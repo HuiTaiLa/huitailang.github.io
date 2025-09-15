@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技能评估 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>技能评估</h1>
+                <button class="action-btn" onclick="viewRecommendations()">
+                    <span class="filter-icon">💡</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 综合评估概览 -->
+        <div class="assessment-overview">
+            <div class="overall-score">
+                <div class="score-circle">
+                    <div class="score-number">85</div>
+                    <div class="score-label">综合评分</div>
+                </div>
+            </div>
+            <div class="skill-level">
+                <div class="level-badge expert">专家级</div>
+                <div class="level-desc">您在多个技术领域表现优秀</div>
+            </div>
+        </div>
+
+        <!-- 技能雷达图区域 -->
+        <div class="radar-section">
+            <h3>技能雷达图</h3>
+            <div class="radar-chart">
+                <div class="radar-placeholder">
+                    <div class="radar-center">📊</div>
+                    <div class="radar-text">技能分布可视化</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技能详细评估 -->
+        <div class="content-section">
+            <h3>详细技能评估</h3>
+            <div class="skill-list" id="skillList">
+                <!-- 技能项将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 评估历史 -->
+        <div class="content-section">
+            <h3>评估历史</h3>
+            <div class="history-list" id="historyList">
+                <!-- 历史记录将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 浮动操作按钮 -->
+        <button class="fab" onclick="startNewAssessment()">
+            <span>📝</span>
+        </button>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSkillAssessments();
+            loadAssessmentHistory();
+        });
+
+        function loadSkillAssessments() {
+            const skills = [
+                {
+                    id: 1,
+                    name: '5G网络技术',
+                    category: '网络技术',
+                    score: 92,
+                    level: 'expert',
+                    lastAssessed: '2024-01-15',
+                    trend: 'up'
+                },
+                {
+                    id: 2,
+                    name: '云计算架构',
+                    category: '云技术',
+                    score: 88,
+                    level: 'advanced',
+                    lastAssessed: '2024-01-10',
+                    trend: 'up'
+                },
+                {
+                    id: 3,
+                    name: '网络安全',
+                    category: '安全技术',
+                    score: 75,
+                    level: 'intermediate',
+                    lastAssessed: '2024-01-05',
+                    trend: 'stable'
+                },
+                {
+                    id: 4,
+                    name: '边缘计算',
+                    category: '新兴技术',
+                    score: 82,
+                    level: 'advanced',
+                    lastAssessed: '2023-12-28',
+                    trend: 'up'
+                },
+                {
+                    id: 5,
+                    name: '项目管理',
+                    category: '管理技能',
+                    score: 78,
+                    level: 'intermediate',
+                    lastAssessed: '2023-12-20',
+                    trend: 'down'
+                }
+            ];
+
+            const skillList = document.getElementById('skillList');
+            skillList.innerHTML = skills.map(skill => `
+                <div class="skill-item" onclick="viewSkillDetail(${skill.id})">
+                    <div class="skill-header">
+                        <div class="skill-info">
+                            <div class="skill-name">${skill.name}</div>
+                            <div class="skill-category">${skill.category}</div>
+                        </div>
+                        <div class="skill-trend ${skill.trend}">${getTrendIcon(skill.trend)}</div>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill ${skill.level}" style="width: ${skill.score}%"></div>
+                        </div>
+                        <div class="skill-score">${skill.score}</div>
+                    </div>
+                    <div class="skill-meta">
+                        <span class="skill-level ${skill.level}">${getLevelText(skill.level)}</span>
+                        <span class="skill-date">📅 ${skill.lastAssessed}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadAssessmentHistory() {
+            const history = [
+                {
+                    id: 1,
+                    title: '5G技术专项评估',
+                    date: '2024-01-15',
+                    score: 92,
+                    duration: '45分钟',
+                    questions: 30
+                },
+                {
+                    id: 2,
+                    title: '云计算综合评估',
+                    date: '2024-01-10',
+                    score: 88,
+                    duration: '60分钟',
+                    questions: 40
+                },
+                {
+                    id: 3,
+                    title: '网络安全基础评估',
+                    date: '2024-01-05',
+                    score: 75,
+                    duration: '30分钟',
+                    questions: 25
+                }
+            ];
+
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item" onclick="viewAssessmentDetail(${item.id})">
+                    <div class="history-header">
+                        <div class="history-title">${item.title}</div>
+                        <div class="history-score">${item.score}分</div>
+                    </div>
+                    <div class="history-meta">
+                        <span>📅 ${item.date}</span>
+                        <span>⏱️ ${item.duration}</span>
+                        <span>❓ ${item.questions}题</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getTrendIcon(trend) {
+            const icons = {
+                'up': '📈',
+                'down': '📉',
+                'stable': '➡️'
+            };
+            return icons[trend] || '➡️';
+        }
+
+        function getLevelText(level) {
+            const levels = {
+                'expert': '专家级',
+                'advanced': '高级',
+                'intermediate': '中级',
+                'beginner': '初级'
+            };
+            return levels[level] || level;
+        }
+
+        function viewSkillDetail(skillId) {
+            commonUtils.showToast('查看技能详情...', 'info');
+        }
+
+        function viewAssessmentDetail(assessmentId) {
+            commonUtils.showToast('查看评估详情...', 'info');
+        }
+
+        function startNewAssessment() {
+            commonUtils.showToast('开始新的技能评估...', 'info');
+        }
+
+        function viewRecommendations() {
+            commonUtils.showToast('查看学习建议...', 'info');
+        }
+    </script>
+
+    <style>
+        .assessment-overview {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .overall-score {
+            flex-shrink: 0;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .score-number {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        .skill-level {
+            flex: 1;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .level-badge.expert {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .level-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .radar-section {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .radar-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .radar-chart {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px dashed #e9ecef;
+        }
+
+        .radar-placeholder {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .radar-center {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .radar-text {
+            font-size: 14px;
+        }
+
+        .content-section h3 {
+            margin: 0 0 16px 0;
+            padding: 0 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .skill-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .skill-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .skill-category {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .skill-trend {
+            font-size: 20px;
+        }
+
+        .skill-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.expert {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .progress-fill.advanced {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+
+        .progress-fill.intermediate {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        }
+
+        .skill-score {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .skill-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .skill-level {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .skill-date {
+            color: #999;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .history-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .history-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</body>
+</html>

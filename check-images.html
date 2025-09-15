@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片引用检查器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .page-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .page-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .image-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .image-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 12px;
+        }
+        .image-item.missing {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        .image-item.exists {
+            border-color: #22c55e;
+            background: #f0fff4;
+        }
+        .image-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .image-status {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        .status-missing {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .status-exists {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .summary {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .summary h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .check-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .check-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 图片引用检查器</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            检查所有HTML页面中的图片引用状态
+        </p>
+
+        <button class="check-btn" onclick="checkAllImages()">
+            🔍 检查所有图片引用
+        </button>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h3>📊 检查结果</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalImages">0</div>
+                    <div class="stat-label">总图片数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="existingImages">0</div>
+                    <div class="stat-label">已存在</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="missingImages">0</div>
+                    <div class="stat-label">缺失</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results">
+            <!-- 检查结果将在这里显示 -->
+        </div>
+    </div>
+
+    <script>
+        // 定义各页面的图片引用
+        const pageImageReferences = {
+            'index.html': [
+                'images/logo.png',
+                'images/avatar.png',
+                'images/search-icon.png',
+                'images/resource-icon.png',
+                'images/circle-icon.png',
+                'images/qa-icon.png',
+                'images/chat-icon.png',
+                'images/training-icon.png',
+                'images/case-icon.png',
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ],
+            'resource-library.html': [
+                'images/back-icon.png',
+                'images/search-icon.png',
+                'images/pdf-icon.png',
+                'images/video-icon.png',
+                'images/doc-icon.png',
+                'images/ppt-icon.png',
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ],
+            'work-circle.html': [
+                'images/back-icon.png',
+                'images/add-icon.png',
+                'images/circle-east.png',
+                'images/circle-cloud.png',
+                'images/circle-iot.png',
+                'images/user1.png',
+                'images/user2.png',
+                'images/user3.png',
+                'images/doc-thumb.png',
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ],
+            'profile.html': [
+                'images/back-icon.png',
+                'images/settings-icon.png',
+                'images/my-avatar.png',
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ],
+            'search-results.html': [
+                'images/back-icon.png',
+                'images/search-icon.png',
+                'images/video-thumbnail.png',
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ],
+            'chat.html': [
+                'images/back-icon.png',
+                'images/more-icon.png',
+                'images/user1.png',
+                'images/user2.png',
+                'images/user3.png',
+                'images/user4.png',
+                'images/ai-avatar.png',
+                'images/my-avatar.png',
+                'images/network-topology.png',
+                'images/file-icon.png',
+                'images/image-icon.png',
+                'images/emoji-icon.png',
+                'images/ai-icon.png',
+                'images/send-icon.png'
+            ],
+            'qa-system.html': [
+                'images/back-icon.png',
+                'images/ask-icon.png',
+                'images/user5.png',
+                'images/user6.png',
+                'images/user7.png',
+                'images/expert1.png',
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ]
+        };
+
+        async function checkAllImages() {
+            const resultsContainer = document.getElementById('results');
+            const summary = document.getElementById('summary');
+            
+            resultsContainer.innerHTML = '';
+            
+            let totalImages = 0;
+            let existingImages = 0;
+            let missingImages = 0;
+            
+            for (const [pageName, images] of Object.entries(pageImageReferences)) {
+                const pageSection = document.createElement('div');
+                pageSection.className = 'page-section';
+                
+                const pageTitle = document.createElement('h3');
+                pageTitle.textContent = `${pageName} (${images.length}个图片)`;
+                pageSection.appendChild(pageTitle);
+                
+                const imageList = document.createElement('div');
+                imageList.className = 'image-list';
+                
+                for (const imagePath of images) {
+                    totalImages++;
+                    const imageItem = document.createElement('div');
+                    imageItem.className = 'image-item';
+                    
+                    const imageName = document.createElement('div');
+                    imageName.className = 'image-name';
+                    imageName.textContent = imagePath.split('/').pop();
+                    
+                    const imageStatus = document.createElement('div');
+                    imageStatus.className = 'image-status';
+                    
+                    // 检查图片是否存在
+                    try {
+                        const exists = await checkImageExists(imagePath);
+                        if (exists) {
+                            imageItem.classList.add('exists');
+                            imageStatus.classList.add('status-exists');
+                            imageStatus.textContent = '✅ 存在';
+                            existingImages++;
+                        } else {
+                            imageItem.classList.add('missing');
+                            imageStatus.classList.add('status-missing');
+                            imageStatus.textContent = '❌ 缺失';
+                            missingImages++;
+                        }
+                    } catch (error) {
+                        imageItem.classList.add('missing');
+                        imageStatus.classList.add('status-missing');
+                        imageStatus.textContent = '❌ 缺失';
+                        missingImages++;
+                    }
+                    
+                    imageItem.appendChild(imageName);
+                    imageItem.appendChild(imageStatus);
+                    imageList.appendChild(imageItem);
+                }
+                
+                pageSection.appendChild(imageList);
+                resultsContainer.appendChild(pageSection);
+            }
+            
+            // 更新统计信息
+            document.getElementById('totalImages').textContent = totalImages;
+            document.getElementById('existingImages').textContent = existingImages;
+            document.getElementById('missingImages').textContent = missingImages;
+            
+            summary.style.display = 'block';
+            
+            // 显示建议
+            if (missingImages > 0) {
+                const suggestion = document.createElement('div');
+                suggestion.style.cssText = 'background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px 0; color: #856404;';
+                suggestion.innerHTML = `
+                    <strong>⚠️ 发现 ${missingImages} 个缺失的图片文件</strong><br>
+                    建议使用 <code>create-all-images.html</code> 工具生成所有缺失的图片。
+                `;
+                resultsContainer.appendChild(suggestion);
+            } else {
+                const success = document.createElement('div');
+                success.style.cssText = 'background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin: 20px 0; color: #155724;';
+                success.innerHTML = `
+                    <strong>✅ 所有图片文件都已存在！</strong><br>
+                    您的原型已经可以正常显示所有图片了。
+                `;
+                resultsContainer.appendChild(success);
+            }
+        }
+
+        function checkImageExists(imagePath) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = imagePath;
+                
+                // 设置超时
+                setTimeout(() => resolve(false), 3000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- 顶部Logo区域 -->
+        <div class="login-header">
+            <div class="logo-section">
+                <img src="images/logo.png" alt="移动云" class="logo">
+                <h1>移动云业务支撑</h1>
+                <p class="subtitle">专业的企业级云服务平台</p>
+            </div>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="login-form-container">
+            <div class="login-form">
+                <h2>欢迎登录</h2>
+                <p class="form-subtitle">请输入您的账号信息</p>
+
+                <form id="loginForm" class="form">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+                        <span class="form-icon">👤</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                        <span class="form-icon">🔒</span>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            记住我
+                        </label>
+                        <a href="#" class="forgot-password" onclick="showForgotPassword()">忘记密码？</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">
+                        <span class="btn-text">登录</span>
+                        <span class="btn-loading" style="display: none;">登录中...</span>
+                    </button>
+                </form>
+
+                <!-- 快速登录选项 -->
+                <div class="quick-login">
+                    <div class="divider">
+                        <span>或</span>
+                    </div>
+                    <div class="quick-login-options">
+                        <button class="quick-login-btn demo-login" onclick="demoLogin()">
+                            <span>🚀</span>
+                            演示登录
+                        </button>
+                        <button class="quick-login-btn guest-login" onclick="guestLogin()">
+                            <span>👤</span>
+                            访客模式
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="login-footer">
+            <div class="footer-links">
+                <a href="#" onclick="showHelp()">使用帮助</a>
+                <a href="#" onclick="showContact()">联系我们</a>
+                <a href="#" onclick="showPrivacy()">隐私政策</a>
+            </div>
+            <p class="copyright">© 2024 中国移动云能力中心. 保留所有权利.</p>
+        </div>
+    </div>
+
+    <!-- 加载提示 -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>登录中，请稍候...</p>
+    </div>
+
+    <!-- 消息提示 -->
+    <div id="messageToast" class="message-toast" style="display: none;">
+        <span class="message-icon"></span>
+        <span class="message-text"></span>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/login.js"></script>
+</body>
+</html>

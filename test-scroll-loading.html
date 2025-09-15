@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>滚动加载功能测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .demo-scroll-area {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            padding: 16px;
+        }
+        
+        .demo-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .demo-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .demo-pdf { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .demo-video { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        .demo-doc { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .demo-ppt { background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); }
+        .demo-excel { background: linear-gradient(135deg, #27ae60 0%, #229954 100%); }
+        
+        .demo-content {
+            flex: 1;
+        }
+        
+        .demo-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin: 0 0 4px 0;
+        }
+        
+        .demo-desc {
+            font-size: 12px;
+            color: #666;
+            margin: 0 0 8px 0;
+        }
+        
+        .demo-meta {
+            font-size: 11px;
+            color: #999;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .demo-loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            gap: 12px;
+        }
+        
+        .demo-loading.show {
+            display: flex;
+        }
+        
+        .demo-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .test-btn.secondary {
+            background: #28a745;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .scroll-stats {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            font-size: 13px;
+        }
+        
+        .scroll-stats strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>📜 滚动加载功能测试</h2>
+            <p>测试移动云资源库页面的滚动自动加载功能</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 功能说明 -->
+            <div class="test-section">
+                <h4>功能改进说明</h4>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>移除"加载更多"按钮：</strong>不再需要手动点击按钮
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>滚动自动加载：</strong>滚动到底部自动加载新内容
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>加载状态提示：</strong>显示加载动画和文字提示
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>数据管理：</strong>自动管理页码和数据状态
+                </div>
+            </div>
+            
+            <!-- 滚动加载演示 -->
+            <div class="test-section">
+                <h4>滚动加载演示</h4>
+                <p>在下方区域中滚动到底部，观察自动加载效果：</p>
+                
+                <div class="demo-scroll-area" id="demoScrollArea">
+                    <div id="demoItemList">
+                        <!-- 初始内容将通过JavaScript生成 -->
+                    </div>
+                    
+                    <div class="demo-loading" id="demoLoading">
+                        <div class="demo-spinner"></div>
+                        <span>正在加载更多...</span>
+                    </div>
+                </div>
+                
+                <div class="scroll-stats" id="scrollStats">
+                    <strong>加载统计：</strong>已加载 <span id="loadedCount">0</span> 页，
+                    共 <span id="totalItems">0</span> 个文档
+                </div>
+            </div>
+            
+            <!-- 功能特性 -->
+            <div class="test-section">
+                <h4>功能特性验证</h4>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>触发距离：</strong>距离底部100px时开始加载
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>加载动画：</strong>旋转加载器 + 文字提示
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>防重复加载：</strong>加载中时不会重复触发
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>数据完结：</strong>没有更多数据时停止加载
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>错误处理：</strong>加载失败时的错误提示
+                </div>
+            </div>
+            
+            <!-- 测试控制 -->
+            <div class="test-section">
+                <h4>测试控制</h4>
+                <button class="test-btn primary" onclick="resetDemo()">
+                    🔄 重置演示
+                </button>
+                <button class="test-btn primary" onclick="simulateError()">
+                    ⚠️ 模拟加载错误
+                </button>
+                <button class="test-btn secondary" onclick="window.open('resource-library.html', '_blank')">
+                    📚 打开资源库页面
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        let demoPage = 1;
+        let demoIsLoading = false;
+        let demoHasMore = true;
+        let demoTotalItems = 0;
+        let simulateErrorNext = false;
+        
+        const documentTypes = [
+            { class: 'demo-pdf', text: 'PDF' },
+            { class: 'demo-video', text: 'MP4' },
+            { class: 'demo-doc', text: 'DOC' },
+            { class: 'demo-ppt', text: 'PPT' },
+            { class: 'demo-excel', text: 'XLS' }
+        ];
+        
+        const titles = [
+            '云原生架构设计指南',
+            '微服务治理最佳实践',
+            '容器化部署实战手册',
+            'DevOps流程优化方案',
+            '数据库性能调优指南',
+            '网络安全防护策略',
+            '移动应用开发规范',
+            '大数据分析平台搭建',
+            '人工智能算法实践',
+            '区块链技术应用案例'
+        ];
+        
+        function generateDemoItems(page) {
+            if (page > 5) return []; // 最多5页
+            
+            const items = [];
+            for (let i = 0; i < 4; i++) { // 每页4个项目
+                const typeInfo = documentTypes[Math.floor(Math.random() * documentTypes.length)];
+                const titleIndex = ((page - 1) * 4 + i) % titles.length;
+                
+                items.push({
+                    id: `demo_${page}_${i}`,
+                    title: titles[titleIndex],
+                    description: `这是第${page}页第${i + 1}个文档的详细描述信息`,
+                    type: typeInfo,
+                    size: `${(Math.random() * 5 + 0.5).toFixed(1)}MB`,
+                    date: `2024-01-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`
+                });
+            }
+            
+            return items;
+        }
+        
+        function createDemoItem(item) {
+            return `
+                <div class="demo-item">
+                    <div class="demo-icon ${item.type.class}">
+                        ${item.type.text}
+                    </div>
+                    <div class="demo-content">
+                        <h4 class="demo-title">${item.title}</h4>
+                        <p class="demo-desc">${item.description}</p>
+                        <div class="demo-meta">
+                            <span>${item.size}</span>
+                            <span>${item.date}</span>
+                            <span>页面${Math.floor((demoTotalItems) / 4) + 1}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadDemoData() {
+            if (demoIsLoading || !demoHasMore) return;
+            
+            demoIsLoading = true;
+            const loadingElement = document.getElementById('demoLoading');
+            loadingElement.classList.add('show');
+            
+            // 模拟网络延迟
+            setTimeout(() => {
+                if (simulateErrorNext) {
+                    // 模拟错误
+                    simulateErrorNext = false;
+                    demoIsLoading = false;
+                    loadingElement.classList.remove('show');
+                    
+                    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
+                        commonUtils.showToast('加载失败，请重试', 'error');
+                    } else {
+                        alert('❌ 模拟加载错误！');
+                    }
+                    return;
+                }
+                
+                const newItems = generateDemoItems(demoPage);
+                
+                if (newItems.length > 0) {
+                    const itemList = document.getElementById('demoItemList');
+                    newItems.forEach(item => {
+                        itemList.innerHTML += createDemoItem(item);
+                        demoTotalItems++;
+                    });
+                    
+                    demoPage++;
+                    demoHasMore = demoPage <= 5;
+                } else {
+                    demoHasMore = false;
+                    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
+                        commonUtils.showToast('没有更多数据了', 'info');
+                    }
+                }
+                
+                demoIsLoading = false;
+                loadingElement.classList.remove('show');
+                updateStats();
+            }, 1500);
+        }
+        
+        function updateStats() {
+            document.getElementById('loadedCount').textContent = demoPage - 1;
+            document.getElementById('totalItems').textContent = demoTotalItems;
+        }
+        
+        function resetDemo() {
+            demoPage = 1;
+            demoIsLoading = false;
+            demoHasMore = true;
+            demoTotalItems = 0;
+            simulateErrorNext = false;
+            
+            document.getElementById('demoItemList').innerHTML = '';
+            document.getElementById('demoLoading').classList.remove('show');
+            
+            // 加载初始数据
+            loadDemoData();
+        }
+        
+        function simulateError() {
+            simulateErrorNext = true;
+            alert('⚠️ 下次滚动加载将模拟错误情况');
+        }
+        
+        // 初始化演示
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📜 滚动加载功能测试页面已加载');
+            
+            // 设置滚动监听
+            const scrollArea = document.getElementById('demoScrollArea');
+            scrollArea.addEventListener('scroll', function() {
+                if (demoIsLoading || !demoHasMore) return;
+                
+                const scrollTop = this.scrollTop;
+                const scrollHeight = this.scrollHeight;
+                const clientHeight = this.clientHeight;
+                
+                // 距离底部50px时开始加载
+                if (scrollTop + clientHeight >= scrollHeight - 50) {
+                    loadDemoData();
+                }
+            });
+            
+            // 加载初始数据
+            resetDemo();
+            
+            console.log('✅ 滚动加载演示已就绪');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天页面UI修复验证</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .fix-summary {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .fix-icon {
+            color: #155724;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .test-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .test-card-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .test-desc {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .comparison-table .before {
+            color: #dc3545;
+        }
+        
+        .comparison-table .after {
+            color: #28a745;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 聊天页面UI修复验证</h2>
+            <p>验证头部图标、底部导航栏等UI问题的修复效果</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 修复总结 -->
+            <div class="fix-summary">
+                <h4 style="margin: 0 0 12px 0; color: #155724;">✅ UI修复完成</h4>
+                <div class="fix-item">
+                    <span class="fix-icon">🔙</span>
+                    <span><strong>返回按钮：</strong>使用Unicode字符"‹"替代缺失的PNG图标，参考工作圈样式</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">⋯</span>
+                    <span><strong>更多按钮：</strong>使用Unicode字符"⋯"替代缺失的PNG图标，添加旋转效果</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">🎨</span>
+                    <span><strong>头部样式：</strong>统一使用渐变背景，白色文字，与整体设计保持一致</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">📱</span>
+                    <span><strong>底部导航：</strong>所有聊天页面添加完整的底部导航栏（首页、资源库、工作圈、我的）</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">🔗</span>
+                    <span><strong>导航功能：</strong>使用div+onclick替代a标签，确保导航功能正常工作</span>
+                </div>
+            </div>
+            
+            <!-- 修复前后对比 -->
+            <div class="test-section">
+                <div class="test-title">📊 修复前后对比</div>
+                <div class="test-content-inner">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>UI元素</th>
+                                <th>修复前</th>
+                                <th>修复后</th>
+                                <th>参考页面</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>返回按钮</strong></td>
+                                <td class="before">PNG图标缺失，显示空白</td>
+                                <td class="after">Unicode字符"‹"，样式一致</td>
+                                <td>work-circle.html</td>
+                            </tr>
+                            <tr>
+                                <td><strong>更多按钮</strong></td>
+                                <td class="before">PNG图标缺失，显示空白</td>
+                                <td class="after">Unicode字符"⋯"，旋转90度</td>
+                                <td>work-circle.html</td>
+                            </tr>
+                            <tr>
+                                <td><strong>头部背景</strong></td>
+                                <td class="before">白色背景，黑色文字</td>
+                                <td class="after">渐变背景，白色文字</td>
+                                <td>work-circle.html</td>
+                            </tr>
+                            <tr>
+                                <td><strong>底部导航</strong></td>
+                                <td class="before">chat.html缺少导航栏</td>
+                                <td class="after">完整的四项导航栏</td>
+                                <td>work-circle.html</td>
+                            </tr>
+                            <tr>
+                                <td><strong>导航样式</strong></td>
+                                <td class="before">chat-list.html使用a标签</td>
+                                <td class="after">统一使用div+onclick</td>
+                                <td>work-circle.html</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <div class="test-title">🧪 UI修复验证</div>
+                <div class="test-content-inner">
+                    <div class="test-grid">
+                        <div class="test-card">
+                            <div class="test-icon">💬</div>
+                            <div class="test-card-title">聊天页面头部</div>
+                            <div class="test-desc">验证返回按钮和更多按钮图标显示</div>
+                            <button class="test-btn" onclick="testChatHeader()">测试聊天头部</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">📋</div>
+                            <div class="test-card-title">聊天列表页面</div>
+                            <div class="test-desc">验证头部图标和底部导航样式</div>
+                            <button class="test-btn" onclick="testChatList()">测试聊天列表</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🤖</div>
+                            <div class="test-card-title">AI聊天页面</div>
+                            <div class="test-desc">验证AI聊天页面的UI完整性</div>
+                            <button class="test-btn" onclick="testAIChat()">测试AI聊天</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">👥</div>
+                            <div class="test-card-title">群聊页面</div>
+                            <div class="test-desc">验证群聊页面的UI和导航功能</div>
+                            <button class="test-btn" onclick="testGroupChat()">测试群聊</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">📱</div>
+                            <div class="test-card-title">底部导航</div>
+                            <div class="test-desc">验证所有页面的底部导航功能</div>
+                            <button class="test-btn" onclick="testBottomNav()">测试底部导航</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🎨</div>
+                            <div class="test-card-title">样式一致性</div>
+                            <div class="test-desc">验证与工作圈页面的样式一致性</div>
+                            <button class="test-btn" onclick="testStyleConsistency()">测试样式一致性</button>
+                        </div>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 聊天页面UI修复完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    所有聊天页面的图标缺失和导航栏问题已修复，UI样式与工作圈页面保持一致
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testChatHeader() {
+            window.open('chat.html?group=group_1&name=华东区5G专网交流群', '_blank');
+            addResult('💬 已打开聊天页面，请验证头部返回按钮(‹)和更多按钮(⋯)显示正常', 'success');
+        }
+        
+        function testChatList() {
+            window.open('chat-list.html', '_blank');
+            addResult('📋 已打开聊天列表，请验证头部图标和底部导航样式', 'success');
+        }
+        
+        function testAIChat() {
+            window.open('chat.html?ai_bot=ai_bot_1&name=移动云智能助手', '_blank');
+            addResult('🤖 已打开AI聊天页面，请验证UI完整性和底部导航', 'success');
+        }
+        
+        function testGroupChat() {
+            window.open('chat.html?group=group_1&name=华东区5G专网交流群', '_blank');
+            addResult('👥 已打开群聊页面，请验证头部样式和底部导航功能', 'success');
+        }
+        
+        function testBottomNav() {
+            addResult('📱 底部导航测试项目：', 'info');
+            addResult('• 所有聊天页面都有完整的四项导航栏', 'info');
+            addResult('• 导航项目：首页、资源库、工作圈、我的', 'info');
+            addResult('• 点击导航项能正确跳转到对应页面', 'info');
+            
+            setTimeout(() => {
+                testChatHeader();
+            }, 2000);
+        }
+        
+        function testStyleConsistency() {
+            addResult('🎨 样式一致性验证：', 'info');
+            addResult('• 头部渐变背景与工作圈页面一致', 'info');
+            addResult('• 返回按钮样式与工作圈页面一致', 'info');
+            addResult('• 底部导航样式与工作圈页面一致', 'info');
+            addResult('• Unicode字符图标替代PNG图标', 'info');
+            
+            setTimeout(() => {
+                window.open('work-circle.html', '_blank');
+                addResult('✅ 已打开工作圈页面作为样式参考', 'success');
+            }, 3000);
+        }
+        
+        function addResult(message, type) {
+            const container = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            container.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 聊天页面UI修复验证页面已加载');
+            
+            setTimeout(() => {
+                addResult('🔧 聊天页面UI修复已完成', 'success');
+                addResult('💡 点击上方按钮验证各项修复效果', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

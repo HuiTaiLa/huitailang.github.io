@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作菜单宽度测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/qa-system.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 100%;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .screen-simulator {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .screen-info {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #666;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .screen-content {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+        }
+        
+        .test-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .width-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .test-results {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .result-item {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .result-item.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .result-item.warning {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .result-item.error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* 屏幕尺寸模拟 */
+        .screen-desktop { width: 100%; max-width: 1200px; }
+        .screen-tablet { width: 768px; max-width: 100%; }
+        .screen-mobile { width: 375px; max-width: 100%; }
+        .screen-small { width: 320px; max-width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>📏 操作菜单宽度测试</h2>
+            <p>测试不同屏幕尺寸下的菜单显示效果</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 桌面端测试 -->
+            <div class="screen-simulator screen-desktop">
+                <div class="screen-info">🖥️ 桌面端 (1200px) - 最大宽度400px</div>
+                <div class="screen-content">
+                    <div class="width-info">1200px</div>
+                    <button class="test-btn" onclick="testWidth('desktop')">测试桌面端菜单</button>
+                </div>
+            </div>
+            
+            <!-- 平板端测试 -->
+            <div class="screen-simulator screen-tablet">
+                <div class="screen-info">📱 平板端 (768px) - 自适应宽度，左右边距12px</div>
+                <div class="screen-content">
+                    <div class="width-info">768px</div>
+                    <button class="test-btn" onclick="testWidth('tablet')">测试平板端菜单</button>
+                </div>
+            </div>
+            
+            <!-- 手机端测试 -->
+            <div class="screen-simulator screen-mobile">
+                <div class="screen-info">📱 手机端 (375px) - 自适应宽度，左右边距8px</div>
+                <div class="screen-content">
+                    <div class="width-info">375px</div>
+                    <button class="test-btn" onclick="testWidth('mobile')">测试手机端菜单</button>
+                </div>
+            </div>
+            
+            <!-- 小屏手机测试 -->
+            <div class="screen-simulator screen-small">
+                <div class="screen-info">📱 小屏手机 (320px) - 自适应宽度，左右边距8px</div>
+                <div class="screen-content">
+                    <div class="width-info">320px</div>
+                    <button class="test-btn" onclick="testWidth('small')">测试小屏菜单</button>
+                </div>
+            </div>
+            
+            <div class="test-results" id="testResults">
+                <h4>测试结果</h4>
+                <p>点击上方按钮开始测试不同屏幕尺寸下的菜单宽度</p>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <button onclick="runAllWidthTests()" style="background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    🧪 运行所有测试
+                </button>
+                <button onclick="window.location.href='qa-system.html'" style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    📱 查看实际页面
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 问题操作菜单 -->
+    <div class="action-sheet" id="questionActionSheet" style="display: none;">
+        <div class="action-sheet-content">
+            <div class="action-sheet-header">
+                <h3>问题操作</h3>
+                <button class="close-btn" onclick="hideQuestionActions()">×</button>
+            </div>
+            <div class="action-sheet-body">
+                <div class="action-item">
+                    <div class="action-icon">❓</div>
+                    <div class="action-info">
+                        <div class="action-title">提出问题</div>
+                        <div class="action-desc">发布新的技术问题，寻求专家解答</div>
+                    </div>
+                </div>
+                <div class="action-item">
+                    <div class="action-icon">🔄</div>
+                    <div class="action-info">
+                        <div class="action-title">加载更多问题</div>
+                        <div class="action-desc">获取更多相关技术问题</div>
+                    </div>
+                </div>
+                <div class="action-item">
+                    <div class="action-icon">🔍</div>
+                    <div class="action-info">
+                        <div class="action-title">搜索问题</div>
+                        <div class="action-desc">按关键词搜索相关问题</div>
+                    </div>
+                </div>
+                <div class="action-item">
+                    <div class="action-icon">📝</div>
+                    <div class="action-info">
+                        <div class="action-title">我的问题</div>
+                        <div class="action-desc">查看我发布的所有问题</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/qa-system.js"></script>
+    <script>
+        let testResults = [];
+        
+        function testWidth(screenType) {
+            showQuestionActions();
+            
+            setTimeout(() => {
+                const actionSheet = document.getElementById('questionActionSheet');
+                const actionSheetContent = actionSheet.querySelector('.action-sheet-content');
+                
+                if (actionSheetContent) {
+                    const rect = actionSheetContent.getBoundingClientRect();
+                    const screenWidth = window.innerWidth;
+                    const contentWidth = rect.width;
+                    const leftMargin = rect.left;
+                    const rightMargin = screenWidth - rect.right;
+                    
+                    const isWithinBounds = leftMargin >= 8 && rightMargin >= 8;
+                    const widthPercentage = ((contentWidth / screenWidth) * 100).toFixed(1);
+                    const maxWidthOk = contentWidth <= 400;
+                    
+                    const result = {
+                        screenType,
+                        screenWidth,
+                        contentWidth: contentWidth.toFixed(0),
+                        leftMargin: leftMargin.toFixed(0),
+                        rightMargin: rightMargin.toFixed(0),
+                        widthPercentage,
+                        isWithinBounds,
+                        maxWidthOk,
+                        timestamp: new Date().toLocaleTimeString()
+                    };
+                    
+                    testResults.push(result);
+                    displayResults();
+                    
+                    hideQuestionActions();
+                } else {
+                    alert('❌ 无法找到操作菜单元素');
+                }
+            }, 500);
+        }
+        
+        function displayResults() {
+            const resultsContainer = document.getElementById('testResults');
+            let html = '<h4>测试结果</h4>';
+            
+            testResults.forEach(result => {
+                const status = result.isWithinBounds && result.maxWidthOk ? 'success' : 
+                              result.isWithinBounds ? 'warning' : 'error';
+                
+                html += `
+                    <div class="result-item ${status}">
+                        <strong>${getScreenTypeName(result.screenType)}</strong> (${result.timestamp})<br>
+                        屏幕: ${result.screenWidth}px | 菜单: ${result.contentWidth}px (${result.widthPercentage}%)<br>
+                        边距: 左${result.leftMargin}px, 右${result.rightMargin}px<br>
+                        状态: ${result.isWithinBounds ? '✅ 边界正常' : '❌ 超出边界'} | 
+                        ${result.maxWidthOk ? '✅ 宽度合适' : '❌ 超出最大宽度'}
+                    </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = html;
+        }
+        
+        function getScreenTypeName(type) {
+            const names = {
+                'desktop': '🖥️ 桌面端',
+                'tablet': '📱 平板端',
+                'mobile': '📱 手机端',
+                'small': '📱 小屏手机'
+            };
+            return names[type] || type;
+        }
+        
+        function runAllWidthTests() {
+            testResults = [];
+            const screenTypes = ['desktop', 'tablet', 'mobile', 'small'];
+            let currentIndex = 0;
+            
+            function runNextTest() {
+                if (currentIndex < screenTypes.length) {
+                    testWidth(screenTypes[currentIndex]);
+                    currentIndex++;
+                    setTimeout(runNextTest, 1500);
+                } else {
+                    setTimeout(() => {
+                        alert('🧪 所有宽度测试完成！\n请查看下方的测试结果。');
+                    }, 500);
+                }
+            }
+            
+            runNextTest();
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📏 操作菜单宽度测试页面已加载');
+            console.log('✅ 准备测试不同屏幕尺寸下的菜单显示效果');
+        });
+    </script>
+</body>
+</html>

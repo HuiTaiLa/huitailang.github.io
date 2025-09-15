@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天菜单调试测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .debug-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .debug-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 12px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .test-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .test-card-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .test-desc {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .debug-log {
+            background: #000;
+            color: #00ff00;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 12px 0;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-label {
+            font-weight: 500;
+        }
+        
+        .status-value {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 聊天菜单调试测试</h2>
+            <p>诊断和修复聊天页面右上角菜单点击无响应问题</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 系统状态检查 -->
+            <div class="debug-section">
+                <div class="debug-title">📊 系统状态检查</div>
+                <div id="systemStatus">
+                    <div class="status-item">
+                        <span class="status-label">common.js 加载状态</span>
+                        <span id="commonJsStatus" class="status-value status-warning">检查中...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">chat.js 加载状态</span>
+                        <span id="chatJsStatus" class="status-value status-warning">检查中...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">模态框HTML存在</span>
+                        <span id="modalStatus" class="status-value status-warning">检查中...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">CSS样式加载</span>
+                        <span id="cssStatus" class="status-value status-warning">检查中...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">showChatMenu函数</span>
+                        <span id="functionStatus" class="status-value status-warning">检查中...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 调试日志 -->
+            <div class="debug-section">
+                <div class="debug-title">📝 调试日志</div>
+                <div id="debugLog" class="debug-log">
+                    等待调试信息...
+                </div>
+                <button onclick="clearLog()" style="padding: 4px 8px; font-size: 12px;">清空日志</button>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-grid">
+                <div class="test-card">
+                    <div class="test-icon">🔍</div>
+                    <div class="test-card-title">检查页面状态</div>
+                    <div class="test-desc">检查所有必要的文件和函数是否正确加载</div>
+                    <button class="test-btn" onclick="checkPageStatus()">检查状态</button>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-icon">👥</div>
+                    <div class="test-card-title">测试群聊菜单</div>
+                    <div class="test-desc">直接测试群聊菜单功能</div>
+                    <button class="test-btn" onclick="testGroupChatMenu()">测试群聊菜单</button>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-icon">🛠️</div>
+                    <div class="test-card-title">手动创建菜单</div>
+                    <div class="test-desc">手动创建和显示聊天菜单</div>
+                    <button class="test-btn" onclick="manualCreateMenu()">手动创建</button>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-icon">🌐</div>
+                    <div class="test-card-title">打开实际页面</div>
+                    <div class="test-desc">打开实际的聊天页面进行测试</div>
+                    <button class="test-btn" onclick="openActualPage()">打开页面</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        let debugLogElement;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            console.log(logMessage);
+            
+            if (debugLogElement) {
+                const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#00ff00';
+                debugLogElement.innerHTML += `<div style="color: ${color}">${logMessage}</div>`;
+                debugLogElement.scrollTop = debugLogElement.scrollHeight;
+            }
+        }
+        
+        function clearLog() {
+            if (debugLogElement) {
+                debugLogElement.innerHTML = '';
+            }
+        }
+        
+        function updateStatus(elementId, status, text) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.className = `status-value status-${status}`;
+                element.textContent = text;
+            }
+        }
+        
+        function checkPageStatus() {
+            log('开始检查页面状态...');
+            
+            // 检查common.js
+            if (typeof commonUtils !== 'undefined') {
+                updateStatus('commonJsStatus', 'success', '✅ 已加载');
+                log('common.js 加载成功', 'success');
+            } else {
+                updateStatus('commonJsStatus', 'error', '❌ 未加载');
+                log('common.js 加载失败', 'error');
+            }
+            
+            // 检查chat.js (通过检查是否有chat.js中的函数)
+            if (typeof showChatMenu !== 'undefined') {
+                updateStatus('chatJsStatus', 'success', '✅ 已加载');
+                updateStatus('functionStatus', 'success', '✅ 存在');
+                log('chat.js 和 showChatMenu 函数存在', 'success');
+            } else {
+                updateStatus('chatJsStatus', 'error', '❌ 未加载');
+                updateStatus('functionStatus', 'error', '❌ 不存在');
+                log('chat.js 或 showChatMenu 函数不存在', 'error');
+            }
+            
+            // 检查模态框HTML
+            const modal = document.getElementById('chatMenuModal');
+            if (modal) {
+                updateStatus('modalStatus', 'success', '✅ 存在');
+                log('chatMenuModal 元素存在', 'success');
+            } else {
+                updateStatus('modalStatus', 'error', '❌ 不存在');
+                log('chatMenuModal 元素不存在', 'error');
+            }
+            
+            // 检查CSS样式
+            const testElement = document.createElement('div');
+            testElement.className = 'modal';
+            document.body.appendChild(testElement);
+            const styles = window.getComputedStyle(testElement);
+            if (styles.position === 'fixed') {
+                updateStatus('cssStatus', 'success', '✅ 已加载');
+                log('模态框CSS样式已加载', 'success');
+            } else {
+                updateStatus('cssStatus', 'error', '❌ 未加载');
+                log('模态框CSS样式未加载', 'error');
+            }
+            document.body.removeChild(testElement);
+        }
+        
+        function testGroupChatMenu() {
+            log('测试群聊菜单功能...');
+            
+            if (typeof showChatMenu === 'function') {
+                log('调用 showChatMenu 函数');
+                try {
+                    showChatMenu();
+                    log('showChatMenu 调用成功', 'success');
+                } catch (error) {
+                    log('showChatMenu 调用出错: ' + error.message, 'error');
+                }
+            } else {
+                log('showChatMenu 函数不存在', 'error');
+            }
+        }
+        
+        function manualCreateMenu() {
+            log('手动创建聊天菜单...');
+            
+            // 检查是否已存在
+            let modal = document.getElementById('chatMenuModal');
+            if (modal) {
+                log('模态框已存在，直接显示');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+                return;
+            }
+            
+            // 手动创建模态框
+            modal = document.createElement('div');
+            modal.id = 'chatMenuModal';
+            modal.className = 'modal';
+            modal.style.display = 'none';
+            
+            modal.innerHTML = `
+                <div class="modal-content chat-menu-content">
+                    <div class="modal-header">
+                        <h3>聊天菜单 (手动创建)</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').style.display='none'">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="menu-list">
+                            <div class="menu-item" onclick="alert('群成员列表')">
+                                <span class="menu-icon">👥</span>
+                                <span>群成员列表</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item" onclick="alert('群聊信息')">
+                                <span class="menu-icon">ℹ️</span>
+                                <span>群聊信息</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item" onclick="alert('群文件')">
+                                <span class="menu-icon">📁</span>
+                                <span>群文件</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            log('手动创建模态框完成', 'success');
+            
+            // 显示模态框
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+            log('显示手动创建的模态框', 'success');
+        }
+        
+        function openActualPage() {
+            log('打开实际的聊天页面...');
+            window.open('chat.html?group=group_2&name=移动云技术支持群', '_blank');
+            log('已打开聊天页面，请在新窗口中测试右上角菜单按钮', 'success');
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLogElement = document.getElementById('debugLog');
+            log('调试页面加载完成');
+            
+            // 自动检查状态
+            setTimeout(checkPageStatus, 500);
+        });
+        
+        // 监听错误
+        window.addEventListener('error', function(e) {
+            log('JavaScript错误: ' + e.message + ' 在 ' + e.filename + ':' + e.lineno, 'error');
+        });
+    </script>
+</body>
+</html>

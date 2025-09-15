@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/search-results.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span style="font-size: 28px; margin-left: -2px;">‹</span>
+                </button>
+                <div class="search-header">
+                    <input type="text" class="search-input" placeholder="搜索文档、解决方案..." id="searchInput">
+                    <button class="search-btn" onclick="performSearch()">
+                        <span style="font-size: 16px;">🔍</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 搜索信息 -->
+        <div class="search-info">
+            <div class="search-query">
+                <span>搜索结果：</span>
+                <strong id="currentQuery">5G专网</strong>
+            </div>
+            <div class="search-stats">
+                <span id="resultCount">找到 156 个相关结果</span>
+                <span class="search-time">用时 0.23 秒</span>
+            </div>
+        </div>
+
+        <!-- 筛选选项 -->
+        <div class="filter-section">
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-type="all">全部</div>
+                <div class="filter-tab" data-type="document">文档</div>
+                <div class="filter-tab" data-type="qa">问答</div>
+                <div class="filter-tab" data-type="video">视频</div>
+            </div>
+            <div class="sort-options">
+                <select class="sort-select">
+                    <option value="relevance">相关性</option>
+                    <option value="time">时间</option>
+                    <option value="popularity">热度</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- AI智能推荐 -->
+        <div class="ai-recommendations">
+            <div class="ai-header">
+                <span class="ai-icon">🤖</span>
+                <span class="ai-title">AI智能推荐</span>
+            </div>
+            <div class="ai-content">
+                <p>基于您的搜索"5G专网"，为您推荐以下相关内容：</p>
+                <div class="ai-suggestions">
+                    <div class="suggestion-item" onclick="searchSuggestion('5G专网部署方案')">
+                        <span class="suggestion-icon">📋</span>
+                        <span class="suggestion-text">5G专网部署方案</span>
+                    </div>
+                    <div class="suggestion-item" onclick="searchSuggestion('专网安全配置')">
+                        <span class="suggestion-icon">🔒</span>
+                        <span class="suggestion-text">专网安全配置</span>
+                    </div>
+                    <div class="suggestion-item" onclick="searchSuggestion('网络切片技术')">
+                        <span class="suggestion-icon">🔧</span>
+                        <span class="suggestion-text">网络切片技术</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 相关搜索 -->
+        <div class="related-searches">
+            <h3>相关搜索</h3>
+            <div class="related-list">
+                <div class="related-item" onclick="searchRelated('5G专网切片')">5G专网切片</div>
+                <div class="related-item" onclick="searchRelated('专网安全')">专网安全</div>
+                <div class="related-item" onclick="searchRelated('5G核心网')">5G核心网</div>
+                <div class="related-item" onclick="searchRelated('专网部署')">专网部署</div>
+                <div class="related-item" onclick="searchRelated('网络优化')">网络优化</div>
+                <div class="related-item" onclick="searchRelated('边缘计算')">边缘计算</div>
+            </div>
+        </div>
+
+        <!-- 搜索结果列表 -->
+        <div class="search-results">
+            <!-- 文档结果 -->
+            <div class="result-item document-result" data-result-id="doc_001" data-result-type="document">
+                <div class="result-header">
+                    <span class="result-type">📄 技术文档</span>
+                    <span class="result-score">相关度: 95%</span>
+                </div>
+                <h3 class="result-title">5G专网建设技术指南 V2.0</h3>
+                <p class="result-snippet">
+                    本指南详细介绍了<mark>5G专网</mark>的建设流程、技术要求和实施方案。包含网络规划、设备选型、部署实施、测试验收等完整流程，适用于各类行业<mark>专网</mark>建设项目...
+                </p>
+                <div class="result-meta">
+                    <span class="result-size">📊 2.3MB</span>
+                    <span class="result-date">📅 2024-01-15</span>
+                    <span class="result-downloads">📥 1,234次下载</span>
+                    <span class="result-rating">⭐ 4.8分</span>
+                </div>
+                <div class="result-tags">
+                    <span class="tag">5G</span>
+                    <span class="tag">专网</span>
+                    <span class="tag">技术指南</span>
+                </div>
+                <div class="result-actions">
+                    <button class="action-btn preview-btn">预览</button>
+                    <button class="action-btn download-btn">下载</button>
+                    <button class="action-btn collect-btn">收藏</button>
+                </div>
+            </div>
+
+            <!-- 问答结果 -->
+            <div class="result-item qa-result" data-result-id="qa_001" data-result-type="qa">
+                <div class="result-header">
+                    <span class="result-type">❓ 专家问答</span>
+                    <span class="result-status solved">已解决</span>
+                </div>
+                <h3 class="result-title">5G专网如何实现与公网的安全隔离？</h3>
+                <p class="result-snippet">
+                    <mark>5G专网</mark>的安全隔离主要通过网络切片、专用频段、独立核心网等技术实现。具体包括：1. 物理隔离：使用专用基站和传输链路；2. 逻辑隔离：通过网络切片技术...
+                </p>
+                <div class="result-meta">
+                    <span class="asker">👤 提问者：李工程师</span>
+                    <span class="expert">🎓 回答者：王专家</span>
+                    <span class="result-date">📅 3天前</span>
+                    <span class="result-views">👁 234次查看</span>
+                </div>
+                <div class="result-actions">
+                    <button class="action-btn view-btn">查看详情</button>
+                    <button class="action-btn follow-btn">关注</button>
+                </div>
+            </div>
+
+            <!-- 视频结果 -->
+            <div class="result-item video-result" data-result-id="video_001" data-result-type="video">
+                <div class="result-header">
+                    <span class="result-type">🎥 培训视频</span>
+                    <span class="result-duration">45分钟</span>
+                </div>
+                <h3 class="result-title">5G专网部署实战培训课程</h3>
+                <div class="video-thumbnail">
+                    <div class="video-placeholder">
+                        <div class="video-icon">🎥</div>
+                        <div class="video-title">5G专网部署实战培训</div>
+                    </div>
+                    <div class="play-button">▶</div>
+                </div>
+                <p class="result-snippet">
+                    本课程从<mark>5G专网</mark>的基础概念开始，详细讲解网络规划、设备配置、性能优化等关键技术点。通过实际案例演示，帮助学员掌握<mark>专网</mark>部署的完整流程...
+                </p>
+                <div class="result-meta">
+                    <span class="instructor">👨‍🏫 讲师：张专家</span>
+                    <span class="result-date">📅 1周前</span>
+                    <span class="result-views">👁 892次观看</span>
+                    <span class="result-rating">⭐ 4.9分</span>
+                </div>
+                <div class="result-actions">
+                    <button class="action-btn play-btn">播放</button>
+                    <button class="action-btn collect-btn">收藏</button>
+                </div>
+            </div>
+
+            <!-- 解决方案结果 -->
+            <div class="result-item solution-result" data-result-id="solution_001" data-result-type="solution">
+                <div class="result-header">
+                    <span class="result-type">💡 解决方案</span>
+                    <span class="result-score">匹配度: 88%</span>
+                </div>
+                <h3 class="result-title">工业互联网5G专网解决方案</h3>
+                <p class="result-snippet">
+                    针对工业制造场景的<mark>5G专网</mark>解决方案，提供端到端的网络架构设计、设备选型建议、部署实施指导。方案覆盖智能制造、远程控制、机器视觉等典型应用场景...
+                </p>
+                <div class="result-meta">
+                    <span class="solution-type">🏭 行业：工业制造</span>
+                    <span class="result-date">📅 2周前</span>
+                    <span class="result-cases">📈 已应用 15 个项目</span>
+                </div>
+                <div class="result-tags">
+                    <span class="tag">工业互联网</span>
+                    <span class="tag">5G专网</span>
+                    <span class="tag">智能制造</span>
+                </div>
+                <div class="result-actions">
+                    <button class="action-btn view-btn">查看方案</button>
+                    <button class="action-btn consult-btn">咨询专家</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 滚动加载提示 -->
+        <div style="width: 100%; text-align: center; padding: 20px 0;">
+            <div class="scroll-loading" id="scrollLoading" style="display: none; justify-content: center; align-items: center; text-align: center; margin: 0 auto; width: auto; gap: 12px;">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">正在加载更多结果...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('resource-library.html')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/search-results.js"></script>
+</body>
+</html>

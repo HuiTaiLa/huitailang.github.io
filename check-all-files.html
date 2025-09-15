@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件完整性检查</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .check-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .check-btn:hover {
+            transform: translateY(-1px);
+        }
+        .file-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .file-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .file-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-item.exists {
+            border-color: #22c55e;
+            background: #f0fff4;
+        }
+        .file-item.missing {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        .file-status {
+            font-size: 16px;
+        }
+        .file-name {
+            flex: 1;
+            word-break: break-all;
+        }
+        .summary {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .summary h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .recommendations {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 文件完整性检查器</h1>
+        <p class="subtitle">检查原型项目中所有引用的CSS、JS和图片文件是否存在</p>
+
+        <button class="check-btn" onclick="checkAllFiles()">
+            🚀 开始检查所有文件
+        </button>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h3>📊 检查结果</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalFiles">0</div>
+                    <div class="stat-label">总文件数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="existingFiles">0</div>
+                    <div class="stat-label">已存在</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="missingFiles">0</div>
+                    <div class="stat-label">缺失</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results">
+            <!-- 检查结果将在这里显示 -->
+        </div>
+    </div>
+
+    <script>
+        // 定义所有需要检查的文件
+        const fileChecks = {
+            'CSS文件': [
+                'styles/common.css',
+                'styles/index.css',
+                'styles/resource-library.css',
+                'styles/work-circle.css',
+                'styles/profile.css',
+                'styles/chat.css'
+            ],
+            'JavaScript文件': [
+                'scripts/common.js',
+                'scripts/index.js',
+                'scripts/resource-library.js',
+                'scripts/work-circle.js',
+                'scripts/profile.js',
+                'scripts/chat.js',
+                'scripts/qa-system.js'
+            ],
+            '图片文件 - 基础': [
+                'images/logo.png',
+                'images/avatar.png',
+                'images/my-avatar.png',
+                'images/search-icon.png',
+                'images/back-icon.png',
+                'images/add-icon.png',
+                'images/more-icon.png',
+                'images/settings-icon.png',
+                'images/ask-icon.png',
+                'images/send-icon.png'
+            ],
+            '图片文件 - 导航': [
+                'images/home-icon.png',
+                'images/resource-nav-icon.png',
+                'images/circle-nav-icon.png',
+                'images/profile-icon.png'
+            ],
+            '图片文件 - 功能': [
+                'images/resource-icon.png',
+                'images/circle-icon.png',
+                'images/qa-icon.png',
+                'images/chat-icon.png',
+                'images/training-icon.png',
+                'images/case-icon.png'
+            ],
+            '图片文件 - 文档类型': [
+                'images/pdf-icon.png',
+                'images/video-icon.png',
+                'images/doc-icon.png',
+                'images/ppt-icon.png'
+            ],
+            '图片文件 - 工具栏': [
+                'images/file-icon.png',
+                'images/image-icon.png',
+                'images/emoji-icon.png',
+                'images/ai-icon.png'
+            ],
+            '图片文件 - 用户头像': [
+                'images/user1.png',
+                'images/user2.png',
+                'images/user3.png',
+                'images/user4.png',
+                'images/user5.png',
+                'images/user6.png',
+                'images/user7.png',
+                'images/expert1.png',
+                'images/ai-avatar.png'
+            ],
+            '图片文件 - 圈子头像': [
+                'images/circle-east.png',
+                'images/circle-cloud.png',
+                'images/circle-iot.png'
+            ],
+            '图片文件 - 内容': [
+                'images/doc-thumb.png',
+                'images/video-thumb.png',
+                'images/video-thumbnail.png',
+                'images/network-topology.png'
+            ]
+        };
+
+        async function checkAllFiles() {
+            const resultsContainer = document.getElementById('results');
+            const summary = document.getElementById('summary');
+            
+            resultsContainer.innerHTML = '';
+            
+            let totalFiles = 0;
+            let existingFiles = 0;
+            let missingFiles = 0;
+            const missingFilesList = [];
+            
+            for (const [sectionName, files] of Object.entries(fileChecks)) {
+                const section = document.createElement('div');
+                section.className = 'file-section';
+                
+                const sectionTitle = document.createElement('h3');
+                sectionTitle.textContent = `${sectionName} (${files.length}个文件)`;
+                section.appendChild(sectionTitle);
+                
+                const fileGrid = document.createElement('div');
+                fileGrid.className = 'file-grid';
+                
+                for (const filePath of files) {
+                    totalFiles++;
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    const fileName = filePath.split('/').pop();
+                    
+                    // 检查文件是否存在
+                    try {
+                        const exists = await checkFileExists(filePath);
+                        if (exists) {
+                            fileItem.classList.add('exists');
+                            fileItem.innerHTML = `
+                                <span class="file-status">✅</span>
+                                <span class="file-name">${fileName}</span>
+                            `;
+                            existingFiles++;
+                        } else {
+                            fileItem.classList.add('missing');
+                            fileItem.innerHTML = `
+                                <span class="file-status">❌</span>
+                                <span class="file-name">${fileName}</span>
+                            `;
+                            missingFiles++;
+                            missingFilesList.push(filePath);
+                        }
+                    } catch (error) {
+                        fileItem.classList.add('missing');
+                        fileItem.innerHTML = `
+                            <span class="file-status">❌</span>
+                            <span class="file-name">${fileName}</span>
+                        `;
+                        missingFiles++;
+                        missingFilesList.push(filePath);
+                    }
+                    
+                    fileGrid.appendChild(fileItem);
+                }
+                
+                section.appendChild(fileGrid);
+                resultsContainer.appendChild(section);
+            }
+            
+            // 更新统计信息
+            document.getElementById('totalFiles').textContent = totalFiles;
+            document.getElementById('existingFiles').textContent = existingFiles;
+            document.getElementById('missingFiles').textContent = missingFiles;
+            
+            summary.style.display = 'block';
+            
+            // 显示建议或成功消息
+            if (missingFiles > 0) {
+                const recommendations = document.createElement('div');
+                recommendations.className = 'recommendations';
+                recommendations.innerHTML = `
+                    <h4>⚠️ 发现 ${missingFiles} 个缺失的文件</h4>
+                    <p><strong>建议操作：</strong></p>
+                    <ol>
+                        <li>使用 <code>create-all-images.html</code> 生成所有图片文件</li>
+                        <li>检查CSS和JS文件是否已正确创建</li>
+                        <li>确保所有文件都放在正确的目录中</li>
+                    </ol>
+                    <p><strong>缺失的文件列表：</strong></p>
+                    <ul style="max-height: 200px; overflow-y: auto; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 4px;">
+                        ${missingFilesList.map(file => `<li><code>${file}</code></li>`).join('')}
+                    </ul>
+                `;
+                resultsContainer.appendChild(recommendations);
+            } else {
+                const successMessage = document.createElement('div');
+                successMessage.className = 'success-message';
+                successMessage.innerHTML = `
+                    <h4>✅ 所有文件都已存在！</h4>
+                    <p>恭喜！您的原型项目文件完整，所有引用的CSS、JS和图片文件都已正确创建。</p>
+                    <p>现在您可以正常使用所有页面功能了。</p>
+                `;
+                resultsContainer.appendChild(successMessage);
+            }
+        }
+
+        function checkFileExists(filePath) {
+            return new Promise((resolve) => {
+                if (filePath.endsWith('.png') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.gif')) {
+                    // 检查图片文件
+                    const img = new Image();
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(false);
+                    img.src = filePath;
+                } else {
+                    // 检查CSS/JS文件
+                    fetch(filePath, { method: 'HEAD' })
+                        .then(response => resolve(response.ok))
+                        .catch(() => resolve(false));
+                }
+                
+                // 设置超时
+                setTimeout(() => resolve(false), 3000);
+            });
+        }
+    </script>
+</body>
+</html>

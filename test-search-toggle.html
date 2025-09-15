@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索框切换测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .status-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 16px 0;
+        }
+        
+        .demo-header h1 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .demo-back-btn,
+        .demo-search-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .demo-search-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔍 搜索框切换功能测试</h2>
+            <p>测试搜索图标点击后的展开/收起功能</p>
+        </div>
+        
+        <div class="test-content">
+            <div class="status-info">
+                <strong>当前状态：</strong>
+                <span id="currentStatus">搜索框隐藏</span>
+            </div>
+            
+            <!-- 模拟头部 -->
+            <div class="demo-header">
+                <button class="demo-back-btn">
+                    <span style="font-size: 28px; margin-left: -2px;">‹</span>
+                </button>
+                <h1>移动云资源库</h1>
+                <button class="demo-search-btn" onclick="testToggleSearch()">
+                    <span style="font-size: 18px;">🔍</span>
+                </button>
+            </div>
+            
+            <!-- 搜索区域 -->
+            <div class="search-section" id="searchSection">
+                <div class="search-box">
+                    <input type="text" placeholder="输入关键词进行语义搜索..." class="search-input" id="searchInput">
+                    <button class="search-submit-btn">搜索</button>
+                </div>
+                <div class="search-filters">
+                    <select class="filter-select">
+                        <option value="">文档类型</option>
+                        <option value="manual">产品手册</option>
+                        <option value="solution">解决方案</option>
+                        <option value="training">培训资料</option>
+                        <option value="case">客户案例</option>
+                    </select>
+                    <select class="filter-select">
+                        <option value="">发布时间</option>
+                        <option value="week">最近一周</option>
+                        <option value="month">最近一月</option>
+                        <option value="quarter">最近三月</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="status-info">
+                <strong>测试说明：</strong><br>
+                1. 点击右上角的🔍图标<br>
+                2. 观察搜索框是否正确展开<br>
+                3. 再次点击观察是否正确收起<br>
+                4. 查看状态提示是否正确
+            </div>
+            
+            <button class="test-btn" onclick="testToggleSearch()">
+                🔍 点击测试搜索框切换
+            </button>
+            
+            <button class="test-btn" onclick="checkCurrentState()">
+                📊 检查当前状态
+            </button>
+            
+            <button class="test-btn" onclick="resetSearchBox()">
+                🔄 重置搜索框状态
+            </button>
+            
+            <div id="testResults" style="margin-top: 16px;"></div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function updateStatus() {
+            const searchSection = document.getElementById('searchSection');
+            const statusElement = document.getElementById('currentStatus');
+            
+            if (searchSection && statusElement) {
+                const isVisible = searchSection.classList.contains('active');
+                statusElement.textContent = isVisible ? '搜索框显示' : '搜索框隐藏';
+                statusElement.style.color = isVisible ? '#28a745' : '#dc3545';
+            }
+        }
+        
+        function testToggleSearch() {
+            const searchSection = document.getElementById('searchSection');
+            const searchInput = document.getElementById('searchInput');
+            
+            if (searchSection) {
+                const isVisible = searchSection.classList.contains('active');
+                
+                if (isVisible) {
+                    // 当前可见，需要隐藏
+                    searchSection.classList.remove('active');
+                    showTestMessage('搜索框已隐藏', 'info');
+                } else {
+                    // 当前隐藏，需要显示
+                    searchSection.classList.add('active');
+                    setTimeout(() => {
+                        if (searchInput) {
+                            searchInput.focus();
+                        }
+                    }, 100);
+                    showTestMessage('搜索框已展开', 'success');
+                }
+                
+                // 更新状态显示
+                updateStatus();
+            }
+        }
+        
+        function checkCurrentState() {
+            const searchSection = document.getElementById('searchSection');
+            if (searchSection) {
+                const isVisible = searchSection.classList.contains('active');
+                const hasActiveClass = searchSection.classList.contains('active');
+                const computedDisplay = window.getComputedStyle(searchSection).display;
+                
+                const stateInfo = `
+                    <div class="status-info">
+                        <strong>详细状态信息：</strong><br>
+                        • 是否包含active类：${hasActiveClass ? '是' : '否'}<br>
+                        • 计算后的display值：${computedDisplay}<br>
+                        • 逻辑判断结果：${isVisible ? '可见' : '隐藏'}
+                    </div>
+                `;
+                
+                document.getElementById('testResults').innerHTML = stateInfo;
+            }
+        }
+        
+        function resetSearchBox() {
+            const searchSection = document.getElementById('searchSection');
+            if (searchSection) {
+                searchSection.classList.remove('active');
+                updateStatus();
+                showTestMessage('搜索框状态已重置为隐藏', 'info');
+            }
+        }
+        
+        function showTestMessage(message, type) {
+            if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
+                commonUtils.showToast(message, type);
+            } else {
+                // 创建简单的提示
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#28a745' : type === 'info' ? '#17a2b8' : '#ffc107'};
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    z-index: 1000;
+                    font-size: 14px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 搜索框切换测试页面已加载');
+            updateStatus();
+            
+            // 测试初始状态
+            setTimeout(() => {
+                checkCurrentState();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

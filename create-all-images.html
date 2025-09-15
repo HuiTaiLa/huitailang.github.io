@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成所有页面图片</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .page-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .page-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-icon {
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        .generate-btn:hover {
+            transform: translateY(-1px);
+        }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .generate-all-btn {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+        .generate-all-btn:hover {
+            transform: translateY(-2px);
+        }
+        .progress-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            height: 25px;
+            display: none;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .file-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .file-item.generated {
+            border-color: #22c55e;
+            background: #f0fff4;
+        }
+        .file-name {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .file-status {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-generated {
+            background: #d4edda;
+            color: #155724;
+        }
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+            display: none;
+        }
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ 小程序图片资源生成器</h1>
+        <p class="subtitle">为所有HTML页面生成完整的PNG图片资源</p>
+
+        <button class="generate-all-btn" onclick="generateAllImages()" id="generateAllBtn">
+            🚀 生成所有图片 (共45个文件)
+        </button>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <strong>✅ 生成完成!</strong> 所有图片已下载完成。请将PNG文件移动到 <code>prototype/images/</code> 目录中，然后刷新页面查看效果。
+        </div>
+
+        <!-- Index页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">🏠</span>
+                index.html (13个图片)
+            </h3>
+            <p>首页所需的Logo、导航图标、功能图标等</p>
+            <button class="generate-btn" onclick="generatePageImages('index')">生成首页图片</button>
+            <div class="file-list" id="index-files"></div>
+        </div>
+
+        <!-- Resource Library页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">📚</span>
+                resource-library.html (10个图片)
+            </h3>
+            <p>资源库页面的文档类型图标和导航图标</p>
+            <button class="generate-btn" onclick="generatePageImages('resource')">生成资源库图片</button>
+            <div class="file-list" id="resource-files"></div>
+        </div>
+
+        <!-- Work Circle页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">👥</span>
+                work-circle.html (13个图片)
+            </h3>
+            <p>工作圈页面的用户头像、圈子头像和导航图标</p>
+            <button class="generate-btn" onclick="generatePageImages('circle')">生成工作圈图片</button>
+            <div class="file-list" id="circle-files"></div>
+        </div>
+
+        <!-- Profile页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">👤</span>
+                profile.html (7个图片)
+            </h3>
+            <p>个人中心页面的用户头像和导航图标</p>
+            <button class="generate-btn" onclick="generatePageImages('profile')">生成个人中心图片</button>
+            <div class="file-list" id="profile-files"></div>
+        </div>
+
+        <!-- Search Results页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">🔍</span>
+                search-results.html (7个图片)
+            </h3>
+            <p>搜索结果页面的导航图标和内容图片</p>
+            <button class="generate-btn" onclick="generatePageImages('search')">生成搜索结果图片</button>
+            <div class="file-list" id="search-files"></div>
+        </div>
+
+        <!-- Chat页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">💬</span>
+                chat.html (12个图片)
+            </h3>
+            <p>聊天页面的用户头像、工具图标和导航图标</p>
+            <button class="generate-btn" onclick="generatePageImages('chat')">生成聊天页面图片</button>
+            <div class="file-list" id="chat-files"></div>
+        </div>
+
+        <!-- QA System页面 -->
+        <div class="page-section">
+            <h3>
+                <span class="page-icon">❓</span>
+                qa-system.html (11个图片)
+            </h3>
+            <p>问答系统页面的用户头像、专家头像和导航图标</p>
+            <button class="generate-btn" onclick="generatePageImages('qa')">生成问答系统图片</button>
+            <div class="file-list" id="qa-files"></div>
+        </div>
+
+        <div class="instructions">
+            <h4>📋 使用说明</h4>
+            <ol>
+                <li>点击 "生成所有图片" 按钮一次性生成全部图片</li>
+                <li>或者点击各页面的单独生成按钮</li>
+                <li>等待图片自动下载到您的下载文件夹</li>
+                <li>将下载的PNG文件移动到 <code>prototype/images/</code> 目录</li>
+                <li>刷新对应的HTML页面查看效果</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // 定义各页面需要的图片文件
+        const pageImages = {
+            index: [
+                { name: 'logo.png', size: 64, type: 'logo' },
+                { name: 'avatar.png', size: 64, type: 'avatar' },
+                { name: 'search-icon.png', size: 24, type: 'search' },
+                { name: 'resource-icon.png', size: 32, type: 'resource' },
+                { name: 'circle-icon.png', size: 32, type: 'circle' },
+                { name: 'qa-icon.png', size: 24, type: 'qa' },
+                { name: 'chat-icon.png', size: 24, type: 'chat' },
+                { name: 'training-icon.png', size: 24, type: 'training' },
+                { name: 'case-icon.png', size: 24, type: 'case' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ],
+            resource: [
+                { name: 'back-icon.png', size: 24, type: 'back' },
+                { name: 'search-icon.png', size: 24, type: 'search' },
+                { name: 'pdf-icon.png', size: 32, type: 'pdf' },
+                { name: 'video-icon.png', size: 32, type: 'video' },
+                { name: 'doc-icon.png', size: 32, type: 'doc' },
+                { name: 'ppt-icon.png', size: 32, type: 'ppt' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ],
+            circle: [
+                { name: 'back-icon.png', size: 24, type: 'back' },
+                { name: 'add-icon.png', size: 24, type: 'add' },
+                { name: 'circle-east.png', size: 64, type: 'circle-east' },
+                { name: 'circle-cloud.png', size: 64, type: 'circle-cloud' },
+                { name: 'circle-iot.png', size: 64, type: 'circle-iot' },
+                { name: 'user1.png', size: 64, type: 'user1' },
+                { name: 'user2.png', size: 64, type: 'user2' },
+                { name: 'user3.png', size: 64, type: 'user3' },
+                { name: 'doc-thumb.png', size: 40, type: 'doc-thumb' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ],
+            profile: [
+                { name: 'back-icon.png', size: 24, type: 'back' },
+                { name: 'settings-icon.png', size: 24, type: 'settings' },
+                { name: 'my-avatar.png', size: 64, type: 'my-avatar' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ],
+            search: [
+                { name: 'back-icon.png', size: 24, type: 'back' },
+                { name: 'search-icon.png', size: 24, type: 'search' },
+                { name: 'video-thumbnail.png', size: [120, 80], type: 'video-thumbnail' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ],
+            chat: [
+                { name: 'back-icon.png', size: 24, type: 'back' },
+                { name: 'more-icon.png', size: 24, type: 'more' },
+                { name: 'user1.png', size: 64, type: 'user1' },
+                { name: 'user2.png', size: 64, type: 'user2' },
+                { name: 'user3.png', size: 64, type: 'user3' },
+                { name: 'user4.png', size: 64, type: 'user4' },
+                { name: 'ai-avatar.png', size: 64, type: 'ai-avatar' },
+                { name: 'my-avatar.png', size: 64, type: 'my-avatar' },
+                { name: 'network-topology.png', size: [300, 200], type: 'network-topology' },
+                { name: 'file-icon.png', size: 24, type: 'file' },
+                { name: 'image-icon.png', size: 24, type: 'image' },
+                { name: 'emoji-icon.png', size: 24, type: 'emoji' },
+                { name: 'ai-icon.png', size: 24, type: 'ai' },
+                { name: 'send-icon.png', size: 24, type: 'send' }
+            ],
+            qa: [
+                { name: 'back-icon.png', size: 24, type: 'back' },
+                { name: 'ask-icon.png', size: 24, type: 'ask' },
+                { name: 'user5.png', size: 64, type: 'user5' },
+                { name: 'user6.png', size: 64, type: 'user6' },
+                { name: 'user7.png', size: 64, type: 'user7' },
+                { name: 'expert1.png', size: 64, type: 'expert1' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ]
+        };
+
+        let generatedFiles = new Set();
+
+        // 初始化文件列表
+        function initFileLists() {
+            Object.keys(pageImages).forEach(page => {
+                const container = document.getElementById(`${page}-files`);
+                if (container) {
+                    pageImages[page].forEach((file, index) => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.id = `${page}-${index}`;
+                        
+                        fileItem.innerHTML = `
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-status status-pending" id="${page}-status-${index}">待生成</div>
+                        `;
+                        
+                        container.appendChild(fileItem);
+                    });
+                }
+            });
+        }
+
+        // 生成所有图片
+        async function generateAllImages() {
+            const generateAllBtn = document.getElementById('generateAllBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            
+            generateAllBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            
+            const allFiles = [];
+            Object.values(pageImages).forEach(files => {
+                files.forEach(file => {
+                    if (!allFiles.find(f => f.name === file.name)) {
+                        allFiles.push(file);
+                    }
+                });
+            });
+            
+            let completed = 0;
+            const total = allFiles.length;
+            
+            for (let i = 0; i < allFiles.length; i++) {
+                const file = allFiles[i];
+                
+                try {
+                    await generateImage(file);
+                    markAllInstancesAsGenerated(file.name);
+                    generatedFiles.add(file.name);
+                } catch (error) {
+                    console.error(`生成 ${file.name} 失败:`, error);
+                }
+                
+                completed++;
+                const percentage = Math.round((completed / total) * 100);
+                progressBar.style.width = percentage + '%';
+                progressBar.textContent = `${percentage}% (${completed}/${total})`;
+                
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                generateAllBtn.disabled = false;
+                document.getElementById('successMessage').style.display = 'block';
+            }, 500);
+        }
+
+        // 生成页面图片
+        async function generatePageImages(page) {
+            const files = pageImages[page];
+            if (!files) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                try {
+                    await generateImage(file);
+                    markFileAsGenerated(page, i);
+                    generatedFiles.add(file.name);
+                } catch (error) {
+                    console.error(`生成 ${file.name} 失败:`, error);
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+        }
+
+        // 生成单个图片
+        function generateImage(fileInfo) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let width, height;
+                if (Array.isArray(fileInfo.size)) {
+                    [width, height] = fileInfo.size;
+                } else {
+                    width = height = fileInfo.size;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                drawIcon(ctx, fileInfo.type, width, height);
+
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = fileInfo.name;
+                    link.href = URL.createObjectURL(blob);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                    resolve();
+                }, 'image/png');
+            });
+        }
+
+        // 绘制图标 (简化版本，包含主要图标类型)
+        function drawIcon(ctx, type, width, height = null) {
+            if (height === null) height = width;
+            ctx.clearRect(0, 0, width, height);
+            
+            switch(type) {
+                case 'logo':
+                    const gradient = ctx.createLinearGradient(0, 0, size, size);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradient;
+                    roundRect(ctx, 0, 0, size, size, size * 0.1875);
+                    ctx.fill();
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(size * 0.25, size * 0.3125, size * 0.5, size * 0.125);
+                    ctx.fillRect(size * 0.25, size * 0.5, size * 0.375, size * 0.125);
+                    ctx.fillRect(size * 0.25, size * 0.6875, size * 0.25, size * 0.125);
+                    ctx.beginPath();
+                    ctx.arc(size * 0.75, size * 0.75, size * 0.125, 0, 2 * Math.PI);
+                    ctx.fill();
+                    break;
+                    
+                case 'avatar':
+                case 'my-avatar':
+                    ctx.fillStyle = type === 'my-avatar' ? '#34495e' : '#bdc3c7';
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = type === 'my-avatar' ? '#2c3e50' : '#95a5a6';
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.375, size * 0.15625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.8125, size * 0.3125, 0, Math.PI);
+                    ctx.fill();
+                    break;
+                    
+                case 'user1':
+                    drawUserAvatar(ctx, size, '#3498db', '#2980b9');
+                    break;
+                case 'user2':
+                    drawUserAvatar(ctx, size, '#e74c3c', '#c0392b');
+                    break;
+                case 'user3':
+                    drawUserAvatar(ctx, width, '#27ae60', '#229954');
+                    break;
+                case 'user4':
+                    drawUserAvatar(ctx, width, '#f39c12', '#e67e22');
+                    break;
+                case 'user5':
+                    drawUserAvatar(ctx, width, '#1abc9c', '#16a085');
+                    break;
+                case 'user6':
+                    drawUserAvatar(ctx, width, '#e91e63', '#c2185b');
+                    break;
+                case 'user7':
+                    drawUserAvatar(ctx, width, '#795548', '#5d4037');
+                    break;
+                    
+                case 'circle-east':
+                    drawCircleAvatar(ctx, size, '#3498db', '华东', '5G');
+                    break;
+                case 'circle-cloud':
+                    drawCircleAvatar(ctx, size, '#9b59b6', '云计算', '专家');
+                    break;
+                case 'circle-iot':
+                    drawCircleAvatar(ctx, size, '#27ae60', '物联网', '应用');
+                    break;
+                    
+                case 'pdf-icon':
+                    drawFileIcon(ctx, size, '#e74c3c', 'PDF');
+                    break;
+                case 'video-icon':
+                    drawFileIcon(ctx, size, '#3498db', '▶');
+                    break;
+                case 'doc-icon':
+                    drawFileIcon(ctx, size, '#2980b9', '📄');
+                    break;
+                case 'ppt-icon':
+                    drawFileIcon(ctx, size, '#d35400', 'PPT');
+                    break;
+                    
+                case 'doc-thumb':
+                    ctx.fillStyle = '#3498db';
+                    roundRect(ctx, width * 0.125, width * 0.05, width * 0.625, width * 0.9, width * 0.075);
+                    ctx.fill();
+                    ctx.fillStyle = 'white';
+                    for (let i = 0; i < 6; i++) {
+                        const y = width * (0.2 + i * 0.1);
+                        const lineWidth = i % 2 === 0 ? width * 0.475 : width * 0.375;
+                        ctx.fillRect(width * 0.2, y, lineWidth, width * 0.05);
+                    }
+                    break;
+
+                case 'video-thumbnail':
+                    // 视频缩略图背景
+                    ctx.fillStyle = '#34495e';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.fillRect(width * 0.083, height * 0.125, width * 0.833, height * 0.75);
+
+                    // 播放按钮
+                    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                    ctx.beginPath();
+                    ctx.arc(width/2, height/2, width * 0.125, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.458, height * 0.4);
+                    ctx.lineTo(width * 0.458, height * 0.6);
+                    ctx.lineTo(width * 0.583, height * 0.5);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // 时长标签
+                    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                    roundRect(ctx, width * 0.708, height * 0.6875, width * 0.208, height * 0.15, height * 0.025);
+                    ctx.fill();
+
+                    ctx.fillStyle = 'white';
+                    ctx.font = `${height * 0.1}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('45:00', width * 0.8125, height * 0.7875);
+
+                    // 标题区域
+                    ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                    ctx.fillRect(0, height * 0.8125, width, height * 0.1875);
+
+                    ctx.fillStyle = 'white';
+                    ctx.font = `${height * 0.125}px Arial`;
+                    ctx.fillText('5G专网培训视频', width/2, height * 0.9375);
+                    break;
+
+                case 'network-topology':
+                    // 网络拓扑图背景
+                    ctx.fillStyle = '#f8f9fa';
+                    ctx.fillRect(0, 0, width, height);
+
+                    // 核心网
+                    ctx.fillStyle = '#3498db';
+                    roundRect(ctx, width * 0.433, height * 0.1, width * 0.133, height * 0.15, width * 0.017);
+                    ctx.fill();
+                    ctx.fillStyle = 'white';
+                    ctx.font = `${height * 0.05}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('核心网', width * 0.5, height * 0.19);
+
+                    // 基站
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.beginPath();
+                    ctx.arc(width * 0.267, height * 0.5, width * 0.05, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(width * 0.733, height * 0.5, width * 0.05, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.fillStyle = 'white';
+                    ctx.font = `${height * 0.04}px Arial`;
+                    ctx.fillText('基站1', width * 0.267, height * 0.52);
+                    ctx.fillText('基站2', width * 0.733, height * 0.52);
+
+                    // 边缘节点
+                    ctx.fillStyle = '#27ae60';
+                    roundRect(ctx, width * 0.2, height * 0.75, width * 0.133, height * 0.125, width * 0.01);
+                    ctx.fill();
+                    roundRect(ctx, width * 0.667, height * 0.75, width * 0.133, height * 0.125, width * 0.01);
+                    ctx.fill();
+
+                    ctx.fillStyle = 'white';
+                    ctx.font = `${height * 0.04}px Arial`;
+                    ctx.fillText('边缘节点', width * 0.267, height * 0.825);
+                    ctx.fillText('边缘节点', width * 0.733, height * 0.825);
+
+                    // 连接线
+                    ctx.strokeStyle = '#34495e';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.5, height * 0.25);
+                    ctx.lineTo(width * 0.267, height * 0.425);
+                    ctx.moveTo(width * 0.5, height * 0.25);
+                    ctx.lineTo(width * 0.733, height * 0.425);
+                    ctx.stroke();
+                    break;
+                    
+                case 'more':
+                    // 更多图标 (三个点)
+                    ctx.fillStyle = '#667eea';
+                    ctx.beginPath();
+                    ctx.arc(width * 0.5, width * 0.5, width * 0.042, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(width * 0.792, width * 0.5, width * 0.042, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(width * 0.208, width * 0.5, width * 0.042, 0, 2 * Math.PI);
+                    ctx.fill();
+                    break;
+
+                case 'ask':
+                    // 提问图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(width/2, width/2, width * 0.417, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    ctx.fillStyle = '#667eea';
+                    ctx.font = `bold ${width * 0.5}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('?', width/2, width * 0.65);
+                    break;
+
+                case 'file':
+                    // 文件图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.583, width * 0.083);
+                    ctx.lineTo(width * 0.25, width * 0.083);
+                    ctx.quadraticCurveTo(width * 0.167, width * 0.083, width * 0.167, width * 0.167);
+                    ctx.lineTo(width * 0.167, width * 0.833);
+                    ctx.quadraticCurveTo(width * 0.167, width * 0.917, width * 0.25, width * 0.917);
+                    ctx.lineTo(width * 0.75, width * 0.917);
+                    ctx.quadraticCurveTo(width * 0.833, width * 0.917, width * 0.833, width * 0.833);
+                    ctx.lineTo(width * 0.833, width * 0.333);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.583, width * 0.083);
+                    ctx.lineTo(width * 0.583, width * 0.333);
+                    ctx.lineTo(width * 0.833, width * 0.333);
+                    ctx.stroke();
+
+                    // 文档线条
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.667, width * 0.542);
+                    ctx.lineTo(width * 0.333, width * 0.542);
+                    ctx.moveTo(width * 0.667, width * 0.708);
+                    ctx.lineTo(width * 0.333, width * 0.708);
+                    ctx.moveTo(width * 0.417, width * 0.375);
+                    ctx.lineTo(width * 0.333, width * 0.375);
+                    ctx.stroke();
+                    break;
+
+                case 'image':
+                    // 图片图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    roundRect(ctx, width * 0.125, width * 0.125, width * 0.75, width * 0.75, width * 0.083);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(width * 0.354, width * 0.354, width * 0.0625, 0, 2 * Math.PI);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.875, width * 0.625);
+                    ctx.lineTo(width * 0.667, width * 0.417);
+                    ctx.lineTo(width * 0.208, width * 0.875);
+                    ctx.stroke();
+                    break;
+
+                case 'emoji':
+                    // 表情图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(width/2, width/2, width * 0.417, 0, 2 * Math.PI);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#667eea';
+                    ctx.beginPath();
+                    ctx.arc(width * 0.375, width * 0.375, width * 0.021, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(width * 0.625, width * 0.375, width * 0.021, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#667eea';
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.333, width * 0.583);
+                    ctx.quadraticCurveTo(width * 0.5, width * 0.667, width * 0.667, width * 0.583);
+                    ctx.stroke();
+                    break;
+
+                case 'ai':
+                    // AI图标 (星星)
+                    ctx.fillStyle = '#667eea';
+                    // 大星星
+                    drawStar(ctx, width/2, width/2, width * 0.25, width * 0.125, 4);
+                    // 小星星
+                    drawStar(ctx, width * 0.792, width * 0.458, width * 0.083, width * 0.042, 4);
+                    drawStar(ctx, width * 0.208, width * 0.458, width * 0.083, width * 0.042, 4);
+                    break;
+
+                case 'send':
+                    // 发送图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.917, width * 0.083);
+                    ctx.lineTo(width * 0.458, width * 0.542);
+                    ctx.moveTo(width * 0.917, width * 0.083);
+                    ctx.lineTo(width * 0.625, width * 0.917);
+                    ctx.lineTo(width * 0.458, width * 0.542);
+                    ctx.moveTo(width * 0.917, width * 0.083);
+                    ctx.lineTo(width * 0.083, width * 0.375);
+                    ctx.lineTo(width * 0.458, width * 0.542);
+                    ctx.stroke();
+                    break;
+
+                case 'back':
+                    // 返回图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(width * 0.625, width * 0.75);
+                    ctx.lineTo(width * 0.375, width * 0.5);
+                    ctx.lineTo(width * 0.625, width * 0.25);
+                    ctx.stroke();
+                    break;
+
+                case 'settings':
+                    // 设置图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(width/2, width/2, width * 0.125, 0, 2 * Math.PI);
+                    ctx.stroke();
+
+                    // 设置齿轮的简化版本
+                    for (let i = 0; i < 8; i++) {
+                        const angle = (i * Math.PI) / 4;
+                        const x1 = width/2 + Math.cos(angle) * width * 0.25;
+                        const y1 = width/2 + Math.sin(angle) * width * 0.25;
+                        const x2 = width/2 + Math.cos(angle) * width * 0.35;
+                        const y2 = width/2 + Math.sin(angle) * width * 0.35;
+
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                    break;
+
+                default:
+                    // 默认图标绘制
+                    ctx.strokeStyle = '#667eea';
+                    ctx.fillStyle = '#667eea';
+                    ctx.lineWidth = 2;
+
+                    if (type.includes('nav') || type === 'resource' || type === 'circle') {
+                        ctx.strokeStyle = type.includes('nav') ? '#667eea' : 'white';
+                        ctx.fillStyle = type.includes('nav') ? '#667eea' : 'white';
+                    }
+
+                    // 简化的图标绘制逻辑
+                    roundRect(ctx, width * 0.25, width * 0.25, width * 0.5, width * 0.5, width * 0.1);
+                    ctx.stroke();
+            }
+        }
+
+        function drawUserAvatar(ctx, size, bgColor, darkColor) {
+            ctx.fillStyle = bgColor;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = darkColor;
+            ctx.beginPath();
+            ctx.arc(size/2, size * 0.375, size * 0.15625, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(size/2, size * 0.8125, size * 0.3125, 0, Math.PI);
+            ctx.fill();
+        }
+
+        function drawCircleAvatar(ctx, size, bgColor, text1, text2) {
+            ctx.fillStyle = bgColor;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.1875}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText(text1, size/2, size * 0.4375);
+            ctx.font = `${size * 0.15625}px Arial`;
+            ctx.fillText(text2, size/2, size * 0.65625);
+        }
+
+        function drawStar(ctx, cx, cy, outerRadius, innerRadius, points) {
+            const angle = Math.PI / points;
+            ctx.beginPath();
+            for (let i = 0; i < 2 * points; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const x = cx + Math.cos(i * angle - Math.PI / 2) * radius;
+                const y = cy + Math.sin(i * angle - Math.PI / 2) * radius;
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawFileIcon(ctx, size, bgColor, text) {
+            ctx.fillStyle = bgColor;
+            roundRect(ctx, size * 0.1875, size * 0.125, size * 0.5, size * 0.75, size * 0.0625);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.25}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText(text, size * 0.4375, size * 0.5625);
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function markFileAsGenerated(page, index) {
+            const fileItem = document.getElementById(`${page}-${index}`);
+            const status = document.getElementById(`${page}-status-${index}`);
+            if (fileItem && status) {
+                fileItem.classList.add('generated');
+                status.textContent = '已生成';
+                status.className = 'file-status status-generated';
+            }
+        }
+
+        function markAllInstancesAsGenerated(fileName) {
+            Object.keys(pageImages).forEach(page => {
+                pageImages[page].forEach((file, index) => {
+                    if (file.name === fileName) {
+                        markFileAsGenerated(page, index);
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initFileLists);
+    </script>
+</body>
+</html>

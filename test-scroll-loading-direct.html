@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>滚动加载居中直接测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/search-results.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .test-result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .demo-container {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            min-height: 200px;
+            position: relative;
+        }
+        
+        .demo-container::before {
+            content: '测试容器边界';
+            position: absolute;
+            top: -12px;
+            left: 10px;
+            background: #f8f9fa;
+            padding: 0 8px;
+            font-size: 12px;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        
+        .center-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #ff0000, #00ff00, #0000ff);
+            transform: translateX(-50%);
+            opacity: 0.3;
+        }
+        
+        .center-line::after {
+            content: '中心线';
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            font-size: 10px;
+            color: #666;
+            background: white;
+            padding: 2px 4px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+        
+        /* 强制居中的滚动加载样式 */
+        .force-center-loading {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+            padding: 20px !important;
+            gap: 12px !important;
+            color: #666 !important;
+            font-size: 14px !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+        }
+        
+        .force-center-spinner {
+            width: 20px !important;
+            height: 20px !important;
+            border: 2px solid #f3f3f3 !important;
+            border-top: 2px solid #667eea !important;
+            border-radius: 50% !important;
+            animation: spin 1s linear infinite !important;
+        }
+        
+        .force-center-text {
+            color: #666 !important;
+            font-size: 14px !important;
+            text-align: center !important;
+            display: inline-block !important;
+            white-space: nowrap !important;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .comparison-item {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+        
+        .comparison-item.problem {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .comparison-item.solution {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 滚动加载居中直接修复</h2>
+            <p>通过内联样式和JavaScript强制确保居中</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 问题说明 -->
+            <div class="test-result warning">
+                <span>⚠️</span>
+                <span><strong>问题：</strong>"正在加载更多结果..."仍然无法居中显示</span>
+            </div>
+            
+            <!-- 解决方案对比 -->
+            <div class="comparison-grid">
+                <div class="comparison-item problem">
+                    <div class="comparison-title">
+                        <span>❌</span>
+                        <span>可能的问题原因</span>
+                    </div>
+                    <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                        <li>CSS样式被其他文件覆盖</li>
+                        <li>JavaScript动态修改破坏了结构</li>
+                        <li>父容器样式影响居中</li>
+                        <li>!important声明不够强</li>
+                    </ul>
+                </div>
+                <div class="comparison-item solution">
+                    <div class="comparison-title">
+                        <span>✅</span>
+                        <span>强制修复方案</span>
+                    </div>
+                    <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                        <li>HTML内联样式强制居中</li>
+                        <li>JavaScript动态设置样式</li>
+                        <li>多重居中策略并用</li>
+                        <li>实时样式检查和修正</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 直接测试演示 -->
+            <div class="demo-container">
+                <div class="center-line"></div>
+                
+                <!-- 使用原始样式的加载提示 -->
+                <div id="originalLoading" class="scroll-loading" style="display: none; justify-content: center !important; align-items: center !important; text-align: center !important; width: 100% !important; margin: 0 auto !important;">
+                    <div class="loading-spinner"></div>
+                    <span class="loading-text">正在加载更多结果...</span>
+                </div>
+                
+                <!-- 使用强制居中样式的加载提示 -->
+                <div id="forceCenterLoading" class="force-center-loading" style="display: none;">
+                    <div class="force-center-spinner"></div>
+                    <span class="force-center-text">正在加载更多结果...</span>
+                </div>
+            </div>
+            
+            <!-- 测试按钮 -->
+            <button class="test-btn" onclick="testOriginalLoading()">
+                🔍 测试原始样式加载提示
+            </button>
+            
+            <button class="test-btn" onclick="testForceCenterLoading()">
+                ✅ 测试强制居中加载提示
+            </button>
+            
+            <button class="test-btn" onclick="openSearchResultsPage()">
+                📄 打开搜索结果页面验证修复
+            </button>
+            
+            <button class="test-btn" onclick="compareLoadingStyles()">
+                📊 对比两种加载样式
+            </button>
+            
+            <!-- 修复说明 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #856404;">🔧 已应用的修复措施</h4>
+                <div style="text-align: left; color: #856404;">
+                    <p style="margin: 4px 0;"><strong>1. HTML内联样式：</strong>直接在元素上添加强制居中样式</p>
+                    <p style="margin: 4px 0;"><strong>2. JavaScript样式设置：</strong>动态设置居中相关的CSS属性</p>
+                    <p style="margin: 4px 0;"><strong>3. 多重保障：</strong>CSS + 内联样式 + JavaScript 三重保障</p>
+                    <p style="margin: 4px 0;"><strong>4. 实时修正：</strong>每次显示时都重新设置居中样式</p>
+                </div>
+            </div>
+            
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testOriginalLoading() {
+            const originalLoading = document.getElementById('originalLoading');
+            const forceCenterLoading = document.getElementById('forceCenterLoading');
+            
+            // 隐藏强制居中的
+            forceCenterLoading.style.display = 'none';
+            
+            // 显示原始样式的
+            originalLoading.style.display = 'flex';
+            originalLoading.style.justifyContent = 'center';
+            originalLoading.style.alignItems = 'center';
+            originalLoading.style.textAlign = 'center';
+            originalLoading.style.width = '100%';
+            originalLoading.style.margin = '0 auto';
+            
+            addTestResult('🔍 原始样式加载提示已显示，请观察是否居中', 'success');
+            
+            setTimeout(() => {
+                originalLoading.style.display = 'none';
+                addTestResult('⏰ 原始样式测试完成', 'success');
+            }, 3000);
+        }
+        
+        function testForceCenterLoading() {
+            const originalLoading = document.getElementById('originalLoading');
+            const forceCenterLoading = document.getElementById('forceCenterLoading');
+            
+            // 隐藏原始样式的
+            originalLoading.style.display = 'none';
+            
+            // 显示强制居中的
+            forceCenterLoading.style.display = 'flex';
+            
+            addTestResult('✅ 强制居中加载提示已显示，应该完全居中', 'success');
+            
+            setTimeout(() => {
+                forceCenterLoading.style.display = 'none';
+                addTestResult('⏰ 强制居中测试完成', 'success');
+            }, 3000);
+        }
+        
+        function openSearchResultsPage() {
+            window.open('search-results.html?q=5G专网', '_blank');
+            addTestResult('📄 已打开搜索结果页面，请滚动到底部测试加载提示', 'success');
+            addTestResult('💡 现在应用了HTML内联样式和JavaScript强制设置，加载提示应该居中', 'success');
+        }
+        
+        function compareLoadingStyles() {
+            addTestResult('📊 样式对比分析：', 'success');
+            addTestResult('🔸 原始样式：依赖CSS文件，可能被覆盖', 'warning');
+            addTestResult('🔸 强制样式：内联样式 + JavaScript，优先级最高', 'success');
+            addTestResult('🔸 修复方案：HTML内联 + JS动态设置 + CSS备用', 'success');
+        }
+        
+        function addTestResult(message, type) {
+            const results = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            results.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 滚动加载居中直接修复测试页面已加载');
+            
+            setTimeout(() => {
+                addTestResult('🎯 已应用强制居中修复：HTML内联样式 + JavaScript动态设置', 'success');
+                addTestResult('📋 请点击测试按钮验证居中效果，然后打开搜索结果页面确认修复', 'success');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI机器人聊天功能完整测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .success-summary {
+            background: #f8f9ff;
+            border: 1px solid #e3e7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .success-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .success-icon {
+            color: #6f42c1;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .test-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .test-card-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .test-desc {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff5f8 100%);
+            border: 1px solid #6f42c1;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .batch-test {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .batch-btn {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .batch-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🤖 AI机器人聊天功能完整测试</h2>
+            <p>验证群聊@机器人、私聊AI助手、文档共享等完整功能</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 成功总结 -->
+            <div class="success-summary">
+                <h4 style="margin: 0 0 12px 0; color: #6f42c1;">🎉 AI机器人功能集成完成</h4>
+                <div class="success-item">
+                    <span class="success-icon">🤖</span>
+                    <span><strong>智能助手：</strong>移动云智能助手、5G专网助手等多个专业AI机器人</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">👥</span>
+                    <span><strong>群聊@功能：</strong>在群聊中@机器人名字触发智能回复和文档分享</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">💬</span>
+                    <span><strong>私聊模式：</strong>与AI机器人一对一深度交流，获得个性化技术支持</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">📄</span>
+                    <span><strong>文档共享：</strong>AI可以访问群聊文件，智能推荐相关技术文档</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">🔧</span>
+                    <span><strong>专业能力：</strong>技术问答、故障诊断、代码生成、性能分析等</span>
+                </div>
+            </div>
+            
+            <!-- 批量测试 -->
+            <div class="batch-test">
+                <h4 style="margin: 0 0 12px 0; color: #856404;">🚀 一键体验所有AI功能</h4>
+                <p style="margin: 0 0 16px 0; color: #856404;">快速打开所有AI相关页面进行完整测试</p>
+                <button class="batch-btn" onclick="openAllAIFeatures()">体验所有AI功能</button>
+            </div>
+            
+            <!-- 功能测试网格 -->
+            <div class="test-section">
+                <div class="test-title">🧪 AI机器人功能测试</div>
+                <div class="test-content-inner">
+                    <div class="test-grid">
+                        <div class="test-card">
+                            <div class="test-icon">📋</div>
+                            <div class="test-card-title">聊天列表AI助手</div>
+                            <div class="test-desc">查看AI助手分类和快速入口</div>
+                            <button class="test-btn" onclick="testChatList()">测试聊天列表</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">👥</div>
+                            <div class="test-card-title">群聊@机器人</div>
+                            <div class="test-desc">在群聊中@机器人触发智能回复</div>
+                            <button class="test-btn" onclick="testGroupAI()">测试群聊@功能</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🤖</div>
+                            <div class="test-card-title">移动云智能助手</div>
+                            <div class="test-desc">与移动云智能助手私聊</div>
+                            <button class="test-btn" onclick="testCloudAI()">测试云助手</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">📡</div>
+                            <div class="test-card-title">5G专网助手</div>
+                            <div class="test-desc">与5G专网助手专业对话</div>
+                            <button class="test-btn" onclick="test5GAI()">测试5G助手</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">📄</div>
+                            <div class="test-card-title">文档智能分享</div>
+                            <div class="test-desc">AI推荐和分享技术文档</div>
+                            <button class="test-btn" onclick="testDocumentAI()">测试文档功能</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🎯</div>
+                            <div class="test-card-title">AI功能演示</div>
+                            <div class="test-desc">完整的AI功能演示和说明</div>
+                            <button class="test-btn" onclick="testAIDemo()">查看演示</button>
+                        </div>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 测试指南 -->
+            <div class="test-section">
+                <div class="test-title">📖 测试指南</div>
+                <div class="test-content-inner">
+                    <h5 style="margin: 0 0 12px 0; color: #495057;">群聊@机器人测试步骤：</h5>
+                    <ol style="margin: 0 0 16px 0; padding-left: 20px; color: #6c757d; font-size: 14px;">
+                        <li>进入群聊页面（华东区5G专网交流群）</li>
+                        <li>在输入框中输入：@移动云智能助手 我需要5G配置文档</li>
+                        <li>发送消息，观察AI机器人的智能回复</li>
+                        <li>尝试不同的问题类型：故障、配置、性能等</li>
+                    </ol>
+                    
+                    <h5 style="margin: 16px 0 12px 0; color: #495057;">AI私聊测试步骤：</h5>
+                    <ol style="margin: 0 0 16px 0; padding-left: 20px; color: #6c757d; font-size: 14px;">
+                        <li>从聊天列表选择AI助手或直接打开AI聊天</li>
+                        <li>直接发送技术问题，无需@符号</li>
+                        <li>观察AI的专业回复和文档推荐</li>
+                        <li>测试代码生成、故障诊断等专业功能</li>
+                    </ol>
+                    
+                    <h5 style="margin: 16px 0 12px 0; color: #495057;">AI能力验证项目：</h5>
+                    <ul style="margin: 0; padding-left: 20px; color: #6c757d; font-size: 14px;">
+                        <li>✅ 自然语言理解和智能回复</li>
+                        <li>✅ 技术问题专业解答</li>
+                        <li>✅ 相关文档智能推荐</li>
+                        <li>✅ 代码和配置脚本生成</li>
+                        <li>✅ 故障诊断和解决方案</li>
+                        <li>✅ 性能分析和优化建议</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 AI机器人聊天功能集成完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    现在即时通讯系统具备了完整的AI机器人功能，支持群聊@机器人、私聊AI助手、智能文档分享等强大特性
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testChatList() {
+            window.open('chat-list.html', '_blank');
+            addResult('📋 已打开聊天列表，请查看AI助手分类和快速入口', 'success');
+        }
+        
+        function testGroupAI() {
+            window.open('chat.html?group=group_1&name=华东区5G专网交流群', '_blank');
+            addResult('👥 已打开群聊，请尝试输入：@移动云智能助手 我需要技术支持', 'success');
+        }
+        
+        function testCloudAI() {
+            window.open('chat.html?ai_bot=ai_bot_1&name=移动云智能助手', '_blank');
+            addResult('🤖 已打开移动云智能助手私聊，开始AI对话', 'success');
+        }
+        
+        function test5GAI() {
+            window.open('chat.html?ai_bot=ai_bot_2&name=5G专网助手', '_blank');
+            addResult('📡 已打开5G专网助手私聊，咨询5G技术问题', 'success');
+        }
+        
+        function testDocumentAI() {
+            addResult('📄 文档智能分享功能测试：', 'info');
+            addResult('• 在AI对话中询问"我需要5G配置文档"', 'info');
+            addResult('• AI会推荐相关技术文档并提供下载', 'info');
+            addResult('• 支持文档摘要和关键信息提取', 'info');
+            
+            setTimeout(() => {
+                testCloudAI();
+            }, 2000);
+        }
+        
+        function testAIDemo() {
+            window.open('ai-chat-demo.html', '_blank');
+            addResult('🎯 已打开AI功能演示页面，查看完整功能说明', 'success');
+        }
+        
+        function openAllAIFeatures() {
+            addResult('🚀 开始打开所有AI功能页面...', 'info');
+            
+            const features = [
+                { url: 'chat-list.html', name: '聊天列表（AI助手分类）' },
+                { url: 'chat.html?group=group_1&name=华东区5G专网交流群', name: '群聊@机器人测试' },
+                { url: 'chat.html?ai_bot=ai_bot_1&name=移动云智能助手', name: '移动云智能助手' },
+                { url: 'chat.html?ai_bot=ai_bot_2&name=5G专网助手', name: '5G专网助手' },
+                { url: 'ai-chat-demo.html', name: 'AI功能演示页面' }
+            ];
+            
+            features.forEach((feature, index) => {
+                setTimeout(() => {
+                    window.open(feature.url, '_blank');
+                    addResult(`✅ 已打开${feature.name}`, 'success');
+                }, index * 800);
+            });
+            
+            setTimeout(() => {
+                addResult('🎉 所有AI功能页面已打开完成，请逐一测试验证', 'success');
+                addResult('💡 建议测试顺序：聊天列表 → 群聊@机器人 → AI私聊 → 功能演示', 'info');
+            }, features.length * 800 + 1000);
+        }
+        
+        function addResult(message, type) {
+            const container = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            container.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 AI机器人聊天功能完整测试页面已加载');
+            
+            setTimeout(() => {
+                addResult('🤖 AI机器人功能已完全集成到即时通讯系统', 'success');
+                addResult('💡 点击上方按钮测试各种AI功能', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG转PNG工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #667eea;
+        }
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+        .file-list {
+            margin-top: 20px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-preview img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        .convert-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .convert-btn:hover {
+            background: #5a6fd8;
+        }
+        .convert-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #667eea;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .batch-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .batch-convert-btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .batch-convert-btn:hover {
+            background: #16a34a;
+        }
+        .batch-convert-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SVG转PNG工具</h1>
+        <p>将SVG文件转换为PNG格式，支持批量处理</p>
+        
+        <div class="upload-area" id="uploadArea">
+            <p>拖拽SVG文件到这里，或点击选择文件</p>
+            <input type="file" id="fileInput" multiple accept=".svg" style="display: none;">
+        </div>
+        
+        <div class="progress" id="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="batch-controls">
+            <button class="batch-convert-btn" id="batchConvertBtn" onclick="convertAllFiles()" disabled>
+                批量转换为PNG
+            </button>
+        </div>
+        
+        <div class="file-list" id="fileList">
+            <!-- 文件列表将在这里显示 -->
+        </div>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+        
+        // 初始化拖拽上传
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const batchConvertBtn = document.getElementById('batchConvertBtn');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('drop', handleDrop);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'image/svg+xml');
+            addFiles(files);
+        }
+        
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            addFiles(files);
+        }
+        
+        function addFiles(files) {
+            files.forEach(file => {
+                if (!selectedFiles.find(f => f.name === file.name)) {
+                    selectedFiles.push(file);
+                }
+            });
+            updateFileList();
+            updateBatchButton();
+        }
+        
+        function updateFileList() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fileItem.innerHTML = `
+                        <div class="file-preview">
+                            <img src="${e.target.result}" alt="${file.name}">
+                            <span>${file.name}</span>
+                        </div>
+                        <div>
+                            <button class="convert-btn" onclick="convertSingleFile(${index})">转换</button>
+                            <button class="convert-btn" onclick="removeFile(${index})" style="background: #e74c3c; margin-left: 5px;">删除</button>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+                
+                fileList.appendChild(fileItem);
+            });
+        }
+        
+        function updateBatchButton() {
+            batchConvertBtn.disabled = selectedFiles.length === 0;
+        }
+        
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+            updateBatchButton();
+        }
+        
+        function convertSingleFile(index) {
+            const file = selectedFiles[index];
+            convertSVGToPNG(file);
+        }
+        
+        function convertAllFiles() {
+            if (selectedFiles.length === 0) return;
+            
+            const progress = document.getElementById('progress');
+            const progressBar = document.getElementById('progressBar');
+            
+            progress.style.display = 'block';
+            batchConvertBtn.disabled = true;
+            
+            let completed = 0;
+            const total = selectedFiles.length;
+            
+            selectedFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    convertSVGToPNG(file).then(() => {
+                        completed++;
+                        const percentage = (completed / total) * 100;
+                        progressBar.style.width = percentage + '%';
+                        
+                        if (completed === total) {
+                            setTimeout(() => {
+                                progress.style.display = 'none';
+                                batchConvertBtn.disabled = false;
+                                alert('所有文件转换完成！');
+                            }, 500);
+                        }
+                    });
+                }, index * 200);
+            });
+        }
+        
+        function convertSVGToPNG(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const svgData = e.target.result;
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // 解析SVG尺寸
+                    const parser = new DOMParser();
+                    const svgDoc = parser.parseFromString(svgData, 'image/svg+xml');
+                    const svgElement = svgDoc.documentElement;
+                    
+                    let width = parseInt(svgElement.getAttribute('width')) || 64;
+                    let height = parseInt(svgElement.getAttribute('height')) || 64;
+                    
+                    // 如果是viewBox，解析viewBox
+                    const viewBox = svgElement.getAttribute('viewBox');
+                    if (viewBox) {
+                        const [, , vbWidth, vbHeight] = viewBox.split(' ').map(Number);
+                        if (!svgElement.getAttribute('width')) width = vbWidth;
+                        if (!svgElement.getAttribute('height')) height = vbHeight;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const img = new Image();
+                    const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
+                    const url = URL.createObjectURL(svgBlob);
+                    
+                    img.onload = function() {
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        canvas.toBlob(function(blob) {
+                            const link = document.createElement('a');
+                            const fileName = file.name.replace('.svg', '.png');
+                            link.download = fileName;
+                            link.href = URL.createObjectURL(blob);
+                            link.click();
+                            
+                            URL.revokeObjectURL(url);
+                            URL.revokeObjectURL(link.href);
+                            resolve();
+                        }, 'image/png');
+                    };
+                    
+                    img.src = url;
+                };
+                reader.readAsText(file);
+            });
+        }
+        
+        // 预加载一些示例SVG文件路径
+        const sampleSVGs = [
+            'images/user1.svg',
+            'images/user2.svg',
+            'images/user3.svg',
+            'images/expert1.svg',
+            'images/ai-avatar.svg',
+            'images/my-avatar.svg',
+            'images/circle-east.svg',
+            'images/circle-cloud.svg',
+            'images/circle-iot.svg',
+            'images/network-topology.svg',
+            'images/video-thumb.svg',
+            'images/doc-thumb.svg'
+        ];
+        
+        // 添加批量加载示例文件的功能
+        function loadSampleFiles() {
+            const loadBtn = document.createElement('button');
+            loadBtn.textContent = '加载示例SVG文件';
+            loadBtn.className = 'batch-convert-btn';
+            loadBtn.style.background = '#f39c12';
+            loadBtn.style.marginRight = '10px';
+            loadBtn.onclick = function() {
+                sampleSVGs.forEach(async (path) => {
+                    try {
+                        const response = await fetch(path);
+                        const svgText = await response.text();
+                        const fileName = path.split('/').pop();
+                        const file = new File([svgText], fileName, { type: 'image/svg+xml' });
+                        addFiles([file]);
+                    } catch (error) {
+                        console.log('无法加载文件:', path);
+                    }
+                });
+            };
+            
+            document.querySelector('.batch-controls').insertBefore(loadBtn, batchConvertBtn);
+        }
+        
+        // 页面加载完成后添加示例加载按钮
+        document.addEventListener('DOMContentLoaded', loadSampleFiles);
+    </script>
+</body>
+</html>

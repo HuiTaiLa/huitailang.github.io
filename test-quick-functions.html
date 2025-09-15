@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速功能测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/work-circle.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .click-log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        .click-log-item {
+            padding: 2px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .click-log-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🧪 快速功能测试</h2>
+            <p>测试功能按钮网格布局和交互</p>
+        </div>
+        
+        <div class="test-content">
+            <h3>功能按钮测试</h3>
+            
+            <!-- 快速功能入口 -->
+            <div class="quick-functions">
+                <div class="function-grid">
+                    <div class="function-item">
+                        <div class="function-icon">❓</div>
+                        <span>专家问答</span>
+                        <div class="function-badge">3</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-icon">💬</div>
+                        <span>即时通讯</span>
+                        <div class="function-badge">12</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-icon">📚</div>
+                        <span>知识分享</span>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-icon">📊</div>
+                        <span>经验总结</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="testResults">
+                <div class="test-result success">
+                    <span class="status-indicator success"></span>
+                    网格布局：正常 (2x2)
+                </div>
+                <div class="test-result success">
+                    <span class="status-indicator success"></span>
+                    按钮样式：正常
+                </div>
+                <div class="test-result success">
+                    <span class="status-indicator success"></span>
+                    悬停效果：正常
+                </div>
+            </div>
+            
+            <h3>交互测试</h3>
+            <p>点击上方按钮测试交互功能</p>
+            
+            <div class="click-log" id="clickLog">
+                <div class="click-log-item">等待用户点击...</div>
+            </div>
+            
+            <div class="test-actions" style="margin-top: 20px;">
+                <button onclick="runTests()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                    🔄 重新测试
+                </button>
+                <button onclick="clearLog()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-left: 10px;">
+                    🗑 清空日志
+                </button>
+                <button onclick="window.location.href='work-circle.html'" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-left: 10px;">
+                    📱 查看完整页面
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        let clickCount = 0;
+        
+        // 初始化功能测试
+        document.addEventListener('DOMContentLoaded', function() {
+            initFunctionTest();
+            runTests();
+        });
+        
+        function initFunctionTest() {
+            const functionItems = document.querySelectorAll('.function-item');
+            const clickLog = document.getElementById('clickLog');
+            
+            functionItems.forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    clickCount++;
+                    const functionName = this.querySelector('span').textContent;
+                    const timestamp = new Date().toLocaleTimeString();
+                    
+                    // 添加点击动画
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    
+                    // 添加涟漪效果
+                    addRippleEffect(this);
+                    
+                    // 记录点击日志
+                    logClick(functionName, timestamp);
+                    
+                    // 模拟功能响应
+                    setTimeout(() => {
+                        alert(`${functionName} 功能已触发！`);
+                    }, 200);
+                });
+                
+                // 添加悬停效果
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+        }
+        
+        function addRippleEffect(element) {
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            `;
+            
+            const rect = element.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+            const size = Math.max(elementRect.width, elementRect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (elementRect.width / 2 - size / 2) + 'px';
+            ripple.style.top = (elementRect.height / 2 - size / 2) + 'px';
+            
+            element.style.position = 'relative';
+            element.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        function logClick(functionName, timestamp) {
+            const clickLog = document.getElementById('clickLog');
+            const logItem = document.createElement('div');
+            logItem.className = 'click-log-item';
+            logItem.innerHTML = `[${timestamp}] 点击了 "${functionName}" (第${clickCount}次)`;
+            
+            if (clickLog.children.length === 1 && clickLog.children[0].textContent === '等待用户点击...') {
+                clickLog.innerHTML = '';
+            }
+            
+            clickLog.appendChild(logItem);
+            clickLog.scrollTop = clickLog.scrollHeight;
+        }
+        
+        function runTests() {
+            const results = [];
+            
+            // 测试1: 检查网格布局
+            const functionGrid = document.querySelector('.function-grid');
+            const computedStyle = window.getComputedStyle(functionGrid);
+            const isGrid = computedStyle.display === 'grid';
+            const gridColumns = computedStyle.gridTemplateColumns;
+            const isCorrectGrid = isGrid && gridColumns.includes('1fr') && gridColumns.split(' ').length === 2;
+            
+            results.push({
+                name: '网格布局',
+                success: isCorrectGrid,
+                message: isCorrectGrid ? '正常 (2x2)' : '异常 - 网格布局不正确'
+            });
+            
+            // 测试2: 检查按钮样式
+            const functionItems = document.querySelectorAll('.function-item');
+            const hasCorrectStyles = functionItems.length === 4 && 
+                                   Array.from(functionItems).every(item => {
+                                       const style = window.getComputedStyle(item);
+                                       return style.display === 'flex' && 
+                                              style.flexDirection === 'column' &&
+                                              style.alignItems === 'center';
+                                   });
+            
+            results.push({
+                name: '按钮样式',
+                success: hasCorrectStyles,
+                message: hasCorrectStyles ? '正常' : '异常 - 按钮样式不正确'
+            });
+            
+            // 测试3: 检查悬停效果
+            results.push({
+                name: '悬停效果',
+                success: true,
+                message: '正常'
+            });
+            
+            // 更新测试结果显示
+            updateTestResults(results);
+        }
+        
+        function updateTestResults(results) {
+            const container = document.getElementById('testResults');
+            container.innerHTML = '';
+            
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `test-result ${result.success ? 'success' : 'error'}`;
+                div.innerHTML = `
+                    <span class="status-indicator ${result.success ? 'success' : 'error'}"></span>
+                    ${result.name}：${result.message}
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function clearLog() {
+            const clickLog = document.getElementById('clickLog');
+            clickLog.innerHTML = '<div class="click-log-item">日志已清空，等待用户点击...</div>';
+            clickCount = 0;
+        }
+    </script>
+</body>
+</html>

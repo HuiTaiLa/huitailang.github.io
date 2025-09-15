@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终修复验证</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .test-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 12px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+        
+        .test-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            color: #155724;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            color: #0c5460;
+        }
+        
+        .step-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .step-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🔧 聊天菜单最终修复验证</h2>
+            <p>彻底解决菜单显示和关闭问题</p>
+        </div>
+        
+        <div class="content">
+            <!-- 修复说明 -->
+            <div class="success-box">
+                <h4 style="margin: 0 0 12px 0;">✅ 最终修复方案</h4>
+                <p style="margin: 0 0 8px 0;"><strong>问题根源：</strong>外部JavaScript文件加载或函数依赖问题</p>
+                <p style="margin: 0;"><strong>解决方案：</strong>直接在HTML中内联简单的菜单函数，完全独立运行</p>
+            </div>
+            
+            <!-- 测试步骤 -->
+            <div class="test-section">
+                <div class="test-title">📋 测试步骤</div>
+                <ol class="step-list">
+                    <li>
+                        <span class="step-number">1</span>
+                        <span>点击下方按钮打开聊天页面</span>
+                    </li>
+                    <li>
+                        <span class="step-number">2</span>
+                        <span>点击页面右上角的更多按钮(⋯)</span>
+                    </li>
+                    <li>
+                        <span class="step-number">3</span>
+                        <span>验证菜单显示完整内容</span>
+                    </li>
+                    <li>
+                        <span class="step-number">4</span>
+                        <span>测试关闭功能（点击×或背景）</span>
+                    </li>
+                    <li>
+                        <span class="step-number">5</span>
+                        <span>测试菜单项点击功能</span>
+                    </li>
+                </ol>
+            </div>
+            
+            <!-- 测试链接 -->
+            <div class="test-section">
+                <div class="test-title">🧪 测试页面</div>
+                <div class="test-grid">
+                    <a href="chat.html?group=group_1&name=华东区5G专网交流群" target="_blank" class="test-btn">
+                        👥 华东区5G专网交流群
+                    </a>
+                    <a href="chat.html?group=group_2&name=移动云技术支持群" target="_blank" class="test-btn">
+                        🏢 移动云技术支持群
+                    </a>
+                    <a href="chat.html?ai_bot=ai_bot_1&name=移动云智能助手" target="_blank" class="test-btn">
+                        🤖 AI智能助手
+                    </a>
+                    <a href="test-simple-menu.html" target="_blank" class="test-btn">
+                        🔧 简化测试页面
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 预期效果 -->
+            <div class="info-box">
+                <h4 style="margin: 0 0 12px 0;">🎯 预期效果</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>点击右上角更多按钮立即显示菜单</li>
+                    <li>菜单显示群聊信息和完整的功能列表</li>
+                    <li>点击关闭按钮(×)能关闭菜单</li>
+                    <li>点击背景区域能关闭菜单</li>
+                    <li>点击菜单项显示功能提示</li>
+                    <li>浏览器控制台显示调试信息</li>
+                </ul>
+            </div>
+            
+            <!-- 技术细节 -->
+            <div class="test-section">
+                <div class="test-title">⚙️ 技术细节</div>
+                <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>新函数：</strong>simpleShowMenu() - 完全独立的菜单函数</p>
+                <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>样式方案：</strong>内联CSS样式，不依赖外部文件</p>
+                <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>DOM操作：</strong>动态创建和移除模态框元素</p>
+                <p style="margin: 0; font-size: 14px;"><strong>事件处理：</strong>直接绑定onclick事件</p>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="success-box">
+                <h4 style="margin: 0 0 8px 0;">🎉 修复完成！</h4>
+                <p style="margin: 0;">
+                    现在聊天页面的右上角菜单应该能完全正常工作了。这个解决方案完全独立，不依赖任何外部文件或复杂的函数调用。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后的提示
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 最终修复验证页面已加载');
+            console.log('💡 请点击上方的测试按钮验证菜单功能');
+        });
+    </script>
+</body>
+</html>

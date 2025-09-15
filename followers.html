@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的粉丝</title>
+  <link rel="stylesheet" href="styles/common.css" />
+  <style>
+    .page { padding: 16px; padding-bottom: 80px; }
+    .header { position: sticky; top: 0; background: linear-gradient(135deg,#667eea,#764ba2); color: #fff; padding: 12px 16px; z-index: 10; }
+    .header-content { display:flex; align-items:center; justify-content:space-between; }
+    .back-btn, .more-btn { border:none; background:transparent; color:#fff; font-size:22px; cursor:pointer; }
+    .list { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+    .item { display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #eee; border-radius:12px; padding:12px; }
+    .avatar { width:40px; height:40px; border-radius:50%; background:#f3f4ff; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .meta { display:flex; flex-direction:column; }
+    .name { color:#333; font-weight:600; }
+    .desc { color:#999; font-size:12px; }
+    .btn { margin-left:auto; border:none; background:#667eea; color:#fff; border-radius:8px; padding:6px 10px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <button class="back-btn" onclick="history.back()">‹</button>
+      <h1 style="font-size:18px; margin:0;">我的粉丝</h1>
+      <span style="width:22px;"></span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="list" id="followersList"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-item" onclick="navigateTo('index.html')">
+      <img src="images/home-icon.png" alt="首页" />
+      <span>首页</span>
+    </div>
+    <div class="nav-item" onclick="navigateTo('resource-library.html')">
+      <img src="images/resource-nav-icon.png" alt="资源库" />
+      <span>资源库</span>
+    </div>
+    <div class="nav-item" onclick="navigateTo('work-circle.html')">
+      <img src="images/circle-nav-icon.png" alt="工作圈" />
+      <span>工作圈</span>
+    </div>
+    <div class="nav-item active" onclick="navigateTo('profile.html')">
+      <img src="images/profile-icon.png" alt="我的" />
+      <span>我的</span>
+    </div>
+  </nav>
+
+  <script src="scripts/common.js"></script>
+  <script>
+    const data = [
+      { name:'王运维', role:'网络运维', avatar:'🛠️' },
+      { name:'李技术', role:'系统架构', avatar:'💻' },
+      { name:'赵产品', role:'产品经理', avatar:'📊' },
+      { name:'周测试', role:'测试工程师', avatar:'🧪' }
+    ];
+
+    function render() {
+      const list = document.getElementById('followersList');
+      list.innerHTML = data.map(u => `
+        <div class="item">
+          <div class="avatar">${u.avatar}</div>
+          <div class="meta">
+            <span class="name">${u.name}</span>
+            <span class="desc">${u.role}</span>
+          </div>
+          <button class="btn" onclick="commonUtils.showToast('已关注TA','success')">回关</button>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  </script>
+</body>
+</html>
+

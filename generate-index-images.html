@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成index.html所需图片</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress {
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            height: 25px;
+            display: none;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .file-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .file-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .file-item.generated {
+            border-color: #22c55e;
+            background: #f0fff4;
+        }
+        .file-preview {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .file-preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .file-name {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+        .file-status {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-generated {
+            background: #d4edda;
+            color: #155724;
+        }
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Index.html 图片生成器</h1>
+        <p class="description">
+            为index.html页面生成所有必需的PNG图片文件。<br>
+            包含Logo、导航图标、功能图标等13个图片文件。
+        </p>
+
+        <button class="generate-btn" onclick="generateAllImages()" id="generateBtn">
+            🚀 生成所有图片 (13个文件)
+        </button>
+
+        <div class="progress" id="progress">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <strong>✅ 生成完成!</strong> 所有图片已下载完成。请将PNG文件移动到 <code>prototype/images/</code> 目录中。
+        </div>
+
+        <div class="instructions">
+            <h3>📋 使用说明</h3>
+            <ol>
+                <li>点击上方按钮开始生成图片</li>
+                <li>等待所有图片自动下载完成</li>
+                <li>将下载的PNG文件移动到 <code>prototype/images/</code> 目录</li>
+                <li>刷新index.html页面查看效果</li>
+            </ol>
+        </div>
+
+        <div class="file-grid" id="fileGrid">
+            <!-- 文件列表将通过JavaScript生成 -->
+        </div>
+    </div>
+
+    <script>
+        // index.html中需要的所有图片文件
+        const imageFiles = [
+            { name: 'logo.png', size: 64, type: 'logo' },
+            { name: 'avatar.png', size: 64, type: 'avatar' },
+            { name: 'search-icon.png', size: 24, type: 'icon' },
+            { name: 'resource-icon.png', size: 32, type: 'module' },
+            { name: 'circle-icon.png', size: 32, type: 'module' },
+            { name: 'qa-icon.png', size: 24, type: 'icon' },
+            { name: 'chat-icon.png', size: 24, type: 'icon' },
+            { name: 'training-icon.png', size: 24, type: 'icon' },
+            { name: 'case-icon.png', size: 24, type: 'icon' },
+            { name: 'home-icon.png', size: 24, type: 'icon' },
+            { name: 'resource-nav-icon.png', size: 24, type: 'icon' },
+            { name: 'circle-nav-icon.png', size: 24, type: 'icon' },
+            { name: 'profile-icon.png', size: 24, type: 'icon' }
+        ];
+
+        let generatedCount = 0;
+
+        // 初始化文件网格
+        function initFileGrid() {
+            const fileGrid = document.getElementById('fileGrid');
+            
+            imageFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.id = `file-${index}`;
+                
+                fileItem.innerHTML = `
+                    <div class="file-preview" id="preview-${index}">
+                        ${getFileIcon(file.type)}
+                    </div>
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-status status-pending" id="status-${index}">待生成</div>
+                `;
+                
+                fileGrid.appendChild(fileItem);
+            });
+        }
+
+        function getFileIcon(type) {
+            const icons = {
+                'logo': '🏢',
+                'avatar': '👤',
+                'icon': '🎯',
+                'module': '📦'
+            };
+            return icons[type] || '📁';
+        }
+
+        // 生成所有图片
+        async function generateAllImages() {
+            const generateBtn = document.getElementById('generateBtn');
+            const progress = document.getElementById('progress');
+            const progressBar = document.getElementById('progressBar');
+            
+            generateBtn.disabled = true;
+            progress.style.display = 'block';
+            generatedCount = 0;
+            
+            for (let i = 0; i < imageFiles.length; i++) {
+                const file = imageFiles[i];
+                
+                try {
+                    await generateImage(file, i);
+                    markFileAsGenerated(i);
+                    generatedCount++;
+                } catch (error) {
+                    console.error(`生成 ${file.name} 失败:`, error);
+                }
+                
+                const percentage = Math.round(((i + 1) / imageFiles.length) * 100);
+                progressBar.style.width = percentage + '%';
+                progressBar.textContent = `${percentage}% (${i + 1}/${imageFiles.length})`;
+                
+                // 添加延迟避免浏览器阻塞
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            setTimeout(() => {
+                progress.style.display = 'none';
+                generateBtn.disabled = false;
+                
+                if (generatedCount === imageFiles.length) {
+                    document.getElementById('successMessage').style.display = 'block';
+                }
+            }, 500);
+        }
+
+        // 生成单个图片
+        function generateImage(fileInfo, index) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = fileInfo.size;
+                canvas.height = fileInfo.size;
+                
+                // 根据文件类型生成图片内容
+                generateImageContent(ctx, fileInfo);
+                
+                // 转换为PNG并下载
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = fileInfo.name;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    
+                    // 更新预览
+                    updatePreview(index, canvas.toDataURL());
+                    resolve();
+                }, 'image/png');
+            });
+        }
+
+        // 生成图片内容
+        function generateImageContent(ctx, fileInfo) {
+            const size = fileInfo.size;
+            
+            // 清空画布
+            ctx.clearRect(0, 0, size, size);
+            
+            if (fileInfo.type === 'logo') {
+                // 生成Logo
+                const gradient = ctx.createLinearGradient(0, 0, size, size);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                
+                // 圆角矩形背景
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 0, 0, size, size, 12);
+                ctx.fill();
+                
+                // 白色图标元素
+                ctx.fillStyle = 'white';
+                ctx.fillRect(size * 0.25, size * 0.3, size * 0.5, size * 0.12);
+                ctx.fillRect(size * 0.25, size * 0.5, size * 0.375, size * 0.12);
+                ctx.fillRect(size * 0.25, size * 0.7, size * 0.25, size * 0.12);
+                
+                // 圆形装饰
+                ctx.beginPath();
+                ctx.arc(size * 0.75, size * 0.75, size * 0.125, 0, 2 * Math.PI);
+                ctx.fill();
+                
+            } else if (fileInfo.type === 'avatar') {
+                // 生成默认头像
+                ctx.fillStyle = '#bdc3c7';
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // 头部
+                ctx.fillStyle = '#95a5a6';
+                ctx.beginPath();
+                ctx.arc(size/2, size * 0.375, size * 0.15625, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // 身体
+                ctx.beginPath();
+                ctx.arc(size/2, size * 0.8125, size * 0.3125, 0, Math.PI);
+                ctx.fill();
+                
+            } else if (fileInfo.type === 'icon') {
+                // 生成图标
+                ctx.strokeStyle = '#667eea';
+                ctx.fillStyle = '#667eea';
+                ctx.lineWidth = 2;
+                
+                if (fileInfo.name.includes('search')) {
+                    // 搜索图标
+                    ctx.beginPath();
+                    ctx.arc(size * 0.45, size * 0.45, size * 0.3, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.7, size * 0.7);
+                    ctx.lineTo(size * 0.85, size * 0.85);
+                    ctx.stroke();
+                    
+                } else if (fileInfo.name.includes('home')) {
+                    // 首页图标
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.125, size * 0.375);
+                    ctx.lineTo(size * 0.5, size * 0.125);
+                    ctx.lineTo(size * 0.875, size * 0.375);
+                    ctx.lineTo(size * 0.875, size * 0.875);
+                    ctx.lineTo(size * 0.125, size * 0.875);
+                    ctx.closePath();
+                    ctx.stroke();
+                    
+                    ctx.strokeRect(size * 0.375, size * 0.5, size * 0.25, size * 0.375);
+                    
+                } else if (fileInfo.name.includes('chat')) {
+                    // 聊天图标
+                    roundRect(ctx, size * 0.125, size * 0.2, size * 0.75, size * 0.5, size * 0.08);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.3, size * 0.7);
+                    ctx.lineTo(size * 0.125, size * 0.875);
+                    ctx.stroke();
+                    
+                } else if (fileInfo.name.includes('qa')) {
+                    // 问答图标
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size * 0.4, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.font = `bold ${size * 0.5}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('?', size/2, size * 0.65);
+                    
+                } else if (fileInfo.name.includes('training')) {
+                    // 培训图标
+                    roundRect(ctx, size * 0.125, size * 0.2, size * 0.3, size * 0.6, size * 0.05);
+                    ctx.stroke();
+                    roundRect(ctx, size * 0.545, size * 0.2, size * 0.3, size * 0.6, size * 0.05);
+                    ctx.stroke();
+                    
+                } else if (fileInfo.name.includes('case')) {
+                    // 案例图标
+                    roundRect(ctx, size * 0.125, size * 0.167, size * 0.75, size * 0.75, size * 0.08);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size * 0.375, size * 0.375, size * 0.08, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                } else {
+                    // 默认图标
+                    roundRect(ctx, size * 0.25, size * 0.25, size * 0.5, size * 0.5, size * 0.08);
+                    ctx.stroke();
+                }
+                
+            } else if (fileInfo.type === 'module') {
+                // 生成模块图标 (白色，用于深色背景)
+                ctx.strokeStyle = 'white';
+                ctx.fillStyle = 'white';
+                ctx.lineWidth = 2;
+                
+                if (fileInfo.name.includes('resource')) {
+                    // 资源库图标
+                    roundRect(ctx, size * 0.125, size * 0.125, size * 0.75, size * 0.75, size * 0.125);
+                    ctx.stroke();
+                    
+                    // 文档线条
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.25, size * 0.375);
+                    ctx.lineTo(size * 0.75, size * 0.375);
+                    ctx.moveTo(size * 0.25, size * 0.5);
+                    ctx.lineTo(size * 0.625, size * 0.5);
+                    ctx.moveTo(size * 0.25, size * 0.625);
+                    ctx.lineTo(size * 0.5, size * 0.625);
+                    ctx.stroke();
+                    
+                } else if (fileInfo.name.includes('circle')) {
+                    // 工作圈图标
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size * 0.375, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    // 连接点
+                    ctx.beginPath();
+                    ctx.arc(size * 0.375, size * 0.4375, size * 0.0625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size * 0.625, size * 0.4375, size * 0.0625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.625, size * 0.0625, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // 圆角矩形函数
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        // 更新预览
+        function updatePreview(index, dataURL) {
+            const preview = document.getElementById(`preview-${index}`);
+            preview.innerHTML = `<img src="${dataURL}" alt="预览">`;
+        }
+
+        // 标记文件为已生成
+        function markFileAsGenerated(index) {
+            const fileItem = document.getElementById(`file-${index}`);
+            const status = document.getElementById(`status-${index}`);
+            
+            fileItem.classList.add('generated');
+            status.textContent = '已生成';
+            status.className = 'file-status status-generated';
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initFileGrid);
+    </script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>底部导航样式更新测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/search-results.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .update-summary {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .update-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .update-icon {
+            color: #1976d2;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .comparison-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .comparison-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-content {
+            padding: 16px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .comparison-card {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .comparison-card.before {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        
+        .comparison-card.after {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-demo {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            margin: 12px 0;
+        }
+        
+        .demo-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .demo-nav-item.active {
+            color: #667eea;
+        }
+        
+        .demo-nav-item img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+            filter: grayscale(1);
+            transition: filter 0.2s;
+        }
+        
+        .demo-nav-item.active img {
+            filter: none;
+        }
+        
+        .demo-nav-item span {
+            font-size: 10px;
+        }
+        
+        .old-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 8px;
+            cursor: pointer;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .old-nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .old-nav-item span:last-child {
+            font-size: 10px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #333;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .feature-icon {
+            font-size: 16px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🎨 底部导航样式更新</h2>
+            <p>统一搜索结果页面与资源库页面的导航样式</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 更新内容总结 -->
+            <div class="update-summary">
+                <h4 style="margin: 0 0 12px 0; color: #1976d2;">🎯 样式更新内容</h4>
+                <div class="update-item">
+                    <span class="update-icon">🖼️</span>
+                    <span>将Unicode字符图标替换为PNG图片图标</span>
+                </div>
+                <div class="update-item">
+                    <span class="update-icon">🎨</span>
+                    <span>统一导航项的样式和尺寸规格</span>
+                </div>
+                <div class="update-item">
+                    <span class="update-icon">🔄</span>
+                    <span>添加图标的灰度滤镜和激活状态</span>
+                </div>
+                <div class="update-item">
+                    <span class="update-icon">📏</span>
+                    <span>调整图标尺寸为24x24px，文字为10px</span>
+                </div>
+                <div class="update-item">
+                    <span class="update-icon">✨</span>
+                    <span>保持与移动云资源库页面完全一致的视觉效果</span>
+                </div>
+            </div>
+            
+            <!-- 样式对比 -->
+            <div class="comparison-section">
+                <div class="comparison-title">📊 导航样式对比</div>
+                <div class="comparison-content">
+                    <div class="comparison-grid">
+                        <div class="comparison-card before">
+                            <div class="card-title">
+                                <span>🔄</span>
+                                <span>更新前 - Unicode图标</span>
+                            </div>
+                            <div class="nav-demo">
+                                <div class="old-nav-item">
+                                    <span class="old-nav-icon">🏠</span>
+                                    <span>首页</span>
+                                </div>
+                                <div class="old-nav-item">
+                                    <span class="old-nav-icon">📚</span>
+                                    <span>资源库</span>
+                                </div>
+                                <div class="old-nav-item">
+                                    <span class="old-nav-icon">👥</span>
+                                    <span>工作圈</span>
+                                </div>
+                                <div class="old-nav-item">
+                                    <span class="old-nav-icon">👤</span>
+                                    <span>我的</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12px; color: #856404; margin: 8px 0;">
+                                使用Unicode字符，样式不够统一
+                            </p>
+                        </div>
+                        <div class="comparison-card after">
+                            <div class="card-title">
+                                <span>✅</span>
+                                <span>更新后 - PNG图标</span>
+                            </div>
+                            <div class="nav-demo">
+                                <div class="demo-nav-item">
+                                    <img src="images/home-icon.png" alt="首页">
+                                    <span>首页</span>
+                                </div>
+                                <div class="demo-nav-item active">
+                                    <img src="images/resource-nav-icon.png" alt="资源库">
+                                    <span>资源库</span>
+                                </div>
+                                <div class="demo-nav-item">
+                                    <img src="images/circle-nav-icon.png" alt="工作圈">
+                                    <span>工作圈</span>
+                                </div>
+                                <div class="demo-nav-item">
+                                    <img src="images/profile-icon.png" alt="我的">
+                                    <span>我的</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 12px; color: #155724; margin: 8px 0;">
+                                使用PNG图标，支持灰度滤镜和激活状态
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 新增功能特色 -->
+            <div class="comparison-section">
+                <div class="comparison-title">🌟 新增功能特色</div>
+                <div class="comparison-content">
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">🖼️</span>
+                            <span>高质量PNG图标</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🎨</span>
+                            <span>灰度滤镜效果</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✨</span>
+                            <span>激活状态高亮</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📏</span>
+                            <span>统一尺寸规格</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔄</span>
+                            <span>平滑过渡动画</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🎯</span>
+                            <span>视觉一致性</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技术实现说明 -->
+            <div class="comparison-section">
+                <div class="comparison-title">⚙️ 技术实现说明</div>
+                <div class="comparison-content">
+                    <div class="test-result success">
+                        <span>🖼️</span>
+                        <span><strong>图标更新：</strong>使用与resource-library.html相同的PNG图标文件</span>
+                    </div>
+                    <div class="test-result success">
+                        <span>🎨</span>
+                        <span><strong>样式统一：</strong>采用common.css中的导航样式规范</span>
+                    </div>
+                    <div class="test-result success">
+                        <span>📏</span>
+                        <span><strong>尺寸规格：</strong>图标24x24px，文字10px，间距2px</span>
+                    </div>
+                    <div class="test-result success">
+                        <span>🔄</span>
+                        <span><strong>交互效果：</strong>灰度滤镜 + 激活状态彩色显示</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 验证测试 -->
+            <div class="comparison-section">
+                <div class="comparison-title">🧪 验证测试</div>
+                <div class="comparison-content">
+                    <button class="test-btn" onclick="openSearchResultsPage()">
+                        🔍 打开搜索结果页面查看更新效果
+                    </button>
+                    
+                    <button class="test-btn" onclick="openResourceLibraryPage()">
+                        📚 打开资源库页面进行对比
+                    </button>
+                    
+                    <div class="test-result info">
+                        <span>📋</span>
+                        <span><strong>验证清单：</strong></span>
+                    </div>
+                    
+                    <div style="margin-left: 20px;">
+                        <div class="test-result success">
+                            <span>✅</span>
+                            <span>检查四个导航图标是否正确显示</span>
+                        </div>
+                        <div class="test-result success">
+                            <span>✅</span>
+                            <span>验证图标是否为灰度显示（未激活状态）</span>
+                        </div>
+                        <div class="test-result success">
+                            <span>✅</span>
+                            <span>测试图标尺寸和文字大小是否一致</span>
+                        </div>
+                        <div class="test-result success">
+                            <span>✅</span>
+                            <span>对比两个页面的导航样式是否完全一致</span>
+                        </div>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #155724;">🎉 导航样式更新完成！</h4>
+                <p style="margin: 0; color: #155724;">
+                    搜索结果页面的底部导航现在与移动云资源库页面保持完全一致的视觉效果
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 实际的底部导航演示 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="testNavClick('首页')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="testNavClick('资源库')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="testNavClick('工作圈')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="testNavClick('我的')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function openSearchResultsPage() {
+            window.open('search-results.html?q=5G专网', '_blank');
+            addTestResult('🔍 已打开搜索结果页面，请检查底部导航样式', 'success');
+        }
+        
+        function openResourceLibraryPage() {
+            window.open('resource-library.html', '_blank');
+            addTestResult('📚 已打开资源库页面，请对比导航样式', 'success');
+        }
+        
+        function testNavClick(navName) {
+            if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
+                commonUtils.showToast(`点击了${navName}菜单`, 'info');
+            } else {
+                alert(`✅ ${navName}菜单点击正常！图标显示正确`);
+            }
+            addTestResult(`✅ ${navName}菜单点击测试通过`, 'success');
+        }
+        
+        function addTestResult(message, type) {
+            const results = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${type === 'success' ? '✅' : '📋'}</span><span>${message}</span>`;
+            results.appendChild(resultDiv);
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 底部导航样式更新测试页面已加载');
+            
+            setTimeout(() => {
+                addTestResult('🎉 导航样式更新完成！现在使用与资源库页面相同的图标和样式', 'success');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

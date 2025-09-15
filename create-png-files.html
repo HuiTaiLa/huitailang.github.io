@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建PNG文件</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            color: #1976d2;
+        }
+        .file-list {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .file-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ PNG文件生成器</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            为index.html生成所有必需的PNG图片文件
+        </p>
+
+        <button class="btn" onclick="createAllPNGFiles()">
+            🚀 创建所有PNG文件
+        </button>
+
+        <div class="status info" id="infoStatus">
+            <strong>📋 说明:</strong> 点击按钮后，所有PNG文件将自动下载到您的下载文件夹。请将这些文件移动到 <code>prototype/images/</code> 目录中。
+        </div>
+
+        <div class="status success" id="successStatus">
+            <strong>✅ 完成!</strong> 所有PNG文件已生成并下载。请将文件移动到正确的目录中。
+        </div>
+
+        <div class="file-list">
+            <h3>将要生成的文件:</h3>
+            <div class="file-item">📱 logo.png - 移动云Logo (64x64)</div>
+            <div class="file-item">👤 avatar.png - 默认用户头像 (64x64)</div>
+            <div class="file-item">🔍 search-icon.png - 搜索图标 (24x24)</div>
+            <div class="file-item">📚 resource-icon.png - 资源库图标 (32x32)</div>
+            <div class="file-item">👥 circle-icon.png - 工作圈图标 (32x32)</div>
+            <div class="file-item">❓ qa-icon.png - 问答图标 (24x24)</div>
+            <div class="file-item">💬 chat-icon.png - 聊天图标 (24x24)</div>
+            <div class="file-item">📖 training-icon.png - 培训图标 (24x24)</div>
+            <div class="file-item">📋 case-icon.png - 案例图标 (24x24)</div>
+            <div class="file-item">🏠 home-icon.png - 首页图标 (24x24)</div>
+            <div class="file-item">📄 resource-nav-icon.png - 资源库导航 (24x24)</div>
+            <div class="file-item">🔗 circle-nav-icon.png - 工作圈导航 (24x24)</div>
+            <div class="file-item">👤 profile-icon.png - 个人中心 (24x24)</div>
+        </div>
+    </div>
+
+    <script>
+        function createAllPNGFiles() {
+            document.getElementById('infoStatus').style.display = 'block';
+            
+            // 定义所有需要的PNG文件
+            const pngFiles = [
+                { name: 'logo.png', size: 64, type: 'logo' },
+                { name: 'avatar.png', size: 64, type: 'avatar' },
+                { name: 'search-icon.png', size: 24, type: 'search' },
+                { name: 'resource-icon.png', size: 32, type: 'resource' },
+                { name: 'circle-icon.png', size: 32, type: 'circle' },
+                { name: 'qa-icon.png', size: 24, type: 'qa' },
+                { name: 'chat-icon.png', size: 24, type: 'chat' },
+                { name: 'training-icon.png', size: 24, type: 'training' },
+                { name: 'case-icon.png', size: 24, type: 'case' },
+                { name: 'home-icon.png', size: 24, type: 'home' },
+                { name: 'resource-nav-icon.png', size: 24, type: 'resource-nav' },
+                { name: 'circle-nav-icon.png', size: 24, type: 'circle-nav' },
+                { name: 'profile-icon.png', size: 24, type: 'profile' }
+            ];
+
+            // 逐个生成并下载PNG文件
+            pngFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    createAndDownloadPNG(file);
+                    
+                    // 最后一个文件下载完成后显示成功消息
+                    if (index === pngFiles.length - 1) {
+                        setTimeout(() => {
+                            document.getElementById('successStatus').style.display = 'block';
+                        }, 500);
+                    }
+                }, index * 200);
+            });
+        }
+
+        function createAndDownloadPNG(fileInfo) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const size = fileInfo.size;
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // 根据类型绘制不同的图标
+            drawIcon(ctx, fileInfo.type, size);
+            
+            // 转换为PNG并下载
+            canvas.toBlob(function(blob) {
+                const link = document.createElement('a');
+                link.download = fileInfo.name;
+                link.href = URL.createObjectURL(blob);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }, 'image/png');
+        }
+
+        function drawIcon(ctx, type, size) {
+            // 清空画布
+            ctx.clearRect(0, 0, size, size);
+            
+            switch(type) {
+                case 'logo':
+                    // 移动云Logo
+                    const gradient = ctx.createLinearGradient(0, 0, size, size);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+                    
+                    ctx.fillStyle = gradient;
+                    roundRect(ctx, 0, 0, size, size, size * 0.1875);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(size * 0.25, size * 0.3125, size * 0.5, size * 0.125);
+                    ctx.fillRect(size * 0.25, size * 0.5, size * 0.375, size * 0.125);
+                    ctx.fillRect(size * 0.25, size * 0.6875, size * 0.25, size * 0.125);
+                    
+                    ctx.beginPath();
+                    ctx.arc(size * 0.75, size * 0.75, size * 0.125, 0, 2 * Math.PI);
+                    ctx.fill();
+                    break;
+                    
+                case 'avatar':
+                    // 默认头像
+                    ctx.fillStyle = '#bdc3c7';
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#95a5a6';
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.375, size * 0.15625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.8125, size * 0.3125, 0, Math.PI);
+                    ctx.fill();
+                    break;
+                    
+                case 'search':
+                    // 搜索图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(size * 0.458, size * 0.458, size * 0.333, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.692, size * 0.692);
+                    ctx.lineTo(size * 0.875, size * 0.875);
+                    ctx.stroke();
+                    break;
+                    
+                case 'home':
+                    // 首页图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.125, size * 0.375);
+                    ctx.lineTo(size * 0.5, size * 0.083);
+                    ctx.lineTo(size * 0.875, size * 0.375);
+                    ctx.lineTo(size * 0.875, size * 0.833);
+                    ctx.lineTo(size * 0.208, size * 0.833);
+                    ctx.lineTo(size * 0.208, size * 0.375);
+                    ctx.stroke();
+                    
+                    ctx.strokeRect(size * 0.375, size * 0.5, size * 0.25, size * 0.333);
+                    break;
+                    
+                case 'chat':
+                    // 聊天图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    roundRect(ctx, size * 0.125, size * 0.208, size * 0.75, size * 0.5, size * 0.083);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.292, size * 0.708);
+                    ctx.lineTo(size * 0.125, size * 0.875);
+                    ctx.stroke();
+                    
+                    // 消息线条
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.333, size * 0.417);
+                    ctx.lineTo(size * 0.667, size * 0.417);
+                    ctx.moveTo(size * 0.333, size * 0.583);
+                    ctx.lineTo(size * 0.5, size * 0.583);
+                    ctx.stroke();
+                    break;
+                    
+                case 'qa':
+                    // 问答图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size * 0.417, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = '#667eea';
+                    ctx.font = `bold ${size * 0.5}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('?', size/2, size * 0.65);
+                    break;
+                    
+                case 'training':
+                    // 培训图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    roundRect(ctx, size * 0.083, size * 0.125, size * 0.25, size * 0.667, size * 0.042);
+                    ctx.stroke();
+                    roundRect(ctx, size * 0.667, size * 0.125, size * 0.25, size * 0.667, size * 0.042);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.5, size * 0.292);
+                    ctx.lineTo(size * 0.5, size * 0.708);
+                    ctx.stroke();
+                    break;
+                    
+                case 'case':
+                    // 案例图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    roundRect(ctx, size * 0.125, size * 0.167, size * 0.75, size * 0.75, size * 0.083);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size * 0.375, size * 0.375, size * 0.083, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.875, size * 0.625);
+                    ctx.lineTo(size * 0.625, size * 0.375);
+                    ctx.lineTo(size * 0.25, size * 0.875);
+                    ctx.stroke();
+                    break;
+                    
+                case 'resource':
+                case 'resource-nav':
+                    // 资源库图标
+                    const isModule = type === 'resource';
+                    ctx.strokeStyle = isModule ? 'white' : '#667eea';
+                    ctx.lineWidth = 2;
+                    
+                    roundRect(ctx, size * 0.125, size * 0.125, size * 0.75, size * 0.75, size * 0.125);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.25, size * 0.375);
+                    ctx.lineTo(size * 0.75, size * 0.375);
+                    ctx.moveTo(size * 0.25, size * 0.5);
+                    ctx.lineTo(size * 0.625, size * 0.5);
+                    ctx.moveTo(size * 0.25, size * 0.625);
+                    ctx.lineTo(size * 0.5, size * 0.625);
+                    ctx.stroke();
+                    break;
+                    
+                case 'circle':
+                case 'circle-nav':
+                    // 工作圈图标
+                    const isCircleModule = type === 'circle';
+                    ctx.strokeStyle = isCircleModule ? 'white' : '#667eea';
+                    ctx.fillStyle = isCircleModule ? 'white' : '#667eea';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size * 0.375, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size * 0.375, size * 0.417, size * 0.0625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size * 0.625, size * 0.417, size * 0.0625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.625, size * 0.0625, 0, 2 * Math.PI);
+                    ctx.fill();
+                    break;
+                    
+                case 'profile':
+                    // 个人中心图标
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.beginPath();
+                    ctx.arc(size/2, size * 0.292, size * 0.167, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(size * 0.167, size * 0.875);
+                    ctx.lineTo(size * 0.167, size * 0.792);
+                    ctx.quadraticCurveTo(size * 0.167, size * 0.625, size * 0.333, size * 0.625);
+                    ctx.lineTo(size * 0.667, size * 0.625);
+                    ctx.quadraticCurveTo(size * 0.833, size * 0.625, size * 0.833, size * 0.792);
+                    ctx.lineTo(size * 0.833, size * 0.875);
+                    ctx.stroke();
+                    break;
+                    
+                default:
+                    // 默认图标
+                    ctx.fillStyle = '#667eea';
+                    roundRect(ctx, size * 0.25, size * 0.25, size * 0.5, size * 0.5, size * 0.083);
+                    ctx.fill();
+            }
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+    </script>
+</body>
+</html>

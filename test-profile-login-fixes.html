@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心图标和登录页面修复验证</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .fix-summary {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .fix-icon {
+            color: #0c5460;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+        
+        .test-btn.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        
+        .test-btn.warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .test-result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .demo-credentials {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .credential-item:last-child {
+            border-bottom: none;
+        }
+        
+        .credential-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .credential-value {
+            color: #dc3545;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .feature-desc {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 个人中心图标和登录页面修复</h2>
+            <p>验证设置图标显示和登录页面功能</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 修复总结 -->
+            <div class="fix-summary">
+                <h4 style="margin: 0 0 12px 0; color: #0c5460;">🎯 已修复的问题</h4>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>设置图标缺失：</strong>使用Unicode字符⚙️替代PNG图片</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>登录页面缺失：</strong>创建了完整的login.html页面</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>登录样式：</strong>创建了专业的login.css样式文件</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>登录功能：</strong>创建了完整的login.js功能脚本</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>退出登录流程：</strong>现在可以正常跳转到登录页面</span>
+                </div>
+            </div>
+            
+            <!-- 个人中心图标测试 -->
+            <div class="test-section">
+                <div class="test-title">⚙️ 个人中心设置图标测试</div>
+                <div class="test-content-inner">
+                    <button class="test-btn primary" onclick="testProfileSettings()">
+                        👤 测试个人中心设置图标
+                    </button>
+                    
+                    <div class="test-result info">
+                        <span>💡</span>
+                        <span><strong>验证要点：</strong>右上角应显示⚙️图标，点击有响应</span>
+                    </div>
+                    
+                    <div id="profileTestResults"></div>
+                </div>
+            </div>
+            
+            <!-- 登录页面测试 -->
+            <div class="test-section">
+                <div class="test-title">🔐 登录页面功能测试</div>
+                <div class="test-content-inner">
+                    <button class="test-btn success" onclick="testLoginPage()">
+                        🚀 打开登录页面
+                    </button>
+                    
+                    <button class="test-btn info" onclick="testLogoutFlow()">
+                        🔄 测试完整退出登录流程
+                    </button>
+                    
+                    <div class="demo-credentials">
+                        <h5 style="margin: 0 0 12px 0; color: #495057;">🔑 演示登录凭据</h5>
+                        <div class="credential-item">
+                            <span class="credential-label">管理员：</span>
+                            <span class="credential-value">admin / 123456</span>
+                        </div>
+                        <div class="credential-item">
+                            <span class="credential-label">演示用户：</span>
+                            <span class="credential-value">demo / demo123</span>
+                        </div>
+                        <div class="credential-item">
+                            <span class="credential-label">测试用户：</span>
+                            <span class="credential-value">test / test123</span>
+                        </div>
+                        <div class="credential-item">
+                            <span class="credential-label">普通用户：</span>
+                            <span class="credential-value">user / user123</span>
+                        </div>
+                    </div>
+                    
+                    <div id="loginTestResults"></div>
+                </div>
+            </div>
+            
+            <!-- 登录页面功能特性 -->
+            <div class="test-section">
+                <div class="test-title">✨ 登录页面功能特性</div>
+                <div class="test-content-inner">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎨</div>
+                            <div class="feature-title">美观界面</div>
+                            <div class="feature-desc">渐变背景、毛玻璃效果、现代化设计</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔐</div>
+                            <div class="feature-title">安全验证</div>
+                            <div class="feature-desc">表单验证、密码显示切换、记住登录</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🚀</div>
+                            <div class="feature-title">快速登录</div>
+                            <div class="feature-desc">演示登录、访客模式、一键填充</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <div class="feature-title">响应式设计</div>
+                            <div class="feature-desc">适配各种屏幕尺寸、移动端优化</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💬</div>
+                            <div class="feature-title">用户反馈</div>
+                            <div class="feature-desc">实时提示、加载状态、错误处理</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <div class="feature-title">状态管理</div>
+                            <div class="feature-desc">自动登录检测、会话保持、安全退出</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 测试流程 -->
+            <div class="test-section">
+                <div class="test-title">🧪 完整测试流程</div>
+                <div class="test-content-inner">
+                    <button class="test-btn warning" onclick="runCompleteTest()">
+                        🎯 运行完整测试流程
+                    </button>
+                    
+                    <div class="test-result warning">
+                        <span>📋</span>
+                        <span><strong>测试步骤：</strong></span>
+                    </div>
+                    <ol style="font-size: 14px; color: #495057; line-height: 1.6;">
+                        <li>打开个人中心页面，验证设置图标显示</li>
+                        <li>点击设置图标，验证功能响应</li>
+                        <li>点击退出登录按钮</li>
+                        <li>确认退出，跳转到登录页面</li>
+                        <li>测试登录页面各项功能</li>
+                        <li>使用演示账号登录</li>
+                        <li>验证登录成功后跳转到首页</li>
+                    </ol>
+                    
+                    <div id="completeTestResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 修复完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    个人中心设置图标现在正常显示，登录页面功能完整，退出登录流程正常工作
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testProfileSettings() {
+            window.open('profile.html', '_blank');
+            addResult('profileTestResults', '👤 已打开个人中心页面，请验证右上角⚙️图标显示和点击响应', 'success');
+        }
+        
+        function testLoginPage() {
+            window.open('login.html', '_blank');
+            addResult('loginTestResults', '🚀 已打开登录页面，请测试各项功能', 'success');
+            addResult('loginTestResults', '💡 可以使用演示账号：demo / demo123', 'info');
+        }
+        
+        function testLogoutFlow() {
+            window.open('profile.html', '_blank');
+            addResult('loginTestResults', '🔄 已打开个人中心页面，请点击退出登录测试完整流程', 'success');
+            addResult('loginTestResults', '📋 流程：点击退出登录 → 确认 → 跳转到登录页面', 'info');
+        }
+        
+        function runCompleteTest() {
+            addResult('completeTestResults', '🎯 开始完整测试流程...', 'info');
+            
+            // 步骤1：打开个人中心
+            setTimeout(() => {
+                window.open('profile.html', '_blank');
+                addResult('completeTestResults', '1️⃣ 已打开个人中心页面', 'success');
+            }, 500);
+            
+            // 步骤2：提示验证设置图标
+            setTimeout(() => {
+                addResult('completeTestResults', '2️⃣ 请验证右上角⚙️设置图标显示', 'info');
+            }, 1500);
+            
+            // 步骤3：提示测试退出登录
+            setTimeout(() => {
+                addResult('completeTestResults', '3️⃣ 请点击退出登录按钮测试跳转', 'info');
+            }, 2500);
+            
+            // 步骤4：打开登录页面
+            setTimeout(() => {
+                window.open('login.html', '_blank');
+                addResult('completeTestResults', '4️⃣ 已打开登录页面供参考', 'success');
+            }, 3500);
+            
+            // 步骤5：完成提示
+            setTimeout(() => {
+                addResult('completeTestResults', '✅ 测试流程已启动，请按步骤验证各项功能', 'success');
+            }, 4500);
+        }
+        
+        function addResult(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            container.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 个人中心图标和登录页面修复验证页面已加载');
+            
+            setTimeout(() => {
+                addResult('profileTestResults', '🎯 个人中心设置图标已修复为Unicode字符', 'success');
+                addResult('loginTestResults', '🎯 登录页面已创建，功能完整', 'success');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

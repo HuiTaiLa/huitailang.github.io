@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的证书 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>我的证书</h1>
+                <button class="action-btn" onclick="shareAchievements()">
+                    <span class="filter-icon">📤</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">5</div>
+                <div class="stat-label">已获得</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">专业认证</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">培训证书</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">95</div>
+                <div class="stat-label">总分数</div>
+            </div>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">全部</button>
+            <button class="filter-tab" data-filter="professional">专业认证</button>
+            <button class="filter-tab" data-filter="training">培训证书</button>
+            <button class="filter-tab" data-filter="recent">最新获得</button>
+        </div>
+
+        <div class="content-section">
+            <div class="certificate-list" id="certificateList">
+                <!-- 证书项将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCertificates();
+            initFilterTabs();
+        });
+
+        function loadCertificates() {
+            const certificates = [
+                {
+                    id: 1,
+                    title: '5G网络工程师认证',
+                    type: 'professional',
+                    issuer: '中国移动技术学院',
+                    score: 95,
+                    issueDate: '2024-01-15',
+                    validUntil: '2026-01-15',
+                    status: 'valid',
+                    icon: '🏆'
+                },
+                {
+                    id: 2,
+                    title: '云计算架构师认证',
+                    type: 'professional',
+                    issuer: '移动云能力中心',
+                    score: 88,
+                    issueDate: '2023-12-20',
+                    validUntil: '2025-12-20',
+                    status: 'valid',
+                    icon: '☁️'
+                },
+                {
+                    id: 3,
+                    title: '网络安全基础培训',
+                    type: 'training',
+                    issuer: '安全培训中心',
+                    score: 92,
+                    issueDate: '2023-11-10',
+                    validUntil: '永久有效',
+                    status: 'valid',
+                    icon: '🔒'
+                },
+                {
+                    id: 4,
+                    title: 'MEC边缘计算专家',
+                    type: 'professional',
+                    issuer: '边缘计算联盟',
+                    score: 90,
+                    issueDate: '2023-10-05',
+                    validUntil: '2025-10-05',
+                    status: 'valid',
+                    icon: '⚡'
+                },
+                {
+                    id: 5,
+                    title: '项目管理基础',
+                    type: 'training',
+                    issuer: '管理培训学院',
+                    score: 85,
+                    issueDate: '2023-09-15',
+                    validUntil: '永久有效',
+                    status: 'valid',
+                    icon: '📋'
+                }
+            ];
+
+            const certificateList = document.getElementById('certificateList');
+            certificateList.innerHTML = certificates.map(cert => `
+                <div class="certificate-item" onclick="viewCertificate(${cert.id})">
+                    <div class="certificate-header">
+                        <div class="certificate-icon">${cert.icon}</div>
+                        <div class="certificate-badge ${cert.type}">${getTypeText(cert.type)}</div>
+                    </div>
+                    <div class="certificate-content">
+                        <div class="certificate-title">${cert.title}</div>
+                        <div class="certificate-issuer">📜 ${cert.issuer}</div>
+                        <div class="certificate-score">⭐ 得分：${cert.score}分</div>
+                        <div class="certificate-dates">
+                            <span>📅 获得：${cert.issueDate}</span>
+                            <span>⏰ 有效期：${cert.validUntil}</span>
+                        </div>
+                    </div>
+                    <div class="certificate-actions">
+                        <button class="action-btn-small" onclick="downloadCertificate(event, ${cert.id})">📥</button>
+                        <button class="action-btn-small" onclick="shareCertificate(event, ${cert.id})">📤</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getTypeText(type) {
+            const typeTexts = {
+                'professional': '专业认证',
+                'training': '培训证书'
+            };
+            return typeTexts[type] || type;
+        }
+
+        function initFilterTabs() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    commonUtils.showToast(`已切换到：${this.textContent}`, 'info');
+                });
+            });
+        }
+
+        function viewCertificate(certId) {
+            commonUtils.showToast('查看证书详情...', 'info');
+        }
+
+        function downloadCertificate(event, certId) {
+            event.stopPropagation();
+            commonUtils.showToast('下载证书中...', 'info');
+        }
+
+        function shareCertificate(event, certId) {
+            event.stopPropagation();
+            commonUtils.showToast('分享证书...', 'info');
+        }
+
+        function shareAchievements() {
+            commonUtils.showToast('分享我的成就...', 'info');
+        }
+    </script>
+
+    <style>
+        .certificate-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .certificate-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .certificate-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .certificate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .certificate-icon {
+            font-size: 32px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+        }
+
+        .certificate-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .certificate-badge.professional {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .certificate-badge.training {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+
+        .certificate-content {
+            margin-bottom: 16px;
+        }
+
+        .certificate-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .certificate-issuer {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .certificate-score {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .certificate-dates {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .certificate-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .action-btn-small {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn-small:hover {
+            background: #e9ecef;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 480px) {
+            .certificate-dates {
+                flex-direction: column;
+            }
+            
+            .certificate-item {
+                padding: 16px;
+            }
+        }
+    </style>
+</body>
+</html>

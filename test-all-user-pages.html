@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心页面完整性测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .success-summary {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .success-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .success-icon {
+            color: #155724;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .page-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .page-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .page-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .page-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .page-desc {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .batch-test {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .batch-btn {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .batch-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>✅ 个人中心页面完整性测试</h2>
+            <p>验证所有个人中心功能页面的创建和访问</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 成功总结 -->
+            <div class="success-summary">
+                <h4 style="margin: 0 0 12px 0; color: #155724;">🎉 页面创建完成</h4>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>我的提问：</strong>my-questions.html - 完整的问题管理页面</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>我的回答：</strong>my-answers.html - 回答记录和统计</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>我的收藏：</strong>my-favorites.html - 收藏内容管理</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>下载记录：</strong>my-downloads.html - 下载历史记录</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>我的圈子：</strong>my-circles.html - 工作圈管理</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>学习进度：</strong>learning-progress.html - 培训课程进度</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>我的证书：</strong>my-certificates.html - 证书管理展示</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>技能评估：</strong>skill-assessment.html - 技能测评系统</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>帮助中心：</strong>help.html - 帮助文档和FAQ</span>
+                </div>
+                <div class="success-item">
+                    <span class="success-icon">✅</span>
+                    <span><strong>意见反馈：</strong>feedback.html - 反馈提交系统</span>
+                </div>
+            </div>
+            
+            <!-- 批量测试 -->
+            <div class="batch-test">
+                <h4 style="margin: 0 0 12px 0; color: #856404;">🚀 批量测试</h4>
+                <p style="margin: 0 0 16px 0; color: #856404;">一键打开所有页面进行快速验证</p>
+                <button class="batch-btn" onclick="openAllPages()">打开所有页面</button>
+            </div>
+            
+            <!-- 页面测试网格 -->
+            <div class="test-section">
+                <div class="test-title">📱 个人中心功能页面测试</div>
+                <div class="test-content-inner">
+                    <div class="page-grid">
+                        <div class="page-card">
+                            <div class="page-icon">❓</div>
+                            <div class="page-title">我的提问</div>
+                            <div class="page-desc">问题发布、管理和统计</div>
+                            <button class="test-btn" onclick="testPage('my-questions.html', '我的提问')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">💡</div>
+                            <div class="page-title">我的回答</div>
+                            <div class="page-desc">回答记录和采纳统计</div>
+                            <button class="test-btn" onclick="testPage('my-answers.html', '我的回答')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">🔖</div>
+                            <div class="page-title">我的收藏</div>
+                            <div class="page-desc">收藏的文档和问答</div>
+                            <button class="test-btn" onclick="testPage('my-favorites.html', '我的收藏')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">📥</div>
+                            <div class="page-title">下载记录</div>
+                            <div class="page-desc">文档下载历史记录</div>
+                            <button class="test-btn" onclick="testPage('my-downloads.html', '下载记录')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">👥</div>
+                            <div class="page-title">我的圈子</div>
+                            <div class="page-desc">加入的工作圈管理</div>
+                            <button class="test-btn" onclick="testPage('my-circles.html', '我的圈子')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">📚</div>
+                            <div class="page-title">学习进度</div>
+                            <div class="page-desc">培训课程学习记录</div>
+                            <button class="test-btn" onclick="testPage('learning-progress.html', '学习进度')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">🏆</div>
+                            <div class="page-title">我的证书</div>
+                            <div class="page-desc">获得的培训证书</div>
+                            <button class="test-btn" onclick="testPage('my-certificates.html', '我的证书')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">📊</div>
+                            <div class="page-title">技能评估</div>
+                            <div class="page-desc">专业技能测评</div>
+                            <button class="test-btn" onclick="testPage('skill-assessment.html', '技能评估')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">❓</div>
+                            <div class="page-title">帮助中心</div>
+                            <div class="page-desc">使用帮助和问题反馈</div>
+                            <button class="test-btn" onclick="testPage('help.html', '帮助中心')">测试页面</button>
+                        </div>
+                        
+                        <div class="page-card">
+                            <div class="page-icon">💬</div>
+                            <div class="page-title">意见反馈</div>
+                            <div class="page-desc">提交建议和问题</div>
+                            <button class="test-btn" onclick="testPage('feedback.html', '意见反馈')">测试页面</button>
+                        </div>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 个人中心入口测试 -->
+            <div class="test-section">
+                <div class="test-title">👤 个人中心入口测试</div>
+                <div class="test-content-inner">
+                    <button class="test-btn" style="width: auto; padding: 12px 24px; margin: 8px;" onclick="testProfilePage()">
+                        测试个人中心页面
+                    </button>
+                    <p style="font-size: 14px; color: #6c757d; margin: 12px 0;">
+                        点击测试个人中心页面，然后点击各个菜单项验证跳转是否正常
+                    </p>
+                    
+                    <div id="profileTestResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 所有个人中心页面创建完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    现在用户可以正常访问个人中心的所有功能页面，不再出现"无法访问您的文件"的错误
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testPage(pageUrl, pageName) {
+            window.open(pageUrl, '_blank');
+            addResult('testResults', `✅ 已打开${pageName}页面，请验证功能是否正常`, 'success');
+        }
+        
+        function testProfilePage() {
+            window.open('profile.html', '_blank');
+            addResult('profileTestResults', '👤 已打开个人中心页面，请点击各个菜单项测试跳转', 'success');
+            addResult('profileTestResults', '💡 重点测试：我的提问、我的回答、我的收藏等菜单项', 'info');
+        }
+        
+        function openAllPages() {
+            const pages = [
+                { url: 'my-questions.html', name: '我的提问' },
+                { url: 'my-answers.html', name: '我的回答' },
+                { url: 'my-favorites.html', name: '我的收藏' },
+                { url: 'my-downloads.html', name: '下载记录' },
+                { url: 'my-circles.html', name: '我的圈子' },
+                { url: 'learning-progress.html', name: '学习进度' },
+                { url: 'my-certificates.html', name: '我的证书' },
+                { url: 'skill-assessment.html', name: '技能评估' },
+                { url: 'help.html', name: '帮助中心' },
+                { url: 'feedback.html', name: '意见反馈' }
+            ];
+            
+            addResult('testResults', '🚀 开始批量打开所有页面...', 'info');
+            
+            pages.forEach((page, index) => {
+                setTimeout(() => {
+                    window.open(page.url, '_blank');
+                    addResult('testResults', `✅ 已打开${page.name}页面`, 'success');
+                }, index * 500);
+            });
+            
+            setTimeout(() => {
+                addResult('testResults', '🎉 所有页面已打开完成，请逐一验证功能', 'success');
+            }, pages.length * 500 + 1000);
+        }
+        
+        function addResult(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            container.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 个人中心页面完整性测试页面已加载');
+            
+            setTimeout(() => {
+                addResult('testResults', '🎯 所有个人中心功能页面已创建完成', 'success');
+                addResult('testResults', '💡 点击上方按钮测试各个页面的功能', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

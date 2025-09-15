@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片资源一键生成</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            height: 20px;
+            display: none;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .file-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .file-item.generated {
+            border-color: #22c55e;
+            background: #f0fff4;
+        }
+        .file-item .icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .file-item .name {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .file-item .status {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status.generated {
+            background: #d4edda;
+            color: #155724;
+        }
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .instructions ol {
+            margin-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 移动云小程序图片资源生成器</h1>
+        <p class="subtitle">一键生成原型所需的所有图片资源</p>
+
+        <div class="warning">
+            <strong>⚠️ 重要提示:</strong> 本工具将生成原型演示所需的所有PNG图片文件。生成的图片将自动下载到您的下载文件夹，请手动将它们移动到 <code>prototype/images/</code> 目录中。
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">1</span>
+                生成基础图标
+            </h3>
+            <p>包含Logo、导航图标、功能图标等基础UI元素</p>
+            <button class="generate-btn" onclick="generateBasicIcons()">生成基础图标 (24个文件)</button>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">2</span>
+                生成用户头像
+            </h3>
+            <p>包含用户头像、专家头像、AI助手头像等</p>
+            <button class="generate-btn" onclick="generateAvatars()">生成用户头像 (10个文件)</button>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">3</span>
+                生成内容图片
+            </h3>
+            <p>包含文档缩略图、视频封面、网络拓扑图等</p>
+            <button class="generate-btn" onclick="generateContentImages()">生成内容图片 (4个文件)</button>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">4</span>
+                一键生成全部
+            </h3>
+            <p>生成原型所需的所有图片资源</p>
+            <button class="generate-btn" onclick="generateAllImages()" id="generateAllBtn">🚀 一键生成全部图片 (38个文件)</button>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <div class="success" id="successMessage">
+            <strong>✅ 生成完成!</strong> 所有图片文件已下载完成。请将下载的PNG文件移动到 <code>prototype/images/</code> 目录中，然后刷新原型页面查看效果。
+        </div>
+
+        <div class="instructions">
+            <h4>📋 使用说明</h4>
+            <ol>
+                <li>点击上方按钮生成所需的图片资源</li>
+                <li>图片将自动下载到您的默认下载文件夹</li>
+                <li>手动将下载的PNG文件移动到 <code>prototype/images/</code> 目录</li>
+                <li>刷新原型页面即可看到图片正常显示</li>
+                <li>如需自定义图片，可以编辑对应的SVG文件后重新生成</li>
+            </ol>
+        </div>
+
+        <div class="file-list" id="fileList">
+            <!-- 文件列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 所有需要生成的图片文件定义
+        const imageFiles = {
+            basic: [
+                { name: 'logo.png', type: 'logo', size: 64 },
+                { name: 'back-icon.png', type: 'icon', size: 24 },
+                { name: 'search-icon.png', type: 'icon', size: 24 },
+                { name: 'add-icon.png', type: 'icon', size: 24 },
+                { name: 'more-icon.png', type: 'icon', size: 24 },
+                { name: 'settings-icon.png', type: 'icon', size: 24 },
+                { name: 'ask-icon.png', type: 'icon', size: 24 },
+                { name: 'send-icon.png', type: 'icon', size: 24 },
+                { name: 'home-icon.png', type: 'icon', size: 24 },
+                { name: 'resource-nav-icon.png', type: 'icon', size: 24 },
+                { name: 'circle-nav-icon.png', type: 'icon', size: 24 },
+                { name: 'profile-icon.png', type: 'icon', size: 24 },
+                { name: 'resource-icon.png', type: 'module', size: 32 },
+                { name: 'circle-icon.png', type: 'module', size: 32 },
+                { name: 'qa-icon.png', type: 'icon', size: 24 },
+                { name: 'chat-icon.png', type: 'icon', size: 24 },
+                { name: 'training-icon.png', type: 'icon', size: 24 },
+                { name: 'case-icon.png', type: 'icon', size: 24 },
+                { name: 'pdf-icon.png', type: 'file', size: 32 },
+                { name: 'video-icon.png', type: 'file', size: 32 },
+                { name: 'doc-icon.png', type: 'file', size: 32 },
+                { name: 'ppt-icon.png', type: 'file', size: 32 },
+                { name: 'file-icon.png', type: 'icon', size: 24 },
+                { name: 'image-icon.png', type: 'icon', size: 24 },
+                { name: 'emoji-icon.png', type: 'icon', size: 24 },
+                { name: 'ai-icon.png', type: 'icon', size: 24 }
+            ],
+            avatars: [
+                { name: 'avatar.png', type: 'avatar', size: 64 },
+                { name: 'my-avatar.png', type: 'avatar', size: 64 },
+                { name: 'user1.png', type: 'avatar', size: 64 },
+                { name: 'user2.png', type: 'avatar', size: 64 },
+                { name: 'user3.png', type: 'avatar', size: 64 },
+                { name: 'user4.png', type: 'avatar', size: 64 },
+                { name: 'user5.png', type: 'avatar', size: 64 },
+                { name: 'user6.png', type: 'avatar', size: 64 },
+                { name: 'user7.png', type: 'avatar', size: 64 },
+                { name: 'expert1.png', type: 'avatar', size: 64 },
+                { name: 'ai-avatar.png', type: 'avatar', size: 64 },
+                { name: 'circle-east.png', type: 'avatar', size: 64 },
+                { name: 'circle-cloud.png', type: 'avatar', size: 64 },
+                { name: 'circle-iot.png', type: 'avatar', size: 64 }
+            ],
+            content: [
+                { name: 'doc-thumb.png', type: 'content', size: 40 },
+                { name: 'video-thumb.png', type: 'content', size: [120, 80] },
+                { name: 'network-topology.png', type: 'content', size: [300, 200] },
+                { name: 'video-thumbnail.png', type: 'content', size: [120, 80] }
+            ]
+        };
+
+        let generatedFiles = new Set();
+
+        // 初始化文件列表显示
+        function initFileList() {
+            const fileList = document.getElementById('fileList');
+            const allFiles = [...imageFiles.basic, ...imageFiles.avatars, ...imageFiles.content];
+            
+            fileList.innerHTML = '';
+            allFiles.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.id = `file-${file.name}`;
+                
+                const icon = getFileIcon(file.type);
+                fileItem.innerHTML = `
+                    <div class="icon">${icon}</div>
+                    <div class="name">${file.name}</div>
+                    <div class="status pending">待生成</div>
+                `;
+                
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function getFileIcon(type) {
+            const icons = {
+                'logo': '🏢',
+                'icon': '🎯',
+                'module': '📦',
+                'file': '📄',
+                'avatar': '👤',
+                'content': '🖼️'
+            };
+            return icons[type] || '📁';
+        }
+
+        // 生成基础图标
+        async function generateBasicIcons() {
+            await generateImageSet(imageFiles.basic, '基础图标');
+        }
+
+        // 生成用户头像
+        async function generateAvatars() {
+            await generateImageSet(imageFiles.avatars, '用户头像');
+        }
+
+        // 生成内容图片
+        async function generateContentImages() {
+            await generateImageSet(imageFiles.content, '内容图片');
+        }
+
+        // 生成所有图片
+        async function generateAllImages() {
+            const allFiles = [...imageFiles.basic, ...imageFiles.avatars, ...imageFiles.content];
+            await generateImageSet(allFiles, '所有图片');
+        }
+
+        // 生成图片集合
+        async function generateImageSet(files, setName) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const generateAllBtn = document.getElementById('generateAllBtn');
+            
+            progressContainer.style.display = 'block';
+            generateAllBtn.disabled = true;
+            
+            let completed = 0;
+            const total = files.length;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                try {
+                    await generateSingleImage(file);
+                    markFileAsGenerated(file.name);
+                    generatedFiles.add(file.name);
+                } catch (error) {
+                    console.error(`生成 ${file.name} 失败:`, error);
+                }
+                
+                completed++;
+                const percentage = Math.round((completed / total) * 100);
+                progressBar.style.width = percentage + '%';
+                progressBar.textContent = `${percentage}% (${completed}/${total})`;
+                
+                // 添加延迟避免浏览器阻塞
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                generateAllBtn.disabled = false;
+                
+                if (generatedFiles.size >= 38) {
+                    document.getElementById('successMessage').style.display = 'block';
+                }
+            }, 500);
+        }
+
+        // 生成单个图片
+        function generateSingleImage(fileInfo) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                let width, height;
+                if (Array.isArray(fileInfo.size)) {
+                    [width, height] = fileInfo.size;
+                } else {
+                    width = height = fileInfo.size;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // 根据文件类型生成不同的图片
+                generateImageByType(ctx, fileInfo, width, height);
+                
+                // 转换为PNG并下载
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = fileInfo.name;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    resolve();
+                }, 'image/png');
+            });
+        }
+
+        // 根据类型生成图片内容
+        function generateImageByType(ctx, fileInfo, width, height) {
+            // 清空画布
+            ctx.clearRect(0, 0, width, height);
+            
+            if (fileInfo.type === 'logo') {
+                // 生成Logo
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('移动云', width/2, height/2 + 4);
+            } else if (fileInfo.type === 'avatar') {
+                // 生成头像
+                const colors = ['#3498db', '#e74c3c', '#27ae60', '#f39c12', '#9b59b6', '#1abc9c', '#e91e63', '#795548'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, width/2, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // 添加简单的人像
+                ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                ctx.beginPath();
+                ctx.arc(width/2, height/2 - 8, width/6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(width/2, height/2 + 12, width/3, 0, Math.PI);
+                ctx.fill();
+            } else if (fileInfo.type === 'icon') {
+                // 生成图标
+                ctx.fillStyle = '#667eea';
+                ctx.fillRect(width/4, height/4, width/2, height/2);
+            } else if (fileInfo.type === 'content') {
+                // 生成内容图片
+                ctx.fillStyle = '#f8f9fa';
+                ctx.fillRect(0, 0, width, height);
+                
+                ctx.fillStyle = '#667eea';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('示例内容', width/2, height/2);
+            } else {
+                // 默认图片
+                ctx.fillStyle = '#e0e0e0';
+                ctx.fillRect(0, 0, width, height);
+                
+                ctx.fillStyle = '#999';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('图片', width/2, height/2);
+            }
+        }
+
+        // 标记文件为已生成
+        function markFileAsGenerated(fileName) {
+            const fileElement = document.getElementById(`file-${fileName}`);
+            if (fileElement) {
+                fileElement.classList.add('generated');
+                const statusElement = fileElement.querySelector('.status');
+                statusElement.textContent = '已生成';
+                statusElement.className = 'status generated';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initFileList);
+    </script>
+</body>
+</html>

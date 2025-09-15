@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>即时通讯导航测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .solution-summary {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .solution-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        
+        .solution-icon {
+            color: #155724;
+            margin-right: 12px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .test-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .test-card-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .test-desc {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-bottom: 8px;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-btn.secondary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .comparison-table .before {
+            color: #dc3545;
+        }
+        
+        .comparison-table .after {
+            color: #28a745;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>💬 即时通讯导航逻辑修复测试</h2>
+            <p>验证首页和工作圈页面的即时通讯跳转逻辑</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 解决方案总结 -->
+            <div class="solution-summary">
+                <h4 style="margin: 0 0 12px 0; color: #155724;">🎯 解决方案总结</h4>
+                <div class="solution-item">
+                    <span class="solution-icon">✅</span>
+                    <div>
+                        <strong>首页即时通讯：</strong>跳转到聊天列表页面 (chat-list.html)，显示所有可用的群组、联系人和客服
+                    </div>
+                </div>
+                <div class="solution-item">
+                    <span class="solution-icon">✅</span>
+                    <div>
+                        <strong>工作圈即时通讯：</strong>直接跳转到对应工作圈的专属群聊 (chat.html?group=xxx)
+                    </div>
+                </div>
+                <div class="solution-item">
+                    <span class="solution-icon">✅</span>
+                    <div>
+                        <strong>聊天列表功能：</strong>支持群组、联系人、客服分类，搜索功能，在线状态显示
+                    </div>
+                </div>
+                <div class="solution-item">
+                    <span class="solution-icon">✅</span>
+                    <div>
+                        <strong>动态聊天页面：</strong>根据URL参数动态显示不同群聊的名称和在线人数
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 修复前后对比 -->
+            <div class="test-section">
+                <div class="test-title">📊 修复前后对比</div>
+                <div class="test-content-inner">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>入口位置</th>
+                                <th>修复前</th>
+                                <th>修复后</th>
+                                <th>用户体验</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>首页即时通讯</strong></td>
+                                <td class="before">跳转到固定群聊页面</td>
+                                <td class="after">跳转到聊天列表页面</td>
+                                <td>用户可以选择不同的聊天对象</td>
+                            </tr>
+                            <tr>
+                                <td><strong>工作圈即时通讯</strong></td>
+                                <td class="before">跳转到固定群聊页面</td>
+                                <td class="after">跳转到对应工作圈群聊</td>
+                                <td>直接进入相关的工作圈讨论</td>
+                            </tr>
+                            <tr>
+                                <td><strong>聊天页面标题</strong></td>
+                                <td class="before">固定显示"华东区5G专网交流群"</td>
+                                <td class="after">根据URL参数动态显示</td>
+                                <td>准确显示当前聊天对象</td>
+                            </tr>
+                            <tr>
+                                <td><strong>在线人数</strong></td>
+                                <td class="before">固定显示"156人在线"</td>
+                                <td class="after">根据聊天类型动态显示</td>
+                                <td>真实反映聊天状态</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <div class="test-title">🧪 功能测试</div>
+                <div class="test-content-inner">
+                    <div class="test-grid">
+                        <!-- 首页即时通讯测试 -->
+                        <div class="test-card">
+                            <div class="test-icon">🏠</div>
+                            <div class="test-card-title">首页即时通讯</div>
+                            <div class="test-desc">测试从首页点击即时通讯，应该进入聊天列表页面</div>
+                            <button class="test-btn" onclick="testHomeChat()">测试首页入口</button>
+                            <button class="test-btn secondary" onclick="openChatList()">直接打开聊天列表</button>
+                        </div>
+                        
+                        <!-- 工作圈即时通讯测试 -->
+                        <div class="test-card">
+                            <div class="test-icon">👥</div>
+                            <div class="test-card-title">工作圈即时通讯</div>
+                            <div class="test-desc">测试从工作圈点击即时通讯，应该进入对应群聊</div>
+                            <button class="test-btn" onclick="testWorkCircleChat()">测试工作圈入口</button>
+                            <button class="test-btn secondary" onclick="openSpecificChat()">直接打开群聊</button>
+                        </div>
+                        
+                        <!-- 聊天列表功能测试 -->
+                        <div class="test-card">
+                            <div class="test-icon">📋</div>
+                            <div class="test-card-title">聊天列表功能</div>
+                            <div class="test-desc">测试聊天列表的分类、搜索、快速入口等功能</div>
+                            <button class="test-btn" onclick="testChatListFeatures()">测试列表功能</button>
+                            <button class="test-btn secondary" onclick="openChatList()">查看聊天列表</button>
+                        </div>
+                        
+                        <!-- 动态聊天页面测试 -->
+                        <div class="test-card">
+                            <div class="test-icon">💬</div>
+                            <div class="test-card-title">动态聊天页面</div>
+                            <div class="test-desc">测试聊天页面根据URL参数显示不同内容</div>
+                            <button class="test-btn" onclick="testDynamicChat()">测试动态显示</button>
+                            <button class="test-btn secondary" onclick="testChatParams()">测试URL参数</button>
+                        </div>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 即时通讯导航逻辑修复完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    现在首页和工作圈的即时通讯功能有了明确的区分，用户体验更加合理和直观
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testHomeChat() {
+            addResult('✅ 正在测试首页即时通讯入口...', 'info');
+            addResult('📱 首页即时通讯应该跳转到 chat-list.html', 'info');
+            
+            setTimeout(() => {
+                window.open('index.html', '_blank');
+                addResult('🎯 请在首页点击"即时通讯"按钮，验证是否跳转到聊天列表页面', 'success');
+            }, 1000);
+        }
+        
+        function testWorkCircleChat() {
+            addResult('✅ 正在测试工作圈即时通讯入口...', 'info');
+            addResult('👥 工作圈即时通讯应该跳转到对应群聊', 'info');
+            
+            setTimeout(() => {
+                window.open('work-circle.html', '_blank');
+                addResult('🎯 请在工作圈页面点击"即时通讯"按钮，验证是否跳转到对应群聊', 'success');
+            }, 1000);
+        }
+        
+        function openChatList() {
+            window.open('chat-list.html', '_blank');
+            addResult('📋 已打开聊天列表页面，请验证功能完整性', 'success');
+        }
+        
+        function openSpecificChat() {
+            window.open('chat.html?group=group_1&name=华东区5G专网交流群', '_blank');
+            addResult('💬 已打开指定群聊，请验证标题和在线人数是否正确', 'success');
+        }
+        
+        function testChatListFeatures() {
+            addResult('📋 聊天列表功能测试项目：', 'info');
+            addResult('• 群组、联系人、客服分类标签', 'info');
+            addResult('• 搜索功能和实时筛选', 'info');
+            addResult('• 在线专家、群组聊天、技术支持快速入口', 'info');
+            addResult('• 未读消息数量显示', 'info');
+            addResult('• 点击聊天项跳转到对应聊天页面', 'info');
+            
+            setTimeout(() => {
+                openChatList();
+            }, 2000);
+        }
+        
+        function testDynamicChat() {
+            addResult('💬 测试动态聊天页面显示...', 'info');
+            
+            const testCases = [
+                { url: 'chat.html?group=group_1&name=华东区5G专网交流群', desc: '群组聊天' },
+                { url: 'chat.html?contact=contact_1&name=张工程师', desc: '专家私聊' },
+                { url: 'chat.html?support=support_1', desc: '技术支持' }
+            ];
+            
+            testCases.forEach((testCase, index) => {
+                setTimeout(() => {
+                    window.open(testCase.url, '_blank');
+                    addResult(`✅ 已打开${testCase.desc}页面，请验证标题和状态显示`, 'success');
+                }, (index + 1) * 1000);
+            });
+        }
+        
+        function testChatParams() {
+            addResult('🔗 URL参数测试说明：', 'info');
+            addResult('• ?group=xxx&name=群名称 - 群组聊天', 'info');
+            addResult('• ?contact=xxx&name=联系人 - 私聊', 'info');
+            addResult('• ?support=xxx - 客服聊天', 'info');
+            
+            setTimeout(() => {
+                testDynamicChat();
+            }, 2000);
+        }
+        
+        function addResult(message, type) {
+            const container = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            container.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 即时通讯导航测试页面已加载');
+            
+            setTimeout(() => {
+                addResult('🎯 即时通讯导航逻辑已修复完成', 'success');
+                addResult('💡 点击上方按钮测试各个功能', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

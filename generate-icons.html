@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图标生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .icon-item svg {
+            margin-bottom: 10px;
+        }
+        .icon-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .download-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .download-btn:hover {
+            background: #5a6fd8;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .download-all {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .download-all button {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>移动云业务支撑小程序图标生成器</h1>
+        <p class="description">点击下载按钮可以将SVG图标保存为PNG文件</p>
+        
+        <div class="download-all">
+            <button onclick="downloadAllIcons()">下载所有图标</button>
+        </div>
+
+        <div class="icon-grid" id="iconGrid">
+            <!-- 图标将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 图标定义
+        const icons = {
+            'logo': {
+                svg: `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="64" height="64" rx="12" fill="url(#gradient1)"/>
+                    <path d="M16 20h32v8H16z" fill="white"/>
+                    <path d="M16 32h24v8H16z" fill="white"/>
+                    <path d="M16 44h16v8H16z" fill="white"/>
+                    <circle cx="48" cy="48" r="8" fill="white"/>
+                    <defs>
+                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea"/>
+                            <stop offset="100%" style="stop-color:#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>`,
+                name: 'logo.png'
+            },
+            'back-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'back-icon.png'
+            },
+            'search-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'search-icon.png'
+            },
+            'add-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'add-icon.png'
+            },
+            'more-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="1" fill="currentColor"/>
+                    <circle cx="19" cy="12" r="1" fill="currentColor"/>
+                    <circle cx="5" cy="12" r="1" fill="currentColor"/>
+                </svg>`,
+                name: 'more-icon.png'
+            },
+            'settings-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/>
+                </svg>`,
+                name: 'settings-icon.png'
+            },
+            'home-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 9L12 2L21 9V20a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'home-icon.png'
+            },
+            'resource-icon': {
+                svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="24" height="24" rx="4" stroke="white" stroke-width="2" fill="none"/>
+                    <path d="M8 12h16M8 16h12M8 20h8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>`,
+                name: 'resource-icon.png'
+            },
+            'circle-icon': {
+                svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="12" stroke="white" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="14" r="2" fill="white"/>
+                    <circle cx="20" cy="14" r="2" fill="white"/>
+                    <circle cx="16" cy="20" r="2" fill="white"/>
+                    <path d="M12 14L16 20L20 14" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'circle-icon.png'
+            },
+            'pdf-icon': {
+                svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="4" width="16" height="24" rx="2" fill="#e74c3c"/>
+                    <path d="M18 4L22 8V26a2 2 0 01-2 2H8a2 2 0 01-2-2V6a2 2 0 012-2h10z" fill="#c0392b"/>
+                    <text x="16" y="18" text-anchor="middle" fill="white" font-size="8" font-weight="bold">PDF</text>
+                </svg>`,
+                name: 'pdf-icon.png'
+            },
+            'video-icon': {
+                svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="8" width="24" height="16" rx="2" fill="#3498db"/>
+                    <polygon points="13,12 13,20 19,16" fill="white"/>
+                </svg>`,
+                name: 'video-icon.png'
+            },
+            'doc-icon': {
+                svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="4" width="16" height="24" rx="2" fill="#2980b9"/>
+                    <path d="M10 12h8M10 16h6M10 20h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>`,
+                name: 'doc-icon.png'
+            },
+            'ppt-icon': {
+                svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="4" width="16" height="24" rx="2" fill="#d35400"/>
+                    <text x="16" y="18" text-anchor="middle" fill="white" font-size="8" font-weight="bold">PPT</text>
+                </svg>`,
+                name: 'ppt-icon.png'
+            },
+            'avatar': {
+                svg: `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="32" fill="#bdc3c7"/>
+                    <circle cx="32" cy="24" r="8" fill="#95a5a6"/>
+                    <path d="M16 48c0-8.837 7.163-16 16-16s16 7.163 16 16" fill="#95a5a6"/>
+                </svg>`,
+                name: 'avatar.png'
+            },
+            'send-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'send-icon.png'
+            },
+            'file-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'file-icon.png'
+            },
+            'image-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="2"/>
+                    <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'image-icon.png'
+            },
+            'emoji-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+                name: 'emoji-icon.png'
+            },
+            'ai-icon': {
+                svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
+                    <path d="M19 11L19.74 13.09L22 14L19.74 14.91L19 17L18.26 14.91L16 14L18.26 13.09L19 11Z" fill="currentColor"/>
+                    <path d="M5 11L5.74 13.09L8 14L5.74 14.91L5 17L4.26 14.91L2 14L4.26 13.09L5 11Z" fill="currentColor"/>
+                </svg>`,
+                name: 'ai-icon.png'
+            }
+        };
+
+        // 生成图标网格
+        function generateIconGrid() {
+            const grid = document.getElementById('iconGrid');
+            
+            Object.entries(icons).forEach(([key, icon]) => {
+                const item = document.createElement('div');
+                item.className = 'icon-item';
+                item.innerHTML = `
+                    ${icon.svg}
+                    <div class="icon-name">${icon.name}</div>
+                    <button class="download-btn" onclick="downloadIcon('${key}')">下载PNG</button>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        // 下载单个图标
+        function downloadIcon(iconKey) {
+            const icon = icons[iconKey];
+            if (!icon) return;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const size = iconKey === 'logo' || iconKey === 'avatar' ? 64 : 
+                        iconKey.includes('resource-icon') || iconKey.includes('circle-icon') ? 32 : 24;
+            
+            canvas.width = size;
+            canvas.height = size;
+
+            // 创建SVG图像
+            const svgBlob = new Blob([icon.svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+            const img = new Image();
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                // 转换为PNG并下载
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = icon.name;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    
+                    URL.revokeObjectURL(url);
+                    URL.revokeObjectURL(link.href);
+                }, 'image/png');
+            };
+            
+            img.src = url;
+        }
+
+        // 下载所有图标
+        function downloadAllIcons() {
+            Object.keys(icons).forEach((key, index) => {
+                setTimeout(() => downloadIcon(key), index * 200);
+            });
+        }
+
+        // 页面加载完成后生成图标
+        document.addEventListener('DOMContentLoaded', generateIconGrid);
+    </script>
+</body>
+</html>

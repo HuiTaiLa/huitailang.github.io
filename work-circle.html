@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区域工作圈</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/work-circle.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>区域工作圈</h1>
+                <button class="add-btn" onclick="showCreateCircle()">
+                    <span class="add-symbol">+</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 圈子切换标签 -->
+        <div class="circle-tabs">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-circle="all">全部</div>
+                <div class="tab-item" data-circle="east">华东区</div>
+                <div class="tab-item" data-circle="south">华南区</div>
+                <div class="tab-item" data-circle="north">华北区</div>
+                <div class="tab-item" data-circle="west">西部区</div>
+                <div class="tab-item" data-circle="expert">专家组</div>
+            </div>
+        </div>
+
+        <!-- 快速功能入口 -->
+        <div class="quick-functions">
+            <div class="function-grid">
+                <div class="function-item" data-function="qa-system">
+                    <div class="function-icon">❓</div>
+                    <span>专家问答</span>
+                    <div class="function-badge">3</div>
+                </div>
+                <div class="function-item" data-function="chat">
+                    <div class="function-icon">💬</div>
+                    <span>即时通讯</span>
+                    <div class="function-badge">12</div>
+                </div>
+                <div class="function-item" data-function="knowledge-share">
+                    <div class="function-icon">📚</div>
+                    <span>知识分享</span>
+                </div>
+                <div class="function-item" data-function="experience-summary">
+                    <div class="function-icon">📊</div>
+                    <span>经验总结</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活跃圈子 -->
+        <div class="active-circles">
+            <h3>活跃圈子</h3>
+            <div class="circle-list">
+                <div class="circle-item" data-circle-type="east" data-circle-id="east-5g" onclick="enterCircle('east-5g')">
+                    <div class="circle-avatar">
+                        <img src="images/circle-east.png" alt="华东5G">
+                    </div>
+                    <div class="circle-info">
+                        <h4 class="circle-name">华东区5G专网交流群</h4>
+                        <p class="circle-desc">5G专网技术交流与案例分享</p>
+                        <div class="circle-stats">
+                            <span class="member-count">👥 156人</span>
+                            <span class="message-count">💬 今日23条</span>
+                        </div>
+                    </div>
+                    <div class="circle-status">
+                        <div class="online-indicator"></div>
+                        <span class="last-active">2分钟前</span>
+                    </div>
+                </div>
+
+                <div class="circle-item" data-circle-type="expert" data-circle-id="cloud-expert" onclick="enterCircle('cloud-expert')">
+                    <div class="circle-avatar">
+                        <img src="images/circle-cloud.png" alt="云计算专家">
+                    </div>
+                    <div class="circle-info">
+                        <h4 class="circle-name">云计算专家咨询组</h4>
+                        <p class="circle-desc">云计算技术问题专业解答</p>
+                        <div class="circle-stats">
+                            <span class="member-count">👥 89人</span>
+                            <span class="message-count">💬 今日15条</span>
+                        </div>
+                    </div>
+                    <div class="circle-status">
+                        <div class="online-indicator"></div>
+                        <span class="last-active">5分钟前</span>
+                    </div>
+                </div>
+
+                <div class="circle-item" data-circle-type="south" data-circle-id="south-iot" onclick="enterCircle('south-iot')">
+                    <div class="circle-avatar">
+                        <img src="images/circle-iot.png" alt="华南物联网">
+                    </div>
+                    <div class="circle-info">
+                        <h4 class="circle-name">华南区物联网应用圈</h4>
+                        <p class="circle-desc">物联网项目实施经验交流</p>
+                        <div class="circle-stats">
+                            <span class="member-count">👥 203人</span>
+                            <span class="message-count">💬 今日31条</span>
+                        </div>
+                    </div>
+                    <div class="circle-status">
+                        <div class="online-indicator active"></div>
+                        <span class="last-active">刚刚</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最新动态 -->
+        <div class="recent-activities">
+            <h3>最新动态</h3>
+            <div class="activity-list">
+                <div class="activity-item" data-circle-type="east" data-activity-id="act1">
+                    <div class="activity-avatar">
+                        <img src="images/user1.png" alt="张工">
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="user-name">张工</span>
+                            <span class="user-role">华东区技术专家</span>
+                            <span class="activity-time">10分钟前</span>
+                        </div>
+                        <p class="activity-text">分享了一个5G专网部署的最佳实践案例，包含完整的网络规划和优化方案。</p>
+                        <div class="activity-attachment">
+                            <img src="images/doc-thumb.png" alt="文档">
+                            <span>5G专网部署最佳实践.pdf</span>
+                        </div>
+                        <div class="activity-actions">
+                            <button class="action-btn like-btn" data-action="like">👍 <span class="like-count">12</span></button>
+                            <button class="action-btn comment-btn" data-action="comment">💬 <span class="comment-count">5</span></button>
+                            <button class="action-btn share-btn" data-action="share">📤 分享</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-item" data-circle-type="south" data-activity-id="act2">
+                    <div class="activity-avatar">
+                        <img src="images/user2.png" alt="李经理">
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="user-name">李经理</span>
+                            <span class="user-role">华南区产品经理</span>
+                            <span class="activity-time">1小时前</span>
+                        </div>
+                        <p class="activity-text">在物联网应用圈提出了关于边缘计算平台选型的问题，希望各位专家给予指导。</p>
+                        <div class="activity-question">
+                            <span class="question-tag">❓ 待解答</span>
+                            <span class="question-title">边缘计算平台选型建议</span>
+                        </div>
+                        <div class="activity-actions">
+                            <button class="action-btn answer-btn" data-action="answer">💡 回答</button>
+                            <button class="action-btn follow-btn" data-action="follow">👁 关注</button>
+                            <button class="action-btn share-btn" data-action="share">📤 分享</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-item" data-circle-type="west" data-activity-id="act3">
+                    <div class="activity-avatar">
+                        <img src="images/user3.png" alt="王总">
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="user-name">王总</span>
+                            <span class="user-role">西部区总监</span>
+                            <span class="activity-time">3小时前</span>
+                        </div>
+                        <p class="activity-text">组织了一场云计算技术培训，欢迎各区域同事参加线上直播。</p>
+                        <div class="activity-event">
+                            <div class="event-info">
+                                <span class="event-title">🎯 云计算架构设计培训</span>
+                                <span class="event-time">明天 14:00-16:00</span>
+                            </div>
+                            <button class="event-join-btn" data-action="join">立即报名</button>
+                        </div>
+                        <div class="activity-actions">
+                            <button class="action-btn like-btn" data-action="like">👍 <span class="like-count">28</span></button>
+                            <button class="action-btn comment-btn" data-action="comment">💬 <span class="comment-count">8</span></button>
+                            <button class="action-btn share-btn" data-action="share">📤 分享</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('resource-library.html')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item active">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/work-circle.js"></script>
+</body>
+</html>

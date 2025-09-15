@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>分享文档</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/share-document.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="app-header gradient">
+        <button class="back-btn" onclick="history.back()" aria-label="返回">‹</button>
+        <h1 class="title">分享文档</h1>
+        <button class="publish-btn" id="publishBtn">发布</button>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="share-document-page">
+        <!-- 文档上传区域 -->
+        <section class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-placeholder" id="uploadPlaceholder">
+                    <div class="upload-icon">📄</div>
+                    <p class="upload-text">点击或拖拽上传文档</p>
+                    <p class="upload-hint">支持 PDF、Word、PPT、Excel 等格式</p>
+                </div>
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" style="display: none;">
+                <div class="file-preview" id="filePreview" style="display: none;">
+                    <!-- 文件预览将在这里显示 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 文档信息 -->
+        <section class="document-info">
+            <div class="form-group">
+                <label for="docTitle">文档标题</label>
+                <input type="text" id="docTitle" placeholder="请输入文档标题">
+            </div>
+            
+            <div class="form-group">
+                <label for="docDescription">文档描述</label>
+                <textarea id="docDescription" rows="4" placeholder="简要描述文档内容，帮助同事了解文档价值..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="docCategory">文档分类</label>
+                <select id="docCategory">
+                    <option value="">请选择分类</option>
+                    <option value="manual">产品手册</option>
+                    <option value="solution">解决方案</option>
+                    <option value="training">培训资料</option>
+                    <option value="case">客户案例</option>
+                    <option value="technical">技术文档</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="docTags">标签</label>
+                <div class="tags-input">
+                    <input type="text" id="tagInput" placeholder="输入标签后按回车添加">
+                    <div class="tags-list" id="tagsList">
+                        <!-- 标签将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 分享设置 -->
+        <section class="share-settings">
+            <h3>分享设置</h3>
+            
+            <div class="setting-item">
+                <label class="setting-label">
+                    <input type="checkbox" id="allowDownload" checked>
+                    <span class="checkmark"></span>
+                    允许下载
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <label class="setting-label">
+                    <input type="checkbox" id="allowComment" checked>
+                    <span class="checkmark"></span>
+                    允许评论
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <label class="setting-label">
+                    <input type="checkbox" id="notifyUpdate">
+                    <span class="checkmark"></span>
+                    文档更新时通知关注者
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="shareScope">分享范围</label>
+                <select id="shareScope">
+                    <option value="current-circle">当前工作圈</option>
+                    <option value="all-circles">所有工作圈</option>
+                    <option value="specific-users">指定用户</option>
+                </select>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <img src="images/home.png" alt="首页" class="nav-icon">
+            <span>首页</span>
+        </a>
+        <a href="resource-library.html" class="nav-item">
+            <img src="images/resource.png" alt="资源库" class="nav-icon">
+            <span>资源库</span>
+        </a>
+        <a href="work-circle.html" class="nav-item active">
+            <img src="images/work-circle.png" alt="工作圈" class="nav-icon">
+            <span>工作圈</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <img src="images/profile.png" alt="我的" class="nav-icon">
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/share-document.js"></script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>即时通讯</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/chat.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <div class="chat-info">
+                    <h1 id="chatTitle">华东区5G专网交流群</h1>
+                    <span class="online-count" id="onlineCount">156人在线</span>
+                </div>
+                <button class="more-btn" onclick="simpleShowMenu()">
+                    <span class="more-icon">⋯</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-messages" id="chatMessages">
+            <!-- 系统消息 -->
+            <div class="message-item system-message">
+                <div class="message-content">
+                    <span class="system-text">张工 加入了群聊</span>
+                    <span class="message-time">14:30</span>
+                </div>
+            </div>
+
+            <!-- 普通消息 -->
+            <div class="message-item">
+                <div class="message-avatar">
+                    <img src="images/user1.png" alt="张工">
+                </div>
+                <div class="message-bubble">
+                    <div class="message-header">
+                        <span class="sender-name">张工</span>
+                        <span class="sender-role">技术专家</span>
+                        <span class="message-time">14:32</span>
+                    </div>
+                    <div class="message-text">
+                        大家好，我刚刚完成了一个5G专网的部署项目，想和大家分享一些经验。这次项目中遇到了一些网络优化的问题，通过调整参数配置成功解决了。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文件消息 -->
+            <div class="message-item">
+                <div class="message-avatar">
+                    <img src="images/user1.png" alt="张工">
+                </div>
+                <div class="message-bubble">
+                    <div class="message-header">
+                        <span class="sender-name">张工</span>
+                        <span class="sender-role">技术专家</span>
+                        <span class="message-time">14:33</span>
+                    </div>
+                    <div class="message-file">
+                        <div class="file-icon">📄</div>
+                        <div class="file-info">
+                            <span class="file-name">5G专网优化参数配置.pdf</span>
+                            <span class="file-size">2.1MB</span>
+                        </div>
+                        <button class="file-download">下载</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 回复消息 -->
+            <div class="message-item">
+                <div class="message-avatar">
+                    <img src="images/user2.png" alt="李经理">
+                </div>
+                <div class="message-bubble">
+                    <div class="message-header">
+                        <span class="sender-name">李经理</span>
+                        <span class="sender-role">产品经理</span>
+                        <span class="message-time">14:35</span>
+                    </div>
+                    <div class="message-text">
+                        @张工 太棒了！这个配置文档正是我们需要的，我们华南区也有类似的项目，可以参考一下。
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI助手消息 -->
+            <div class="message-item ai-message">
+                <div class="message-avatar">
+                    <img src="images/ai-avatar.png" alt="AI助手">
+                </div>
+                <div class="message-bubble ai-bubble">
+                    <div class="message-header">
+                        <span class="sender-name">AI智能助手</span>
+                        <span class="ai-badge">AI</span>
+                        <span class="message-time">14:36</span>
+                    </div>
+                    <div class="message-text">
+                        检测到您分享了5G专网优化相关内容，为您推荐以下相关资源：
+                    </div>
+                    <div class="ai-recommendations">
+                        <div class="recommendation-item">
+                            <span class="rec-icon">📋</span>
+                            <span class="rec-title">5G网络优化最佳实践指南</span>
+                        </div>
+                        <div class="recommendation-item">
+                            <span class="rec-icon">🎯</span>
+                            <span class="rec-title">专网部署常见问题解答</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 自己的消息 -->
+            <div class="message-item own-message">
+                <div class="message-bubble own-bubble">
+                    <div class="message-header">
+                        <span class="message-time">14:38</span>
+                    </div>
+                    <div class="message-text">
+                        谢谢张工的分享！我们西部区最近也在规划5G专网项目，这个文档很有参考价值。
+                    </div>
+                </div>
+                <div class="message-avatar">
+                    <img src="images/my-avatar.png" alt="我">
+                </div>
+            </div>
+
+            <!-- 图片消息 -->
+            <div class="message-item">
+                <div class="message-avatar">
+                    <img src="images/user3.png" alt="王总">
+                </div>
+                <div class="message-bubble">
+                    <div class="message-header">
+                        <span class="sender-name">王总</span>
+                        <span class="sender-role">区域总监</span>
+                        <span class="message-time">14:40</span>
+                    </div>
+                    <div class="message-text">
+                        这是我们最新的网络拓扑图，大家可以参考：
+                    </div>
+                    <div class="message-image">
+                        <img src="images/network-topology.png" alt="网络拓扑图">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 正在输入指示器 -->
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="typing-avatar">
+                    <img src="images/user4.png" alt="用户">
+                </div>
+                <div class="typing-bubble">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 消息输入区域 -->
+        <div class="message-input-area">
+            <div class="input-toolbar">
+                <button class="tool-btn" onclick="selectFile()">
+                    <img src="images/file-icon.png" alt="文件">
+                </button>
+                <button class="tool-btn" onclick="selectImage()">
+                    <img src="images/image-icon.png" alt="图片">
+                </button>
+                <button class="tool-btn" onclick="showEmoji()">
+                    <img src="images/emoji-icon.png" alt="表情">
+                </button>
+                <button class="tool-btn" onclick="showAIAssist()">
+                    <img src="images/ai-icon.png" alt="AI助手">
+                </button>
+            </div>
+            <div class="input-container">
+                <textarea class="message-input" placeholder="输入消息..." id="messageInput"></textarea>
+                <button class="send-btn" onclick="sendMessage()">
+                    <img src="images/send-icon.png" alt="发送">
+                </button>
+            </div>
+        </div>
+
+        <!-- AI助手面板 -->
+        <div class="ai-assist-panel" id="aiAssistPanel" style="display: none;">
+            <div class="ai-panel-header">
+                <h3>AI智能助手</h3>
+                <button class="close-btn" onclick="hideAIAssist()">×</button>
+            </div>
+            <div class="ai-suggestions">
+                <div class="suggestion-item" onclick="insertSuggestion('请问5G专网的覆盖范围如何规划？')">
+                    <span class="suggestion-text">请问5G专网的覆盖范围如何规划？</span>
+                </div>
+                <div class="suggestion-item" onclick="insertSuggestion('有没有边缘计算部署的最佳实践？')">
+                    <span class="suggestion-text">有没有边缘计算部署的最佳实践？</span>
+                </div>
+                <div class="suggestion-item" onclick="insertSuggestion('云平台的安全策略应该如何配置？')">
+                    <span class="suggestion-text">云平台的安全策略应该如何配置？</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('resource-library.html')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/chat.js"></script>
+    <script>
+        // 简单的菜单函数，直接创建和显示
+        function simpleShowMenu() {
+            console.log('simpleShowMenu 被调用');
+
+            // 移除已存在的模态框
+            const existingModal = document.getElementById('simpleMenuModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // 创建新的模态框
+            const modal = document.createElement('div');
+            modal.id = 'simpleMenuModal';
+            modal.style.cssText = `
+                display: flex;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+            `;
+
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                    max-width: 360px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 16px 20px;
+                        border-bottom: 1px solid #f0f0f0;
+                    ">
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #333;">聊天菜单</h3>
+                        <button onclick="simpleCloseMenu()" style="
+                            background: none;
+                            border: none;
+                            font-size: 24px;
+                            color: #999;
+                            cursor: pointer;
+                            padding: 0;
+                            width: 32px;
+                            height: 32px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 50%;
+                        ">&times;</button>
+                    </div>
+                    <div id="simpleMenuBody" style="padding: 20px;">
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 16px 0;
+                            border-bottom: 1px solid #f0f0f0;
+                            margin-bottom: 16px;
+                        ">
+                            <div style="
+                                width: 60px;
+                                height: 60px;
+                                border-radius: 50%;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 24px;
+                                color: white;
+                            ">👥</div>
+                            <div>
+                                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #333;">华东区5G专网交流群</h4>
+                                <p style="margin: 0; font-size: 14px; color: #666;">群成员 156人</p>
+                            </div>
+                        </div>
+                        <div id="simpleMenuList" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div onclick="simpleMenuAction('群成员列表')" style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                padding: 12px 8px;
+                                cursor: pointer;
+                                border-radius: 8px;
+                                transition: all 0.2s;
+                            " onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                <span style="font-size: 18px; width: 24px; text-align: center;">👥</span>
+                                <span>群成员列表</span>
+                                <span style="margin-left: auto; background: #667eea; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: 8px;">156</span>
+                                <span style="color: #999; font-size: 16px;">›</span>
+                            </div>
+                            <div onclick="simpleMenuAction('群聊信息')" style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                padding: 12px 8px;
+                                cursor: pointer;
+                                border-radius: 8px;
+                                transition: all 0.2s;
+                            " onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                <span style="font-size: 18px; width: 24px; text-align: center;">ℹ️</span>
+                                <span>群聊信息</span>
+                                <span style="margin-left: auto; color: #999; font-size: 16px;">›</span>
+                            </div>
+                            <div onclick="simpleMenuAction('群文件')" style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                padding: 12px 8px;
+                                cursor: pointer;
+                                border-radius: 8px;
+                                transition: all 0.2s;
+                            " onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                <span style="font-size: 18px; width: 24px; text-align: center;">📁</span>
+                                <span>群文件</span>
+                                <span style="margin-left: auto; color: #999; font-size: 16px;">›</span>
+                            </div>
+                            <div style="height: 1px; background: #f0f0f0; margin: 8px 0;"></div>
+                            <div onclick="simpleMenuAction('聊天记录搜索')" style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                padding: 12px 8px;
+                                cursor: pointer;
+                                border-radius: 8px;
+                                transition: all 0.2s;
+                            " onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                <span style="font-size: 18px; width: 24px; text-align: center;">🔍</span>
+                                <span>聊天记录搜索</span>
+                                <span style="margin-left: auto; color: #999; font-size: 16px;">›</span>
+                            </div>
+                            <div onclick="simpleMenuAction('清空聊天记录')" style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                padding: 12px 8px;
+                                cursor: pointer;
+                                border-radius: 8px;
+                                transition: all 0.2s;
+                            " onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                <span style="font-size: 18px; width: 24px; text-align: center;">🗑️</span>
+                                <span>清空聊天记录</span>
+                                <span style="margin-left: auto; color: #999; font-size: 16px;">›</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 添加点击背景关闭功能
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    console.log('点击背景关闭');
+                    simpleCloseMenu();
+                }
+            };
+
+            document.body.appendChild(modal);
+            console.log('模态框已创建并显示');
+        }
+
+        function simpleCloseMenu() {
+            console.log('simpleCloseMenu 被调用');
+            const modal = document.getElementById('simpleMenuModal');
+            if (modal) {
+                modal.remove();
+                console.log('模态框已移除');
+            }
+        }
+
+        function simpleMenuAction(action) {
+            console.log('菜单动作:', action);
+            const body = document.getElementById('simpleMenuBody');
+            if (!body) return;
+
+            // 辅助：返回按钮
+            const backBtn = `<button onclick="simpleShowMenu()" style="border:none;background:none;color:#667eea;font-weight:600;cursor:pointer;padding:0;">\u2190 返回</button>`;
+
+            if (action === '群成员列表') {
+                body.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        ${backBtn}
+                        <h4 style="margin:0;">群成员列表</h4>
+                        <span style="width:64px;"></span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+                        ${[
+                            {name:'张工程师', role:'群主', avatar:'👨‍💼'},
+                            {name:'李技术', role:'管理员', avatar:'👩‍💻'},
+                            {name:'王运维', role:'成员', avatar:'👨‍🔧'},
+                            {name:'赵产品', role:'成员', avatar:'👩‍💼'}
+                        ].map(u => `
+                            <div style="display:flex;gap:12px;align-items:center;padding:10px;border:1px solid #eee;border-radius:8px;">
+                                <div style="width:40px;height:40px;border-radius:50%;background:#f3f4ff;display:flex;align-items:center;justify-content:center;font-size:18px;">${u.avatar}</div>
+                                <div style="display:flex;flex-direction:column;">
+                                    <span style="font-weight:600;color:#333;">${u.name}</span>
+                                    <span style="font-size:12px;color:#999;">${u.role}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (action === '群聊信息') {
+                body.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        ${backBtn}
+                        <h4 style="margin:0;">群聊信息</h4>
+                        <span style="width:64px;"></span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;"><span>群名称</span><span style="color:#333;font-weight:600;">华东区5G专网交流群</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;"><span>成员数量</span><span style="color:#333;font-weight:600;">156人</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;"><span>创建时间</span><span style="color:#333;font-weight:600;">2024-01-15</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;"><span>群主</span><span style="color:#333;font-weight:600;">张工程师</span></div>
+                        <div style="padding:10px 0;">
+                            <div style="color:#666;font-size:12px;margin-bottom:6px;">群描述</div>
+                            <div style="color:#333;">华东区5G专网技术交流与支持，分享资料、答疑解惑、经验沉淀。</div>
+                        </div>
+                    </div>
+                `;
+            } else if (action === '群文件') {
+                body.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        ${backBtn}
+                        <h4 style="margin:0;">群文件</h4>
+                        <span style="width:64px;"></span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        ${[
+                            {icon:'📄', name:'5G专网优化参数配置.pdf', size:'2.1MB'},
+                            {icon:'📊', name:'行业客户案例精选.pptx', size:'8.4MB'},
+                            {icon:'🖼️', name:'网络拓扑图.png', size:'1.2MB'}
+                        ].map(f => `
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #eee;border-radius:8px;">
+                                <div style="font-size:20px;width:24px;text-align:center;">${f.icon}</div>
+                                <div style="flex:1;display:flex;flex-direction:column;">
+                                    <span style="color:#333;font-weight:600;">${f.name}</span>
+                                    <span style="color:#999;font-size:12px;">${f.size}</span>
+                                </div>
+                                <button style="border:none;background:#667eea;color:#fff;border-radius:6px;padding:6px 10px;cursor:pointer;">下载</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (action === '聊天记录搜索') {
+                body.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        ${backBtn}
+                        <h4 style="margin:0;">聊天记录搜索</h4>
+                        <span style="width:64px;"></span>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-bottom:12px;">
+                        <input id="simpleSearchInput" type="text" placeholder="输入关键词..." style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:6px;"/>
+                        <button onclick="simpleSearchChat()" style="border:none;background:#667eea;color:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;">搜索</button>
+                    </div>
+                    <div id="simpleSearchResults" style="color:#666;">请输入关键词进行搜索</div>
+                `;
+                // 定义全局搜索函数
+                window.simpleSearchChat = function() {
+                    const kw = (document.getElementById('simpleSearchInput')?.value || '').trim();
+                    const box = document.getElementById('simpleSearchResults');
+                    if (!box) return;
+                    if (!kw) { box.innerHTML = '请输入关键词进行搜索'; return; }
+                    box.innerHTML = `找到 <b>3</b> 条包含 “${kw}” 的记录（示例）`;
+                }
+            } else if (action === '清空聊天记录') {
+                body.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        ${backBtn}
+                        <h4 style="margin:0;">清空聊天记录</h4>
+                        <span style="width:64px;"></span>
+                    </div>
+                    <div style="padding:10px;border:1px solid #ffeaa7;background:#fff8e1;color:#856404;border-radius:8px;margin-bottom:12px;">
+                        此操作将从当前页面清空可见聊天记录（示例效果）。
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="simpleShowMenu()" style="border:1px solid #ddd;background:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;">取消</button>
+                        <button onclick="simpleConfirmClearChat()" style="border:none;background:#e03131;color:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;">确认清空</button>
+                    </div>
+                `;
+                // 定义全局清空函数
+                window.simpleConfirmClearChat = function() {
+                    const msgs = document.getElementById('chatMessages');
+                    if (msgs) {
+                        msgs.innerHTML = '<div class="message-item system-message"><div class="message-content"><span class="system-text">聊天记录已清空</span></div></div>';
+                    }
+                    alert('聊天记录已清空（示例）');
+                    simpleShowMenu();
+                }
+            }
+        }
+
+
+    </script>
+</body>
+</html>

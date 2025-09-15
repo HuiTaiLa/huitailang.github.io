@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习进度 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>学习进度</h1>
+                <button class="action-btn" onclick="browseCourses()">
+                    <span class="filter-icon">📚</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">在学课程</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">已完成</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">156</div>
+                <div class="stat-label">学习时长</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">完成率</div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="course-list">
+                <div class="course-item">
+                    <div class="course-cover">📱</div>
+                    <div class="course-content">
+                        <div class="course-title">5G网络基础培训</div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                            <span class="progress-text">75%</span>
+                        </div>
+                        <div class="course-meta">⏱️ 12小时 · 📅 还剩3天</div>
+                    </div>
+                </div>
+                
+                <div class="course-item">
+                    <div class="course-cover">☁️</div>
+                    <div class="course-content">
+                        <div class="course-title">云计算架构设计</div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                            <span class="progress-text">45%</span>
+                        </div>
+                        <div class="course-meta">⏱️ 8小时 · 📅 还剩7天</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function browseCourses() {
+            commonUtils.showToast('浏览更多课程...', 'info');
+        }
+    </script>
+
+    <style>
+        .course-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .course-cover {
+            font-size: 32px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+        }
+
+        .course-content {
+            flex: 1;
+        }
+
+        .course-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .course-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            min-width: 35px;
+        }
+
+        .course-meta {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</body>
+</html>

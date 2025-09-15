@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单居中测试</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-area {
+            border: 2px dashed #ccc;
+            margin: 20px 0;
+            position: relative;
+            min-height: 100px;
+        }
+        
+        .center-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: red;
+            transform: translateX(-50%);
+            opacity: 0.5;
+        }
+        
+        .center-line::after {
+            content: '中心线';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 12px;
+            color: red;
+            background: white;
+            padding: 2px;
+        }
+        
+        /* 原始的加载样式 */
+        .scroll-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔧 滚动加载居中问题最终修复</h2>
+        
+        <div class="result success">
+            <strong>✅ 最新修复方案：</strong>使用外层容器 + text-align: center 确保居中
+        </div>
+        
+        <h3>测试区域（红线为中心线）</h3>
+        
+        <!-- 测试1：原始方法 -->
+        <div class="test-area">
+            <div class="center-line"></div>
+            <div id="test1" class="scroll-loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">正在加载更多结果...</span>
+            </div>
+        </div>
+        
+        <!-- 测试2：外层容器方法 -->
+        <div class="test-area">
+            <div class="center-line"></div>
+            <div style="width: 100%; text-align: center; padding: 20px 0;">
+                <div id="test2" class="scroll-loading" style="display: none; margin: 0 auto; width: auto;">
+                    <div class="loading-spinner"></div>
+                    <span class="loading-text">正在加载更多结果...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="btn" onclick="showTest1()">显示测试1（原始方法）</button>
+            <button class="btn" onclick="showTest2()">显示测试2（外层容器方法）</button>
+            <button class="btn" onclick="hideAll()">隐藏所有</button>
+        </div>
+        
+        <div class="result success">
+            <strong>🎯 修复说明：</strong><br>
+            • 在滚动加载元素外面包裹一个容器<br>
+            • 容器设置 width: 100% 和 text-align: center<br>
+            • 内部元素设置 margin: 0 auto 和 width: auto<br>
+            • 这样可以确保在任何情况下都居中显示
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="btn" onclick="openSearchResults()" style="background: #28a745;">
+                🚀 打开搜索结果页面验证修复
+            </button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function showTest1() {
+            hideAll();
+            document.getElementById('test1').style.display = 'flex';
+            addResult('显示测试1：使用原始Flexbox居中方法', 'success');
+        }
+        
+        function showTest2() {
+            hideAll();
+            document.getElementById('test2').style.display = 'flex';
+            addResult('显示测试2：使用外层容器 + text-align 方法', 'success');
+        }
+        
+        function hideAll() {
+            document.getElementById('test1').style.display = 'none';
+            document.getElementById('test2').style.display = 'none';
+        }
+        
+        function openSearchResults() {
+            window.open('search-results.html?q=5G专网', '_blank');
+            addResult('已打开搜索结果页面，请滚动到底部测试加载提示居中效果', 'success');
+        }
+        
+        function addResult(message, type) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${type === 'success' ? '✅' : '❌'}</strong> ${message}`;
+            results.appendChild(div);
+        }
+        
+        // 页面加载时显示说明
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('页面已加载，请点击测试按钮对比两种居中方法的效果', 'success');
+            addResult('测试2使用的是搜索结果页面中应用的新方法', 'success');
+        });
+    </script>
+</body>
+</html>

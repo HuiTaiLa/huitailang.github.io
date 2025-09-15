@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>发表评论</title>
+  <link rel="stylesheet" href="styles/common.css" />
+  <link rel="stylesheet" href="styles/comment.css" />
+</head>
+<body>
+  <header class="app-header gradient">
+    <button class="back-btn" id="backBtn" aria-label="返回">‹</button>
+    <h1 class="title">发表评论</h1>
+    <div class="header-actions"></div>
+  </header>
+
+  <main class="comment-page">
+    <section class="activity-brief" id="activityBrief">
+      <!-- 活动摘要将由 JS 填充 -->
+    </section>
+
+    <section class="comment-editor">
+      <label for="commentInput" class="editor-label">我的评论</label>
+      <textarea id="commentInput" class="comment-input" rows="5" placeholder="写点什么，与大家交流…"></textarea>
+      <div class="editor-actions">
+        <button id="submitCommentBtn" class="primary-btn">发布评论</button>
+      </div>
+    </section>
+
+    <section class="comment-list" id="commentList">
+      <h2 class="section-title">全部评论</h2>
+      <!-- 评论列表由 JS 渲染 -->
+    </section>
+  </main>
+
+  <script src="scripts/common.js"></script>
+  <script src="scripts/comment.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单菜单测试</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .back-btn, .more-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .back-btn:hover, .more-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .chat-info {
+            flex: 1;
+            text-align: center;
+            margin: 0 16px;
+        }
+        
+        .chat-info h1 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .online-count {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-info {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            max-width: 360px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .chat-info-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 16px;
+        }
+        
+        .chat-avatar-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .chat-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .chat-details p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .menu-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .menu-badge {
+            margin-left: auto;
+            background: #667eea;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-right: 8px;
+        }
+        
+        .menu-arrow {
+            color: #999;
+            font-size: 16px;
+            margin-left: auto;
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <button class="back-btn" onclick="history.back()">
+                <span>‹</span>
+            </button>
+            <div class="chat-info">
+                <h1>华东区5G专网交流群</h1>
+                <span class="online-count">156人在线</span>
+            </div>
+            <button class="more-btn" onclick="showMenu()">
+                <span>⋯</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="test-info">
+            <h3>🔧 简化菜单测试</h3>
+            <p>这是一个简化的测试页面，所有代码都内联在HTML中</p>
+            <p>点击右上角的更多按钮(⋯)测试菜单功能</p>
+            <button onclick="showMenu()" style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer;">直接测试菜单</button>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>聊天菜单</h3>
+                <button class="close-btn" onclick="closeMenu()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-info-section">
+                    <div class="chat-avatar-large">👥</div>
+                    <div class="chat-details">
+                        <h4>华东区5G专网交流群</h4>
+                        <p>群成员 156人</p>
+                    </div>
+                </div>
+                <div class="menu-list">
+                    <div class="menu-item" onclick="menuAction('群成员列表')">
+                        <span class="menu-icon">👥</span>
+                        <span>群成员列表</span>
+                        <span class="menu-badge">156</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="menuAction('群聊信息')">
+                        <span class="menu-icon">ℹ️</span>
+                        <span>群聊信息</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="menuAction('群文件')">
+                        <span class="menu-icon">📁</span>
+                        <span>群文件</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <div class="menu-item" onclick="menuAction('聊天记录搜索')">
+                        <span class="menu-icon">🔍</span>
+                        <span>聊天记录搜索</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="menuAction('清空聊天记录')">
+                        <span class="menu-icon">🗑️</span>
+                        <span>清空聊天记录</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showMenu() {
+            console.log('showMenu 被调用');
+            const modal = document.getElementById('menuModal');
+            console.log('找到模态框:', modal);
+            
+            if (modal) {
+                console.log('显示模态框');
+                modal.style.display = 'flex';
+                
+                // 添加点击背景关闭功能
+                modal.onclick = function(e) {
+                    if (e.target === modal) {
+                        console.log('点击背景关闭');
+                        closeMenu();
+                    }
+                };
+            } else {
+                console.log('模态框不存在');
+                alert('模态框不存在！');
+            }
+        }
+        
+        function closeMenu() {
+            console.log('closeMenu 被调用');
+            const modal = document.getElementById('menuModal');
+            if (modal) {
+                console.log('关闭模态框');
+                modal.style.display = 'none';
+            } else {
+                console.log('模态框不存在');
+            }
+        }
+        
+        function menuAction(action) {
+            console.log('菜单动作:', action);
+            alert('点击了：' + action);
+            closeMenu();
+        }
+        
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成');
+            console.log('模态框存在:', document.getElementById('menuModal') ? 'YES' : 'NO');
+        });
+        
+        // 监听错误
+        window.addEventListener('error', function(e) {
+            console.log('JavaScript错误:', e.message);
+            alert('JavaScript错误: ' + e.message);
+        });
+    </script>
+</body>
+</html>

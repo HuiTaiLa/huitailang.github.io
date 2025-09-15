@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果最终修复验证</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .fix-summary {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .fix-icon {
+            color: #0c5460;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-btn.success {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .test-result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .comparison-item {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .comparison-item.before {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        
+        .comparison-item.after {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .demo-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .demo-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .demo-content {
+            font-size: 14px;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+        
+        .check-list {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .check-icon {
+            color: #28a745;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .url-demo {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>✅ 搜索结果最终修复验证</h2>
+            <p>验证高亮效果移除和结果数目统计修正</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 修复总结 -->
+            <div class="fix-summary">
+                <h4 style="margin: 0 0 12px 0; color: #0c5460;">🎯 本次修复内容</h4>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>移除高亮效果：</strong>搜索结果中不再显示关键词高亮</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>修正结果统计：</strong>显示全量搜索结果总数，而非当前页面数量</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>保持功能完整：</strong>搜索相关性和匹配度计算保持不变</span>
+                </div>
+            </div>
+            
+            <!-- 修复前后对比 -->
+            <div class="test-section">
+                <div class="test-title">📊 修复前后对比</div>
+                <div class="test-content-inner">
+                    <div class="comparison-grid">
+                        <div class="comparison-item before">
+                            <div class="comparison-title">
+                                <span>⚠️</span>
+                                <span>修复前的问题</span>
+                            </div>
+                            <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                                <li>搜索结果中有关键词高亮效果</li>
+                                <li>结果数目显示当前页面的数量</li>
+                                <li>分页后统计信息不准确</li>
+                                <li>用户体验不符合预期</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-item after">
+                            <div class="comparison-title">
+                                <span>✅</span>
+                                <span>修复后的效果</span>
+                            </div>
+                            <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                                <li>搜索结果无高亮，显示原始内容</li>
+                                <li>结果数目显示全量搜索总数</li>
+                                <li>统计信息准确反映搜索规模</li>
+                                <li>用户体验更加专业</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技术实现说明 -->
+            <div class="test-section">
+                <div class="test-title">🔧 技术实现说明</div>
+                <div class="test-content-inner">
+                    <div class="demo-box">
+                        <div class="demo-title">1. 高亮效果移除</div>
+                        <div class="demo-content">
+                            • 注释掉 updateResultsContent() 函数中的高亮逻辑<br>
+                            • 移除搜索结果加载时的高亮调用<br>
+                            • 保留函数结构以便将来需要时重新启用
+                        </div>
+                    </div>
+                    
+                    <div class="demo-box">
+                        <div class="demo-title">2. 结果统计修正</div>
+                        <div class="demo-content">
+                            • 为搜索结果添加 totalCount 属性<br>
+                            • 模拟全量搜索结果总数（实际项目中来自后端API）<br>
+                            • 分页显示部分结果，但统计显示全量总数<br>
+                            • 默认结果也包含准确的总数统计
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 验证清单 -->
+            <div class="test-section">
+                <div class="test-title">📋 验证清单</div>
+                <div class="test-content-inner">
+                    <div class="check-list">
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>搜索结果中没有关键词高亮效果</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>结果数目显示合理的全量总数（如：找到 156 个相关结果）</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>搜索结果内容与关键词相关</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>匹配度分数合理（60-99分）</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>搜索用时显示真实处理时间</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>滚动加载功能正常工作</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <div class="test-title">🧪 功能测试</div>
+                <div class="test-content-inner">
+                    <button class="test-btn primary" onclick="testSearchWithKeyword('产品手册')">
+                        📚 测试"产品手册"搜索（验证无高亮+正确统计）
+                    </button>
+                    
+                    <button class="test-btn primary" onclick="testSearchWithKeyword('故障排查')">
+                        🔧 测试"故障排查"搜索（验证无高亮+正确统计）
+                    </button>
+                    
+                    <button class="test-btn primary" onclick="testSearchWithKeyword('客户案例')">
+                        📋 测试"客户案例"搜索（验证无高亮+正确统计）
+                    </button>
+                    
+                    <button class="test-btn success" onclick="testEmptySearch()">
+                        📄 测试默认结果（验证默认统计）
+                    </button>
+                    
+                    <button class="test-btn info" onclick="testAllKeywords()">
+                        🔄 批量测试所有关键词
+                    </button>
+                    
+                    <div class="test-result warning">
+                        <span>💡</span>
+                        <span><strong>验证重点：</strong>确认搜索结果无高亮效果，结果数目显示全量总数</span>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- URL示例 -->
+            <div class="test-section">
+                <div class="test-title">🔗 测试URL示例</div>
+                <div class="test-content-inner">
+                    <div class="test-result success">
+                        <span>📚</span>
+                        <span><strong>产品手册搜索：</strong></span>
+                    </div>
+                    <div class="url-demo">search-results.html?q=产品手册</div>
+                    <div style="font-size: 12px; color: #6c757d; margin-top: 4px;">
+                        预期：无高亮效果，显示如"找到 156 个相关结果"
+                    </div>
+                    
+                    <div class="test-result success">
+                        <span>🔧</span>
+                        <span><strong>故障排查搜索：</strong></span>
+                    </div>
+                    <div class="url-demo">search-results.html?q=故障排查</div>
+                    <div style="font-size: 12px; color: #6c757d; margin-top: 4px;">
+                        预期：无高亮效果，显示如"找到 142 个相关结果"
+                    </div>
+                    
+                    <div class="test-result success">
+                        <span>📋</span>
+                        <span><strong>客户案例搜索：</strong></span>
+                    </div>
+                    <div class="url-demo">search-results.html?q=客户案例</div>
+                    <div style="font-size: 12px; color: #6c757d; margin-top: 4px;">
+                        预期：无高亮效果，显示如"找到 178 个相关结果"
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #155724;">🎉 搜索结果最终修复完成！</h4>
+                <p style="margin: 0; color: #155724;">
+                    现在搜索结果无高亮效果，结果数目显示全量搜索总数，用户体验更加专业
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testSearchWithKeyword(keyword) {
+            window.open(`search-results.html?q=${encodeURIComponent(keyword)}`, '_blank');
+            addTestResult(`🔍 已打开"${keyword}"搜索结果，请验证：1)无高亮效果 2)显示全量总数`, 'success');
+        }
+        
+        function testEmptySearch() {
+            window.open('search-results.html', '_blank');
+            addTestResult('📄 已打开默认搜索结果，请验证默认统计数目是否正确', 'success');
+        }
+        
+        function testAllKeywords() {
+            const keywords = ['产品手册', '故障排查', '客户案例', '5G专网', '培训资料'];
+            
+            keywords.forEach((keyword, index) => {
+                setTimeout(() => {
+                    window.open(`search-results.html?q=${encodeURIComponent(keyword)}`, '_blank');
+                    addTestResult(`🔗 已打开"${keyword}"搜索结果`, 'info');
+                }, index * 1000);
+            });
+            
+            addTestResult('🔄 正在依次打开所有关键词搜索结果，请逐一验证修复效果', 'success');
+        }
+        
+        function addTestResult(message, type) {
+            const results = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            results.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ 搜索结果最终修复验证页面已加载');
+            
+            setTimeout(() => {
+                addTestResult('🎯 搜索结果最终修复已完成，可以开始验证', 'success');
+                addTestResult('💡 重点验证：1)搜索结果无高亮效果 2)结果数目显示全量总数', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专家问答系统</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/qa-system.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>专家问答</h1>
+                <button class="ask-btn" onclick="showQuestionActions()">
+                    <span class="ask-symbol">?</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 分类标签 -->
+        <div class="category-tabs">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="5g">5G网络</div>
+                <div class="tab-item" data-category="cloud">云计算</div>
+                <div class="tab-item" data-category="edge">边缘计算</div>
+                <div class="tab-item" data-category="iot">物联网</div>
+                <div class="tab-item" data-category="security">网络安全</div>
+            </div>
+        </div>
+
+        <!-- 筛选和排序 -->
+        <div class="filter-section">
+            <div class="filter-options">
+                <select class="filter-select">
+                    <option value="all">全部状态</option>
+                    <option value="pending">待解答</option>
+                    <option value="answered">已解答</option>
+                    <option value="solved">已解决</option>
+                </select>
+                <select class="sort-select">
+                    <option value="latest">最新发布</option>
+                    <option value="hot">热门问题</option>
+                    <option value="urgent">紧急程度</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 热门问题 -->
+        <div class="hot-questions">
+            <h3>热门问题</h3>
+            <div class="hot-question-list">
+                <div class="hot-question-item" data-category="5g" onclick="viewQuestion('q001')">
+                    <div class="hot-question-rank top3">1</div>
+                    <div class="hot-question-content">
+                        <div class="hot-question-title">5G专网如何实现与公网的安全隔离？</div>
+                        <div class="hot-question-meta">
+                            <span>👁 234次浏览</span>
+                            <span>💬 12个回答</span>
+                        </div>
+                    </div>
+                    <div class="hot-question-stats">
+                        <span>🔥 热度: 95</span>
+                    </div>
+                </div>
+                <div class="hot-question-item" data-category="edge" onclick="viewQuestion('q002')">
+                    <div class="hot-question-rank top3">2</div>
+                    <div class="hot-question-content">
+                        <div class="hot-question-title">边缘计算节点的部署位置如何选择？</div>
+                        <div class="hot-question-meta">
+                            <span>👁 189次浏览</span>
+                            <span>💬 8个回答</span>
+                        </div>
+                    </div>
+                    <div class="hot-question-stats">
+                        <span>🔥 热度: 87</span>
+                    </div>
+                </div>
+                <div class="hot-question-item" data-category="cloud" onclick="viewQuestion('q003')">
+                    <div class="hot-question-rank top3">3</div>
+                    <div class="hot-question-content">
+                        <div class="hot-question-title">云平台迁移过程中的数据安全如何保障？</div>
+                        <div class="hot-question-meta">
+                            <span>👁 156次浏览</span>
+                            <span>💬 15个回答</span>
+                        </div>
+                    </div>
+                    <div class="hot-question-stats">
+                        <span>🔥 热度: 82</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题列表 -->
+        <div class="question-list-section">
+            <h3>问题列表 <span class="question-count">共 127 个问题</span></h3>
+
+            <div class="question-list">
+                <!-- 待解答问题 -->
+                <div class="question-item" data-status="pending" data-category="iot" onclick="viewQuestion('q004')">
+                    <div class="question-header">
+                        <div class="question-avatar">
+                            <img src="images/user5.png" alt="提问者">
+                        </div>
+                        <div class="question-info">
+                            <div class="question-user">
+                                <span class="question-username">刘工程师</span>
+                                <span class="question-role">华南区技术专家</span>
+                            </div>
+                            <div class="question-time">2小时前</div>
+                        </div>
+                        <div class="question-status pending">待解答</div>
+                    </div>
+                    <div class="question-title">物联网设备大规模接入时的网络优化策略</div>
+                    <div class="question-content">我们项目中需要接入10万+物联网设备，目前网络延迟较高，请问有什么优化建议？包括网络架构调整和参数配置方面。</div>
+                    <div class="question-tags">
+                        <span class="question-tag category">物联网</span>
+                        <span class="question-tag">网络优化</span>
+                        <span class="question-tag">大规模接入</span>
+                    </div>
+                    <div class="question-stats">
+                        <div class="question-stats-left">
+                            <span>👁 45次浏览</span>
+                            <span>👥 12人关注</span>
+                            <span>💬 0个回答</span>
+                        </div>
+                        <div class="question-stats-right">
+                            <span class="question-priority high">紧急</span>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button class="action-btn view-btn" onclick="viewSolution('q004')">👁 查看方案</button>
+                        <button class="action-btn bookmark-btn" onclick="toggleBookmark('q004', this)">🔖 收藏</button>
+                    </div>
+                </div>
+
+                <!-- 已解答问题 -->
+                <div class="question-item" data-status="answered" data-category="5g" onclick="viewQuestion('q005')">
+                    <div class="question-header">
+                        <div class="question-avatar">
+                            <img src="images/user6.png" alt="提问者">
+                        </div>
+                        <div class="question-info">
+                            <div class="question-user">
+                                <span class="question-username">陈经理</span>
+                                <span class="question-role">华东区产品经理</span>
+                            </div>
+                            <div class="question-time">5小时前</div>
+                        </div>
+                        <div class="question-status answered">已解答</div>
+                    </div>
+                    <div class="question-title">5G专网切片技术的实际应用场景</div>
+                    <div class="question-content">想了解5G网络切片在不同行业中的具体应用，特别是在工业互联网和智慧城市方面的实践案例。</div>
+                    <div class="question-tags">
+                        <span class="question-tag category">5G网络</span>
+                        <span class="question-tag">网络切片</span>
+                        <span class="question-tag">应用场景</span>
+                    </div>
+                    <div class="question-stats">
+                        <div class="question-stats-left">
+                            <span>👁 89次浏览</span>
+                            <span>👥 8人关注</span>
+                            <span>💬 3个回答</span>
+                        </div>
+                        <div class="question-stats-right">
+                            <span class="question-priority medium">中等</span>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button class="action-btn view-btn" onclick="viewSolution('q005')">👁 查看方案</button>
+                        <button class="action-btn bookmark-btn" onclick="toggleBookmark('q005', this)">🔖 收藏</button>
+                    </div>
+                </div>
+
+                <!-- 已解决问题 -->
+                <div class="question-item" data-status="solved" data-category="cloud" onclick="viewQuestion('q006')">
+                    <div class="question-header">
+                        <div class="question-avatar">
+                            <img src="images/user7.png" alt="提问者">
+                        </div>
+                        <div class="question-info">
+                            <div class="question-user">
+                                <span class="question-username">赵主管</span>
+                                <span class="question-role">华北区运维主管</span>
+                            </div>
+                            <div class="question-time">1天前</div>
+                        </div>
+                        <div class="question-status solved">已解决</div>
+                    </div>
+                    <div class="question-title">云服务器性能监控和告警配置</div>
+                    <div class="question-content">需要建立完善的云服务器监控体系，包括CPU、内存、磁盘、网络等指标的监控和告警机制。</div>
+                    <div class="question-tags">
+                        <span class="question-tag category">云计算</span>
+                        <span class="question-tag">性能监控</span>
+                        <span class="question-tag">告警配置</span>
+                    </div>
+                    <div class="question-stats">
+                        <div class="question-stats-left">
+                            <span>👁 156次浏览</span>
+                            <span>👥 15人关注</span>
+                            <span>💬 7个回答</span>
+                        </div>
+                        <div class="question-stats-right">
+                            <span class="question-priority low">普通</span>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button class="action-btn view-btn" onclick="viewSolution('q006')">👁 查看方案</button>
+                        <button class="action-btn bookmark-btn" onclick="toggleBookmark('q006', this)">🔖 收藏</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加载更多 -->
+            <div class="load-more">
+                <button class="load-more-btn">加载更多问题</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提问浮层 -->
+    <div class="ask-modal" id="askModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>提出问题</h3>
+                <button class="close-btn" onclick="hideAskQuestion()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>问题标题</label>
+                    <input type="text" placeholder="简洁明确地描述您的问题" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>问题描述</label>
+                    <textarea placeholder="详细描述问题背景、具体情况和期望解决的目标" class="form-textarea"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>问题分类</label>
+                    <select class="form-select">
+                        <option value="">选择分类</option>
+                        <option value="5g">5G网络</option>
+                        <option value="cloud">云计算</option>
+                        <option value="edge">边缘计算</option>
+                        <option value="iot">物联网</option>
+                        <option value="security">网络安全</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>紧急程度</label>
+                    <div class="urgency-options">
+                        <label class="radio-option">
+                            <input type="radio" name="urgency" value="low">
+                            <span>一般</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="urgency" value="medium">
+                            <span>较急</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="urgency" value="high">
+                            <span>紧急</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="hideAskQuestion()">取消</button>
+                <button class="submit-btn" onclick="submitQuestion()">发布问题</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 问题操作菜单 -->
+    <div class="action-sheet" id="questionActionSheet" style="display: none;">
+        <div class="action-sheet-content">
+            <div class="action-sheet-header">
+                <h3>问题操作</h3>
+                <button class="close-btn" onclick="hideQuestionActions()">×</button>
+            </div>
+            <div class="action-sheet-body">
+                <div class="action-item" onclick="showAskQuestion(); hideQuestionActions();">
+                    <div class="action-icon">❓</div>
+                    <div class="action-info">
+                        <div class="action-title">提出问题</div>
+                        <div class="action-desc">发布新的技术问题，寻求专家解答</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="loadMoreQuestions(); hideQuestionActions();">
+                    <div class="action-icon">🔄</div>
+                    <div class="action-info">
+                        <div class="action-title">加载更多问题</div>
+                        <div class="action-desc">获取更多相关技术问题</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showQuestionSearch(); hideQuestionActions();">
+                    <div class="action-icon">🔍</div>
+                    <div class="action-info">
+                        <div class="action-title">搜索问题</div>
+                        <div class="action-desc">按关键词搜索相关问题</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showMyQuestions(); hideQuestionActions();">
+                    <div class="action-icon">📝</div>
+                    <div class="action-info">
+                        <div class="action-title">我的问题</div>
+                        <div class="action-desc">查看我发布的所有问题</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('resource-library.html')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/qa-system.js"></script>
+</body>
+</html>

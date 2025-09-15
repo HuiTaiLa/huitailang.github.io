@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/profile.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>个人中心</h1>
+                <button class="settings-btn" onclick="showSettingsModal()">
+                    <span class="settings-icon">⚙️</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 用户信息卡片 -->
+        <div class="user-card">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img src="images/my-avatar.png" alt="我的头像">
+                    <button class="avatar-edit-btn">📷</button>
+                </div>
+                <div class="user-info">
+                    <h2>张明</h2>
+                    <p class="user-title">高级技术工程师</p>
+                    <p class="user-region">华东区 · 上海分公司</p>
+                </div>
+            </div>
+            <div class="user-stats">
+                <div class="stat-item" data-stat="answers">
+                    <span class="stat-number">156</span>
+                    <span class="stat-label">回答数</span>
+                </div>
+                <div class="stat-item" data-stat="posts">
+                    <span class="stat-number">128</span>
+                    <span class="stat-label">发布数</span>
+                </div>
+                <div class="stat-item" data-stat="followers">
+                    <span class="stat-number">256</span>
+                    <span class="stat-label">关注者</span>
+                </div>
+                <div class="stat-item" data-stat="following">
+                    <span class="stat-number">89</span>
+                    <span class="stat-label">关注中</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能菜单 -->
+        <div class="menu-section">
+            <div class="menu-group">
+                <h3>我的活动</h3>
+                <div class="menu-item" data-action="my-questions">
+                    <div class="menu-icon">❓</div>
+                    <div class="menu-content">
+                        <span class="menu-title">我的提问</span>
+                        <span class="menu-desc">查看我发布的问题</span>
+                    </div>
+                    <div class="menu-badge">12</div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="my-answers">
+                    <div class="menu-icon">💡</div>
+                    <div class="menu-content">
+                        <span class="menu-title">我的回答</span>
+                        <span class="menu-desc">查看我的回答记录</span>
+                    </div>
+                    <div class="menu-badge">45</div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="my-favorites">
+                    <div class="menu-icon">🔖</div>
+                    <div class="menu-content">
+                        <span class="menu-title">我的收藏</span>
+                        <span class="menu-desc">收藏的文档和问答</span>
+                    </div>
+                    <div class="menu-badge">78</div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="my-downloads">
+                    <div class="menu-icon">📥</div>
+                    <div class="menu-content">
+                        <span class="menu-title">下载记录</span>
+                        <span class="menu-desc">查看下载的文档</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <h3>工作圈管理</h3>
+                <div class="menu-item" data-action="my-circles">
+                    <div class="menu-icon">👥</div>
+                    <div class="menu-content">
+                        <span class="menu-title">我的圈子</span>
+                        <span class="menu-desc">管理加入的工作圈</span>
+                    </div>
+                    <div class="menu-badge">8</div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="notifications">
+                    <div class="menu-icon">📨</div>
+                    <div class="menu-content">
+                        <span class="menu-title">圈子邀请</span>
+                        <span class="menu-desc">处理圈子邀请</span>
+                    </div>
+                    <div class="menu-badge">3</div>
+                    <div class="menu-arrow">></div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <h3>学习成长</h3>
+                <div class="menu-item" data-action="learning-progress">
+                    <div class="menu-icon">📚</div>
+                    <div class="menu-content">
+                        <span class="menu-title">学习进度</span>
+                        <span class="menu-desc">培训课程学习记录</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="my-certificates">
+                    <div class="menu-icon">🏆</div>
+                    <div class="menu-content">
+                        <span class="menu-title">我的证书</span>
+                        <span class="menu-desc">获得的培训证书</span>
+                    </div>
+                    <div class="menu-badge">5</div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="skill-assessment">
+                    <div class="menu-icon">📊</div>
+                    <div class="menu-content">
+                        <span class="menu-title">技能评估</span>
+                        <span class="menu-desc">专业技能测评</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+            </div>
+
+            <div class="menu-group">
+                <h3>系统设置</h3>
+                <div class="menu-item" data-action="edit-profile">
+                    <div class="menu-icon primary">👤</div>
+                    <div class="menu-content">
+                        <span class="menu-title">编辑资料</span>
+                        <span class="menu-desc">修改个人信息</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="settings">
+                    <div class="menu-icon">⚙️</div>
+                    <div class="menu-content">
+                        <span class="menu-title">系统设置</span>
+                        <span class="menu-desc">应用设置和偏好</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="notifications">
+                    <div class="menu-icon">🔔</div>
+                    <div class="menu-content">
+                        <span class="menu-title">消息通知</span>
+                        <span class="menu-desc">通知设置和消息管理</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="privacy">
+                    <div class="menu-icon">🔒</div>
+                    <div class="menu-content">
+                        <span class="menu-title">隐私设置</span>
+                        <span class="menu-desc">个人信息和隐私管理</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="help">
+                    <div class="menu-icon">❓</div>
+                    <div class="menu-content">
+                        <span class="menu-title">帮助中心</span>
+                        <span class="menu-desc">使用帮助和问题反馈</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="feedback">
+                    <div class="menu-icon info">💬</div>
+                    <div class="menu-content">
+                        <span class="menu-title">意见反馈</span>
+                        <span class="menu-desc">提交建议和问题</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+                <div class="menu-item" data-action="about">
+                    <div class="menu-icon">ℹ️</div>
+                    <div class="menu-content">
+                        <span class="menu-title">关于应用</span>
+                        <span class="menu-desc">版本信息和团队介绍</span>
+                    </div>
+                    <div class="menu-arrow">></div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- 最近活动 -->
+        <div class="recent-activity">
+            <h3>最近活动</h3>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">💡</div>
+                    <div class="activity-content">
+                        <p>回答了问题《5G专网部署的关键技术要点》</p>
+                        <span class="activity-time">2小时前</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📥</div>
+                    <div class="activity-content">
+                        <p>下载了文档《边缘计算解决方案白皮书》</p>
+                        <span class="activity-time">5小时前</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">👥</div>
+                    <div class="activity-content">
+                        <p>加入了华东区云计算技术交流群</p>
+                        <span class="activity-time">1天前</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 退出登录 -->
+        <div class="logout-section">
+            <button class="logout-btn" onclick="confirmLogout()">退出登录</button>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('resource-library.html')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item active">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <!-- 设置模态框 -->
+    <div class="settings-modal" id="settingsModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>系统设置</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">消息通知</div>
+                        <div class="setting-desc">接收新消息推送通知</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" data-setting="notifications" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">声音提醒</div>
+                        <div class="setting-desc">消息到达时播放提示音</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" data-setting="sound" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">震动反馈</div>
+                        <div class="setting-desc">操作时提供震动反馈</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" data-setting="vibration">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">自动更新</div>
+                        <div class="setting-desc">自动检查并下载应用更新</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" data-setting="autoUpdate" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/profile.js"></script>
+</body>
+</html>

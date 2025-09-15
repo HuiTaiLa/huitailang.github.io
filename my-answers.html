@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的回答 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- 头部导航 -->
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>我的回答</h1>
+                <button class="action-btn" onclick="showSortOptions()">
+                    <span class="filter-icon">📊</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 统计信息 -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">45</div>
+                <div class="stat-label">总回答</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">32</div>
+                <div class="stat-label">被采纳</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">156</div>
+                <div class="stat-label">获赞数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">89</div>
+                <div class="stat-label">帮助人数</div>
+            </div>
+        </div>
+
+        <!-- 筛选标签 -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">全部</button>
+            <button class="filter-tab" data-filter="accepted">已采纳</button>
+            <button class="filter-tab" data-filter="liked">高赞</button>
+            <button class="filter-tab" data-filter="recent">最新</button>
+        </div>
+
+        <!-- 回答列表 -->
+        <div class="content-section">
+            <div class="answer-list" id="answerList">
+                <!-- 回答项将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 简化的我的回答页面脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnswers();
+            initFilterTabs();
+        });
+
+        function loadAnswers() {
+            const answers = [
+                {
+                    id: 1,
+                    questionTitle: '5G专网部署时如何配置QoS参数？',
+                    content: '5G专网QoS配置需要考虑以下几个关键参数：1. 5QI（5G QoS Identifier）：定义服务质量等级...',
+                    isAccepted: true,
+                    likes: 15,
+                    comments: 3,
+                    createTime: '2024-01-16 09:15'
+                },
+                {
+                    id: 2,
+                    questionTitle: 'MEC边缘计算节点部署位置选择',
+                    content: '边缘计算节点的部署位置选择需要综合考虑以下因素：1. 网络延迟要求 2. 用户分布密度...',
+                    isAccepted: false,
+                    likes: 8,
+                    comments: 2,
+                    createTime: '2024-01-14 14:20'
+                }
+            ];
+
+            const answerList = document.getElementById('answerList');
+            answerList.innerHTML = answers.map(answer => `
+                <div class="answer-item" onclick="viewAnswer(${answer.id})">
+                    <div class="answer-header">
+                        <div class="question-title">${answer.questionTitle}</div>
+                        ${answer.isAccepted ? '<div class="accepted-badge">✓ 已采纳</div>' : ''}
+                    </div>
+                    <div class="answer-content">${answer.content}</div>
+                    <div class="answer-meta">
+                        <div class="answer-stats">
+                            <span>👍 ${answer.likes}</span>
+                            <span>💬 ${answer.comments}</span>
+                        </div>
+                        <div class="answer-time">${answer.createTime}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initFilterTabs() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    commonUtils.showToast(`已切换到：${this.textContent}`, 'info');
+                });
+            });
+        }
+
+        function viewAnswer(answerId) {
+            commonUtils.showToast('查看回答详情...', 'info');
+        }
+
+        function showSortOptions() {
+            commonUtils.showToast('排序选项开发中...', 'info');
+        }
+    </script>
+
+    <style>
+        .answer-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #f0f0f0;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .answer-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .accepted-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .answer-content {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .answer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .answer-stats {
+            display: flex;
+            gap: 16px;
+        }
+    </style>
+</body>
+</html>

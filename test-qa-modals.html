@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专家问答模态框测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/qa-system.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .test-btn.secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .demo-ask-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🧪 专家问答模态框测试</h2>
+            <p>测试所有弹窗和操作菜单的样式</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 头部按钮测试 -->
+            <div class="test-section">
+                <h4>1. 头部问号按钮测试</h4>
+                <div class="demo-header">
+                    <span>专家问答</span>
+                    <button class="demo-ask-btn" onclick="showQuestionActions()">?</button>
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    点击问号按钮显示操作菜单
+                </div>
+            </div>
+            
+            <!-- 操作菜单测试 -->
+            <div class="test-section">
+                <h4>2. 操作菜单功能测试</h4>
+                <button class="test-btn primary" onclick="showQuestionActions()">
+                    📋 显示操作菜单
+                </button>
+                <button class="test-btn secondary" onclick="testMenuWidth()">
+                    📏 测试菜单宽度
+                </button>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    包含：提出问题、加载更多、搜索问题、我的问题
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    宽度控制：最大400px，移动端自适应，不超出屏幕边界
+                </div>
+            </div>
+            
+            <!-- 提问模态框测试 -->
+            <div class="test-section">
+                <h4>3. 提问模态框测试</h4>
+                <button class="test-btn primary" onclick="showAskQuestion()">
+                    ❓ 显示提问对话框
+                </button>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    包含：标题、描述、分类、紧急程度、取消、发布
+                </div>
+            </div>
+            
+            <!-- 搜索功能测试 -->
+            <div class="test-section">
+                <h4>4. 搜索功能测试</h4>
+                <button class="test-btn secondary" onclick="showQuestionSearch()">
+                    🔍 显示搜索对话框
+                </button>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    包含：关键词输入、搜索范围选择
+                </div>
+            </div>
+            
+            <!-- 其他功能测试 -->
+            <div class="test-section">
+                <h4>5. 其他功能测试</h4>
+                <button class="test-btn secondary" onclick="loadMoreQuestions()">
+                    🔄 加载更多问题
+                </button>
+                <button class="test-btn secondary" onclick="showMyQuestions()">
+                    📝 显示我的问题
+                </button>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    功能完整，交互正常
+                </div>
+            </div>
+            
+            <div class="test-actions" style="margin-top: 20px; text-align: center;">
+                <button onclick="runAllTests()" style="background: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    🧪 运行所有测试
+                </button>
+                <button onclick="window.location.href='qa-system.html'" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    📱 查看完整页面
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 问题操作菜单 -->
+    <div class="action-sheet" id="questionActionSheet" style="display: none;">
+        <div class="action-sheet-content">
+            <div class="action-sheet-header">
+                <h3>问题操作</h3>
+                <button class="close-btn" onclick="hideQuestionActions()">×</button>
+            </div>
+            <div class="action-sheet-body">
+                <div class="action-item" onclick="showAskQuestion(); hideQuestionActions();">
+                    <div class="action-icon">❓</div>
+                    <div class="action-info">
+                        <div class="action-title">提出问题</div>
+                        <div class="action-desc">发布新的技术问题，寻求专家解答</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="loadMoreQuestions(); hideQuestionActions();">
+                    <div class="action-icon">🔄</div>
+                    <div class="action-info">
+                        <div class="action-title">加载更多问题</div>
+                        <div class="action-desc">获取更多相关技术问题</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showQuestionSearch(); hideQuestionActions();">
+                    <div class="action-icon">🔍</div>
+                    <div class="action-info">
+                        <div class="action-title">搜索问题</div>
+                        <div class="action-desc">按关键词搜索相关问题</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showMyQuestions(); hideQuestionActions();">
+                    <div class="action-icon">📝</div>
+                    <div class="action-info">
+                        <div class="action-title">我的问题</div>
+                        <div class="action-desc">查看我发布的所有问题</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提问浮层 -->
+    <div class="ask-modal" id="askModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>提出问题</h3>
+                <button class="close-btn" onclick="hideAskQuestion()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>问题标题</label>
+                    <input type="text" placeholder="简洁明确地描述您的问题" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>问题描述</label>
+                    <textarea placeholder="详细描述问题背景、具体情况和期望解决的目标" class="form-textarea"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>问题分类</label>
+                    <select class="form-select">
+                        <option value="">选择分类</option>
+                        <option value="5g">5G网络</option>
+                        <option value="cloud">云计算</option>
+                        <option value="edge">边缘计算</option>
+                        <option value="iot">物联网</option>
+                        <option value="security">网络安全</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>紧急程度</label>
+                    <div class="urgency-options">
+                        <label class="radio-option">
+                            <input type="radio" name="urgency" value="low">
+                            <span>一般</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="urgency" value="medium">
+                            <span>较急</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="urgency" value="high">
+                            <span>紧急</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="hideAskQuestion()">取消</button>
+                <button class="submit-btn" onclick="submitQuestion()">发布问题</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/qa-system.js"></script>
+    <script>
+        function runAllTests() {
+            const results = [];
+            
+            // 测试1: 检查CSS样式加载
+            const hasQAStyles = Array.from(document.styleSheets).some(sheet => 
+                sheet.href && sheet.href.includes('qa-system.css')
+            );
+            results.push(`CSS样式加载: ${hasQAStyles ? '✅ 正常' : '❌ 异常'}`);
+            
+            // 测试2: 检查DOM元素
+            const hasActionSheet = document.getElementById('questionActionSheet') !== null;
+            const hasAskModal = document.getElementById('askModal') !== null;
+            results.push(`操作菜单元素: ${hasActionSheet ? '✅ 存在' : '❌ 缺失'}`);
+            results.push(`提问模态框元素: ${hasAskModal ? '✅ 存在' : '❌ 缺失'}`);
+            
+            // 测试3: 检查JavaScript函数
+            const hasShowFunction = typeof showQuestionActions === 'function';
+            const hasHideFunction = typeof hideQuestionActions === 'function';
+            const hasAskFunction = typeof showAskQuestion === 'function';
+            results.push(`显示操作菜单函数: ${hasShowFunction ? '✅ 存在' : '❌ 缺失'}`);
+            results.push(`隐藏操作菜单函数: ${hasHideFunction ? '✅ 存在' : '❌ 缺失'}`);
+            results.push(`显示提问对话框函数: ${hasAskFunction ? '✅ 存在' : '❌ 缺失'}`);
+            
+            alert('🧪 模态框测试结果：\n\n' + results.join('\n'));
+        }
+        
+        // 测试菜单宽度
+        function testMenuWidth() {
+            showQuestionActions();
+
+            setTimeout(() => {
+                const actionSheet = document.getElementById('questionActionSheet');
+                const actionSheetContent = actionSheet.querySelector('.action-sheet-content');
+
+                if (actionSheetContent) {
+                    const rect = actionSheetContent.getBoundingClientRect();
+                    const screenWidth = window.innerWidth;
+                    const contentWidth = rect.width;
+                    const leftMargin = rect.left;
+                    const rightMargin = screenWidth - rect.right;
+
+                    const isWithinBounds = leftMargin >= 0 && rightMargin >= 0;
+                    const widthPercentage = ((contentWidth / screenWidth) * 100).toFixed(1);
+
+                    const results = [
+                        `屏幕宽度: ${screenWidth}px`,
+                        `菜单宽度: ${contentWidth.toFixed(0)}px (${widthPercentage}%)`,
+                        `左边距: ${leftMargin.toFixed(0)}px`,
+                        `右边距: ${rightMargin.toFixed(0)}px`,
+                        `边界检查: ${isWithinBounds ? '✅ 正常' : '❌ 超出边界'}`,
+                        `最大宽度限制: ${contentWidth <= 400 ? '✅ 符合' : '❌ 超出400px'}`
+                    ];
+
+                    alert('📏 菜单宽度测试结果：\n\n' + results.join('\n'));
+                } else {
+                    alert('❌ 无法找到操作菜单元素');
+                }
+            }, 500);
+        }
+
+        // 模拟提交问题函数
+        function submitQuestion() {
+            alert('✅ 问题提交功能正常！\n（这是测试环境的模拟提交）');
+            hideAskQuestion();
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 专家问答模态框测试页面已加载');
+            console.log('✅ 所有样式和功能已就绪');
+        });
+    </script>
+</body>
+</html>

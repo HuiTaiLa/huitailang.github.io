@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果修复验证</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .fix-summary {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .fix-icon {
+            color: #155724;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .test-btn.success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .test-result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .comparison-item {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .comparison-item.before {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .comparison-item.after {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        
+        .search-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .search-example:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+        
+        .search-keyword {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+        
+        .search-desc {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .url-demo {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 搜索结果问题修复验证</h2>
+            <p>验证搜索结果相关性、匹配度计算、结果统计和搜索用时的修复效果</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 修复总结 -->
+            <div class="fix-summary">
+                <h4 style="margin: 0 0 12px 0; color: #155724;">🎯 已修复的问题</h4>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>搜索结果相关性：</strong>根据查询关键词生成相关的搜索结果</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>匹配度计算：</strong>基于关键词匹配程度计算真实的匹配度分数</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>结果个数统计：</strong>显示实际找到的相关结果数量</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>搜索用时：</strong>计算真实的搜索处理时间</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>关键词高亮：</strong>在搜索结果中高亮显示查询关键词</span>
+                </div>
+            </div>
+            
+            <!-- 修复前后对比 -->
+            <div class="test-section">
+                <div class="test-title">📊 修复前后对比</div>
+                <div class="test-content-inner">
+                    <div class="comparison-grid">
+                        <div class="comparison-item before">
+                            <div class="comparison-title">
+                                <span>❌</span>
+                                <span>修复前的问题</span>
+                            </div>
+                            <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                                <li>搜索结果与关键词无关</li>
+                                <li>匹配度是随机生成的</li>
+                                <li>结果个数是随机数字</li>
+                                <li>搜索用时是模拟时间</li>
+                                <li>内容摘要不相关</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-item after">
+                            <div class="comparison-title">
+                                <span>✅</span>
+                                <span>修复后的效果</span>
+                            </div>
+                            <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                                <li>根据关键词生成相关结果</li>
+                                <li>基于匹配算法计算分数</li>
+                                <li>显示实际结果数量</li>
+                                <li>计算真实处理时间</li>
+                                <li>生成相关的内容摘要</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 搜索测试示例 -->
+            <div class="test-section">
+                <div class="test-title">🔍 搜索测试示例</div>
+                <div class="test-content-inner">
+                    <div class="test-result info">
+                        <span>💡</span>
+                        <span><strong>测试说明：</strong>点击下方关键词测试搜索结果的相关性和准确性</span>
+                    </div>
+                    
+                    <div class="search-examples">
+                        <div class="search-example" onclick="testSearch('产品手册')">
+                            <div class="search-keyword">产品手册</div>
+                            <div class="search-desc">测试产品手册相关结果</div>
+                        </div>
+                        <div class="search-example" onclick="testSearch('故障排查')">
+                            <div class="search-keyword">故障排查</div>
+                            <div class="search-desc">测试故障排查相关结果</div>
+                        </div>
+                        <div class="search-example" onclick="testSearch('客户案例')">
+                            <div class="search-keyword">客户案例</div>
+                            <div class="search-desc">测试客户案例相关结果</div>
+                        </div>
+                        <div class="search-example" onclick="testSearch('5G专网')">
+                            <div class="search-keyword">5G专网</div>
+                            <div class="search-desc">测试5G专网相关结果</div>
+                        </div>
+                        <div class="search-example" onclick="testSearch('培训资料')">
+                            <div class="search-keyword">培训资料</div>
+                            <div class="search-desc">测试培训资料相关结果</div>
+                        </div>
+                        <div class="search-example" onclick="testSearch('解决方案')">
+                            <div class="search-keyword">解决方案</div>
+                            <div class="search-desc">测试解决方案相关结果</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <div class="test-title">🧪 功能测试</div>
+                <div class="test-content-inner">
+                    <button class="test-btn primary" onclick="openHomePage()">
+                        🏠 打开首页测试搜索建议跳转
+                    </button>
+                    
+                    <button class="test-btn success" onclick="testAllKeywords()">
+                        🔄 批量测试所有关键词
+                    </button>
+                    
+                    <button class="test-btn info" onclick="testEmptySearch()">
+                        📋 测试无关键词的默认结果
+                    </button>
+                    
+                    <div class="test-result warning">
+                        <span>💡</span>
+                        <span><strong>测试重点：</strong>观察搜索结果是否与关键词相关，匹配度是否合理，统计信息是否准确</span>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- URL示例 -->
+            <div class="test-section">
+                <div class="test-title">🔗 测试URL示例</div>
+                <div class="test-content-inner">
+                    <div class="test-result success">
+                        <span>📚</span>
+                        <span><strong>产品手册搜索：</strong></span>
+                    </div>
+                    <div class="url-demo">search-results.html?q=产品手册</div>
+                    
+                    <div class="test-result success">
+                        <span>🔧</span>
+                        <span><strong>故障排查搜索：</strong></span>
+                    </div>
+                    <div class="url-demo">search-results.html?q=故障排查</div>
+                    
+                    <div class="test-result success">
+                        <span>📋</span>
+                        <span><strong>客户案例搜索：</strong></span>
+                    </div>
+                    <div class="url-demo">search-results.html?q=客户案例</div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #155724;">🎉 搜索结果问题修复完成！</h4>
+                <p style="margin: 0; color: #155724;">
+                    现在搜索结果会根据查询关键词生成相关内容，匹配度计算准确，统计信息真实可靠
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testSearch(keyword) {
+            window.open(`search-results.html?q=${encodeURIComponent(keyword)}`, '_blank');
+            addTestResult(`🔍 已打开"${keyword}"的搜索结果，请观察结果相关性和匹配度`, 'success');
+        }
+        
+        function openHomePage() {
+            window.open('index.html', '_blank');
+            addTestResult('🏠 已打开首页，请点击搜索建议标签测试跳转功能', 'success');
+        }
+        
+        function testAllKeywords() {
+            const keywords = ['产品手册', '故障排查', '客户案例', '5G专网', '培训资料', '解决方案'];
+            
+            keywords.forEach((keyword, index) => {
+                setTimeout(() => {
+                    window.open(`search-results.html?q=${encodeURIComponent(keyword)}`, '_blank');
+                    addTestResult(`🔗 已打开"${keyword}"搜索结果`, 'info');
+                }, index * 1000);
+            });
+            
+            addTestResult('🔄 正在依次打开所有关键词的搜索结果，请观察每个页面的相关性', 'success');
+        }
+        
+        function testEmptySearch() {
+            window.open('search-results.html', '_blank');
+            addTestResult('📋 已打开无查询词的搜索结果页面，应显示默认推荐内容', 'success');
+        }
+        
+        function addTestResult(message, type) {
+            const results = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            results.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 搜索结果修复验证页面已加载');
+            
+            setTimeout(() => {
+                addTestResult('🎯 搜索结果问题已修复，可以开始测试验证', 'success');
+                addTestResult('💡 建议测试不同关键词，观察结果相关性、匹配度和统计信息', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

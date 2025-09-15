@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>意见反馈 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>意见反馈</h1>
+                <button class="action-btn" onclick="viewFeedbackHistory()">
+                    <span class="filter-icon">📋</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 反馈类型选择 -->
+        <div class="feedback-types">
+            <h3>反馈类型</h3>
+            <div class="type-grid">
+                <div class="type-item active" data-type="bug">
+                    <div class="type-icon">🐛</div>
+                    <div class="type-title">问题反馈</div>
+                </div>
+                <div class="type-item" data-type="feature">
+                    <div class="type-icon">💡</div>
+                    <div class="type-title">功能建议</div>
+                </div>
+                <div class="type-item" data-type="improvement">
+                    <div class="type-icon">⚡</div>
+                    <div class="type-title">体验优化</div>
+                </div>
+                <div class="type-item" data-type="other">
+                    <div class="type-icon">💬</div>
+                    <div class="type-title">其他意见</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 反馈表单 -->
+        <div class="feedback-form">
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="feedbackTitle">反馈标题 *</label>
+                    <input type="text" id="feedbackTitle" placeholder="请简要描述您的问题或建议" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="feedbackContent">详细描述 *</label>
+                    <textarea id="feedbackContent" rows="6" placeholder="请详细描述您遇到的问题或建议，包括具体的操作步骤、期望结果等" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="feedbackContact">联系方式</label>
+                    <input type="text" id="feedbackContact" placeholder="手机号或邮箱（可选，便于我们联系您）">
+                </div>
+
+                <div class="form-group">
+                    <label>上传截图</label>
+                    <div class="upload-area" onclick="uploadScreenshot()">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">点击上传截图（可选）</div>
+                        <div class="upload-hint">支持 JPG、PNG 格式，最大 5MB</div>
+                    </div>
+                    <div class="uploaded-files" id="uploadedFiles"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="allowContact">
+                        <span class="checkmark"></span>
+                        允许我们就此反馈与您联系
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">提交反馈</span>
+                    <span class="btn-loading" style="display: none;">提交中...</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- 反馈统计 -->
+        <div class="feedback-stats">
+            <h3>反馈统计</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">总反馈数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">89</div>
+                    <div class="stat-label">已处理</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">67</div>
+                    <div class="stat-label">处理中</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">满意度</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 常见问题 -->
+        <div class="faq-section">
+            <h3>常见问题</h3>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">反馈后多久会有回复？</div>
+                    <div class="faq-answer">我们会在1-3个工作日内回复您的反馈</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">如何查看反馈处理进度？</div>
+                    <div class="faq-answer">点击右上角按钮可查看历史反馈记录</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">可以匿名反馈吗？</div>
+                    <div class="faq-answer">可以，联系方式为可选项，不填写即为匿名反馈</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        let selectedType = 'bug';
+        let uploadedFiles = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initFeedbackTypes();
+            initForm();
+        });
+
+        function initFeedbackTypes() {
+            const typeItems = document.querySelectorAll('.type-item');
+            typeItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    typeItems.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedType = this.dataset.type;
+                    updateFormPlaceholder();
+                });
+            });
+        }
+
+        function updateFormPlaceholder() {
+            const titleInput = document.getElementById('feedbackTitle');
+            const contentTextarea = document.getElementById('feedbackContent');
+            
+            const placeholders = {
+                bug: {
+                    title: '请简要描述您遇到的问题',
+                    content: '请详细描述问题的具体表现、出现频率、操作步骤等'
+                },
+                feature: {
+                    title: '请简要描述您的功能建议',
+                    content: '请详细描述您希望增加的功能、使用场景、预期效果等'
+                },
+                improvement: {
+                    title: '请简要描述需要优化的地方',
+                    content: '请详细描述当前体验中的不足之处、改进建议等'
+                },
+                other: {
+                    title: '请简要描述您的意见',
+                    content: '请详细描述您的想法、建议或其他意见'
+                }
+            };
+            
+            titleInput.placeholder = placeholders[selectedType].title;
+            contentTextarea.placeholder = placeholders[selectedType].content;
+        }
+
+        function initForm() {
+            const form = document.getElementById('feedbackForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitFeedback();
+            });
+        }
+
+        function submitFeedback() {
+            const title = document.getElementById('feedbackTitle').value.trim();
+            const content = document.getElementById('feedbackContent').value.trim();
+            const contact = document.getElementById('feedbackContact').value.trim();
+            const allowContact = document.getElementById('allowContact').checked;
+
+            if (!title || !content) {
+                commonUtils.showToast('请填写必填项', 'warning');
+                return;
+            }
+
+            const submitBtn = document.querySelector('.submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+
+            // 显示提交状态
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+
+            // 模拟提交
+            setTimeout(() => {
+                commonUtils.showToast('反馈提交成功！', 'success');
+                
+                // 重置表单
+                document.getElementById('feedbackForm').reset();
+                uploadedFiles = [];
+                document.getElementById('uploadedFiles').innerHTML = '';
+                
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                
+                setTimeout(() => {
+                    commonUtils.showToast('我们会尽快处理您的反馈', 'info');
+                }, 1500);
+            }, 2000);
+        }
+
+        function uploadScreenshot() {
+            // 模拟文件上传
+            commonUtils.showToast('上传功能开发中...', 'info');
+        }
+
+        function viewFeedbackHistory() {
+            commonUtils.showToast('查看反馈历史...', 'info');
+        }
+    </script>
+
+    <style>
+        .feedback-types {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .feedback-types h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .type-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-item:hover {
+            border-color: #667eea;
+        }
+
+        .type-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .type-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .feedback-form {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .upload-area {
+            border: 2px dashed #e9ecef;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #6c757d;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .checkbox-label input {
+            margin-right: 8px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback-stats {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .feedback-stats h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .faq-section {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .faq-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .faq-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .faq-answer {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .type-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</body>
+</html>

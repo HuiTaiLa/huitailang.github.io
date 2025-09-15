@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题详情 - 移动云业务支撑小程序</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/qa-system.css">
+    <link rel="stylesheet" href="styles/question-detail.css">
+    <style>
+        /* 页面特定的覆盖样式 */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="question-detail-page">
+        <!-- 头部导航 -->
+        <div class="detail-header">
+            <button class="back-btn" onclick="goBack()">
+                <span class="back-arrow">‹</span>
+            </button>
+            <h1>问题详情</h1>
+            <button class="share-btn" onclick="shareQuestion()">
+                <span>⋯</span>
+            </button>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="detail-content">
+            <!-- 加载状态 -->
+            <div id="loadingContainer" class="question-detail-card">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <div>正在加载问题详情...</div>
+                </div>
+            </div>
+            
+            <!-- 错误状态 -->
+            <div id="errorContainer" class="question-detail-card" style="display: none;">
+                <div class="error-container">
+                    <div class="error-icon">😕</div>
+                    <div class="error-message">加载失败，请重试</div>
+                    <button class="retry-btn" onclick="loadQuestionDetail()">重新加载</button>
+                </div>
+            </div>
+            
+            <!-- 问题详情内容 -->
+            <div id="questionDetailContainer" style="display: none;">
+                <!-- 问题信息卡片 -->
+                <div class="question-detail-card">
+                    <div class="question-detail-header">
+                        <div class="question-detail-status" id="questionStatus"></div>
+                        <div class="question-detail-priority" id="questionPriority"></div>
+                    </div>
+                    
+                    <h2 class="question-detail-title" id="questionTitle"></h2>
+                    
+                    <div class="question-detail-meta">
+                        <div class="question-detail-user">
+                            <img id="userAvatar" alt="提问者" class="user-avatar">
+                            <div class="user-info">
+                                <div class="user-name" id="userName"></div>
+                                <div class="user-role" id="userRole"></div>
+                            </div>
+                        </div>
+                        <div class="question-detail-time" id="questionTime"></div>
+                    </div>
+                    
+                    <div class="question-detail-content" id="questionContent"></div>
+                    
+                    <div class="question-detail-tags" id="questionTags"></div>
+                    
+                    <div class="question-detail-stats">
+                        <span id="questionViews"></span>
+                        <span id="questionFollowers"></span>
+                        <span id="questionAnswers"></span>
+                    </div>
+                </div>
+                
+                <!-- 专家回答卡片 -->
+                <div class="question-detail-card" id="answersContainer" style="display: none;">
+                    <div class="question-answers">
+                        <h4 id="answersTitle">专家回答</h4>
+                        <div id="answersList"></div>
+                    </div>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="question-detail-card">
+                    <div class="modal-footer" style="border-top: none; padding: 0; justify-content: center;">
+                        <button class="cancel-btn" onclick="goBack()" style="margin-right: 12px;">返回列表</button>
+                        <button class="submit-btn" onclick="answerQuestion()">💡 我来回答</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/qa-system.js"></script>
+    <script>
+        let currentQuestionId = null;
+        
+        // 页面加载时获取问题ID并加载详情
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentQuestionId = urlParams.get('id');
+            
+            console.log('问题详情页面加载，问题ID:', currentQuestionId);
+            
+            if (currentQuestionId) {
+                loadQuestionDetail();
+            } else {
+                showError('问题ID不存在');
+            }
+        });
+        
+        // 加载问题详情
+        function loadQuestionDetail() {
+            if (!currentQuestionId) {
+                showError('问题ID不存在');
+                return;
+            }
+            
+            // 显示加载状态
+            document.getElementById('loadingContainer').style.display = 'block';
+            document.getElementById('errorContainer').style.display = 'none';
+            document.getElementById('questionDetailContainer').style.display = 'none';
+            
+            // 模拟API调用
+            setTimeout(() => {
+                const questionData = getQuestionData(currentQuestionId);
+                
+                if (questionData) {
+                    displayQuestionDetail(questionData);
+                } else {
+                    showError('问题不存在或已被删除');
+                }
+            }, 1000);
+        }
+        
+        // 显示问题详情
+        function displayQuestionDetail(data) {
+            // 隐藏加载状态
+            document.getElementById('loadingContainer').style.display = 'none';
+            document.getElementById('errorContainer').style.display = 'none';
+            document.getElementById('questionDetailContainer').style.display = 'block';
+            
+            // 填充问题信息
+            document.getElementById('questionStatus').textContent = getStatusText(data.status);
+            document.getElementById('questionStatus').className = `question-detail-status ${data.status}`;
+            
+            document.getElementById('questionPriority').textContent = getPriorityText(data.priority);
+            document.getElementById('questionPriority').className = `question-detail-priority ${data.priority}`;
+            
+            document.getElementById('questionTitle').textContent = data.title;
+            document.getElementById('questionContent').innerHTML = `<p>${data.content}</p>`;
+            
+            document.getElementById('userAvatar').src = data.avatar;
+            document.getElementById('userName').textContent = data.username;
+            document.getElementById('userRole').textContent = data.role;
+            document.getElementById('questionTime').textContent = data.time;
+            
+            // 填充标签
+            const tagsContainer = document.getElementById('questionTags');
+            tagsContainer.innerHTML = data.tags.map(tag => 
+                `<span class="question-tag">${tag}</span>`
+            ).join('');
+            
+            // 填充统计信息
+            document.getElementById('questionViews').textContent = `👁 ${data.views}次浏览`;
+            document.getElementById('questionFollowers').textContent = `👥 ${data.followers}人关注`;
+            document.getElementById('questionAnswers').textContent = `💬 ${data.answers}个回答`;
+            
+            // 显示专家回答
+            if (data.answers > 0 && data.answerList && data.answerList.length > 0) {
+                document.getElementById('answersContainer').style.display = 'block';
+                document.getElementById('answersTitle').textContent = `专家回答 (${data.answers})`;
+                
+                const answersHtml = data.answerList.map(answer => `
+                    <div class="answer-item">
+                        <div class="answer-header">
+                            <img src="${answer.avatar}" alt="专家" class="expert-avatar">
+                            <div class="expert-info">
+                                <div class="expert-name">${answer.expertName}</div>
+                                <div class="expert-title">${answer.expertTitle}</div>
+                            </div>
+                            <div class="answer-time">${answer.time}</div>
+                        </div>
+                        <div class="answer-content">${answer.content}</div>
+                        <div class="answer-actions">
+                            <button class="like-btn">👍 ${answer.likes}</button>
+                            <button class="reply-btn">💬 回复</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('answersList').innerHTML = answersHtml;
+            }
+            
+            // 更新页面标题
+            document.title = `${data.title} - 问题详情`;
+        }
+        
+        // 显示错误状态
+        function showError(message) {
+            document.getElementById('loadingContainer').style.display = 'none';
+            document.getElementById('questionDetailContainer').style.display = 'none';
+            document.getElementById('errorContainer').style.display = 'block';
+            document.querySelector('.error-message').textContent = message;
+        }
+        
+        // 返回上一页
+        function goBack() {
+            if (document.referrer && document.referrer.includes('qa-system.html')) {
+                history.back();
+            } else {
+                window.location.href = 'qa-system.html';
+            }
+        }
+        
+        // 分享问题
+        function shareQuestion() {
+            if (navigator.share && currentQuestionId) {
+                const questionTitle = document.getElementById('questionTitle')?.textContent || '问题详情';
+                navigator.share({
+                    title: questionTitle,
+                    text: '查看这个技术问题的详情',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    commonUtils.showToast('链接已复制到剪贴板', 'success');
+                }).catch(() => {
+                    commonUtils.showToast('分享功能暂不可用', 'info');
+                });
+            }
+        }
+        
+        // 回答问题
+        function answerQuestion() {
+            commonUtils.showToast('跳转到回答页面...', 'info');
+            setTimeout(() => {
+                alert(`功能开发中：回答问题 ${currentQuestionId}`);
+            }, 500);
+        }
+    </script>
+</body>
+</html>

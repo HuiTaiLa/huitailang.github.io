@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助中心 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>帮助中心</h1>
+                <button class="action-btn" onclick="searchHelp()">
+                    <span class="filter-icon">🔍</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 搜索框 -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" placeholder="搜索帮助内容..." id="helpSearch">
+                <button class="search-btn" onclick="performSearch()">🔍</button>
+            </div>
+        </div>
+
+        <!-- 快速入口 -->
+        <div class="quick-access">
+            <h3>快速入口</h3>
+            <div class="quick-grid">
+                <div class="quick-item" onclick="showFAQ()">
+                    <div class="quick-icon">❓</div>
+                    <div class="quick-title">常见问题</div>
+                </div>
+                <div class="quick-item" onclick="showUserGuide()">
+                    <div class="quick-icon">📖</div>
+                    <div class="quick-title">使用指南</div>
+                </div>
+                <div class="quick-item" onclick="contactSupport()">
+                    <div class="quick-icon">📞</div>
+                    <div class="quick-title">联系客服</div>
+                </div>
+                <div class="quick-item" onclick="showVideoTutorials()">
+                    <div class="quick-icon">🎥</div>
+                    <div class="quick-title">视频教程</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 帮助分类 -->
+        <div class="content-section">
+            <h3>帮助分类</h3>
+            <div class="help-categories" id="helpCategories">
+                <!-- 分类项将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 热门问题 -->
+        <div class="content-section">
+            <h3>热门问题</h3>
+            <div class="popular-questions" id="popularQuestions">
+                <!-- 热门问题将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 联系方式 -->
+        <div class="contact-section">
+            <h3>联系我们</h3>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div class="contact-content">
+                        <div class="contact-title">客服热线</div>
+                        <div class="contact-detail">400-123-4567</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-content">
+                        <div class="contact-title">邮箱支持</div>
+                        <div class="contact-detail">support@chinamobile.com</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">💬</div>
+                    <div class="contact-content">
+                        <div class="contact-title">在线客服</div>
+                        <div class="contact-detail">工作日 9:00-18:00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHelpCategories();
+            loadPopularQuestions();
+        });
+
+        function loadHelpCategories() {
+            const categories = [
+                {
+                    id: 1,
+                    title: '账户管理',
+                    icon: '👤',
+                    description: '登录、注册、密码重置等',
+                    count: 15
+                },
+                {
+                    id: 2,
+                    title: '功能使用',
+                    icon: '⚙️',
+                    description: '各功能模块的使用方法',
+                    count: 28
+                },
+                {
+                    id: 3,
+                    title: '技术支持',
+                    icon: '🔧',
+                    description: '技术问题和故障排查',
+                    count: 22
+                },
+                {
+                    id: 4,
+                    title: '资源下载',
+                    icon: '📥',
+                    description: '文档下载和资源获取',
+                    count: 12
+                },
+                {
+                    id: 5,
+                    title: '培训认证',
+                    icon: '🎓',
+                    description: '培训课程和认证考试',
+                    count: 18
+                },
+                {
+                    id: 6,
+                    title: '其他问题',
+                    icon: '❓',
+                    description: '其他常见问题解答',
+                    count: 9
+                }
+            ];
+
+            const helpCategories = document.getElementById('helpCategories');
+            helpCategories.innerHTML = categories.map(category => `
+                <div class="category-item" onclick="viewCategory(${category.id})">
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-content">
+                        <div class="category-title">${category.title}</div>
+                        <div class="category-desc">${category.description}</div>
+                    </div>
+                    <div class="category-count">${category.count}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadPopularQuestions() {
+            const questions = [
+                {
+                    id: 1,
+                    question: '如何重置登录密码？',
+                    views: 1234
+                },
+                {
+                    id: 2,
+                    question: '文档下载失败怎么办？',
+                    views: 987
+                },
+                {
+                    id: 3,
+                    question: '如何加入工作圈？',
+                    views: 856
+                },
+                {
+                    id: 4,
+                    question: '培训证书如何获取？',
+                    views: 743
+                },
+                {
+                    id: 5,
+                    question: '技能评估如何参与？',
+                    views: 621
+                }
+            ];
+
+            const popularQuestions = document.getElementById('popularQuestions');
+            popularQuestions.innerHTML = questions.map(q => `
+                <div class="question-item" onclick="viewQuestion(${q.id})">
+                    <div class="question-text">${q.question}</div>
+                    <div class="question-views">👁️ ${q.views}</div>
+                </div>
+            `).join('');
+        }
+
+        function searchHelp() {
+            const searchInput = document.getElementById('helpSearch');
+            searchInput.focus();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('helpSearch').value.trim();
+            if (query) {
+                commonUtils.showToast(`搜索：${query}`, 'info');
+            } else {
+                commonUtils.showToast('请输入搜索关键词', 'warning');
+            }
+        }
+
+        function showFAQ() {
+            commonUtils.showToast('查看常见问题...', 'info');
+        }
+
+        function showUserGuide() {
+            commonUtils.showToast('查看使用指南...', 'info');
+        }
+
+        function contactSupport() {
+            commonUtils.showToast('联系客服...', 'info');
+        }
+
+        function showVideoTutorials() {
+            commonUtils.showToast('查看视频教程...', 'info');
+        }
+
+        function viewCategory(categoryId) {
+            commonUtils.showToast('查看分类详情...', 'info');
+        }
+
+        function viewQuestion(questionId) {
+            commonUtils.showToast('查看问题详情...', 'info');
+        }
+
+        // 搜索框回车事件
+        document.getElementById('helpSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+
+    <style>
+        .search-section {
+            padding: 16px;
+            background: white;
+            margin-bottom: 12px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 12px 16px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .quick-access {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .quick-access h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .quick-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e9ecef;
+        }
+
+        .quick-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .quick-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .quick-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .content-section h3 {
+            margin: 0 0 16px 0;
+            padding: 0 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .category-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .category-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .category-content {
+            flex: 1;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .category-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .category-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .question-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-size: 14px;
+            color: #333;
+            flex: 1;
+        }
+
+        .question-views {
+            font-size: 12px;
+            color: #999;
+            margin-left: 12px;
+        }
+
+        .contact-section {
+            background: white;
+            margin: 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .contact-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .contact-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .contact-detail {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 500;
+        }
+    </style>
+</body>
+</html>

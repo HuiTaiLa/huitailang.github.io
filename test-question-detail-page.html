@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题详情页面测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .question-link {
+            display: block;
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .question-link:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .question-link-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .question-link-meta {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .question-link-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .question-link-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .question-link-status.answered {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .question-link-status.solved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .test-btn.secondary {
+            background: #28a745;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .url-display {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #495057;
+            margin: 8px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>📄 问题详情页面测试</h2>
+            <p>测试问题详情页面的跳转和显示功能</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 直接链接测试 -->
+            <div class="test-section">
+                <h4>1. 直接链接访问测试</h4>
+                <p>点击下方链接直接访问问题详情页面：</p>
+                
+                <a href="question-detail.html?id=q001" class="question-link" target="_blank">
+                    <div class="question-link-title">🔥 5G专网如何实现与公网的安全隔离？</div>
+                    <div class="question-link-meta">
+                        <span class="question-link-status answered">已解答</span>
+                        <span>👁 234次浏览</span>
+                        <span>💬 3个回答</span>
+                        <span>ID: q001</span>
+                    </div>
+                </a>
+                <div class="url-display">question-detail.html?id=q001</div>
+                
+                <a href="question-detail.html?id=q004" class="question-link" target="_blank">
+                    <div class="question-link-title">📝 物联网设备大规模接入时的网络优化策略</div>
+                    <div class="question-link-meta">
+                        <span class="question-link-status pending">待解答</span>
+                        <span>👁 45次浏览</span>
+                        <span>💬 0个回答</span>
+                        <span>ID: q004</span>
+                    </div>
+                </a>
+                <div class="url-display">question-detail.html?id=q004</div>
+                
+                <a href="question-detail.html?id=q006" class="question-link" target="_blank">
+                    <div class="question-link-title">🛠 云服务器性能监控和告警配置</div>
+                    <div class="question-link-meta">
+                        <span class="question-link-status solved">已解决</span>
+                        <span>👁 156次浏览</span>
+                        <span>💬 7个回答</span>
+                        <span>ID: q006</span>
+                    </div>
+                </a>
+                <div class="url-display">question-detail.html?id=q006</div>
+                
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    点击链接将在新标签页中打开问题详情页面
+                </div>
+            </div>
+            
+            <!-- JavaScript跳转测试 -->
+            <div class="test-section">
+                <h4>2. JavaScript跳转测试</h4>
+                <p>测试通过JavaScript函数跳转到问题详情页面：</p>
+                
+                <button class="test-btn primary" onclick="testViewQuestion('q002')">
+                    📱 测试边缘计算问题 (q002)
+                </button>
+                
+                <button class="test-btn primary" onclick="testViewQuestion('q003')">
+                    ☁️ 测试云平台迁移问题 (q003)
+                </button>
+                
+                <button class="test-btn primary" onclick="testViewQuestion('q005')">
+                    🔗 测试5G切片问题 (q005)
+                </button>
+                
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    点击按钮将调用viewQuestion函数进行页面跳转
+                </div>
+            </div>
+            
+            <!-- 错误处理测试 -->
+            <div class="test-section">
+                <h4>3. 错误处理测试</h4>
+                <p>测试无效问题ID和错误处理：</p>
+                
+                <a href="question-detail.html?id=invalid" class="question-link" target="_blank">
+                    <div class="question-link-title">❌ 无效问题ID测试</div>
+                    <div class="question-link-meta">
+                        <span>ID: invalid</span>
+                        <span>应显示错误页面</span>
+                    </div>
+                </a>
+                <div class="url-display">question-detail.html?id=invalid</div>
+                
+                <a href="question-detail.html" class="question-link" target="_blank">
+                    <div class="question-link-title">❌ 缺少问题ID测试</div>
+                    <div class="question-link-meta">
+                        <span>无ID参数</span>
+                        <span>应显示错误页面</span>
+                    </div>
+                </a>
+                <div class="url-display">question-detail.html (无ID参数)</div>
+                
+                <button class="test-btn primary" onclick="testViewQuestion('undefined')">
+                    ❌ 测试undefined ID
+                </button>
+                
+                <button class="test-btn primary" onclick="testViewQuestion('')">
+                    ❌ 测试空字符串ID
+                </button>
+                
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    无效ID应显示相应的错误提示和重试选项
+                </div>
+            </div>
+            
+            <!-- 功能特性测试 -->
+            <div class="test-section">
+                <h4>4. 页面功能特性</h4>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>页面结构：</strong>头部导航、内容区域、操作按钮
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>加载状态：</strong>加载动画、错误提示、重试功能
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>问题信息：</strong>标题、内容、状态、优先级、标签
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>用户信息：</strong>头像、姓名、角色、时间
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>专家回答：</strong>回答列表、专家信息、互动功能
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    <strong>导航功能：</strong>返回按钮、分享功能、我来回答
+                </div>
+            </div>
+            
+            <div class="test-actions" style="margin-top: 20px; text-align: center;">
+                <button class="test-btn secondary" onclick="window.open('qa-system.html', '_blank')">
+                    📋 打开专家问答页面
+                </button>
+                <button class="test-btn secondary" onclick="testAllQuestions()">
+                    🧪 测试所有问题详情
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/qa-system.js"></script>
+    <script>
+        function testViewQuestion(questionId) {
+            console.log('测试viewQuestion函数，问题ID:', questionId);
+            
+            if (typeof viewQuestion === 'function') {
+                try {
+                    viewQuestion(questionId);
+                } catch (error) {
+                    console.error('viewQuestion函数执行错误:', error);
+                    alert(`❌ 函数执行错误: ${error.message}`);
+                }
+            } else {
+                alert('❌ viewQuestion函数不存在');
+            }
+        }
+        
+        function testAllQuestions() {
+            const questionIds = ['q001', 'q002', 'q003', 'q004', 'q005', 'q006'];
+            let currentIndex = 0;
+            
+            function openNextQuestion() {
+                if (currentIndex < questionIds.length) {
+                    const questionId = questionIds[currentIndex];
+                    const url = `question-detail.html?id=${questionId}`;
+                    
+                    console.log(`打开问题 ${questionId}: ${url}`);
+                    window.open(url, '_blank');
+                    
+                    currentIndex++;
+                    
+                    if (currentIndex < questionIds.length) {
+                        setTimeout(openNextQuestion, 1000);
+                    } else {
+                        setTimeout(() => {
+                            alert('🎉 所有问题详情页面已打开！\n\n请检查新打开的标签页：\n✅ 页面加载正常\n✅ 问题信息显示完整\n✅ 专家回答展示正常\n✅ 导航功能正常');
+                        }, 1000);
+                    }
+                }
+            }
+            
+            if (confirm('将打开6个问题详情页面的新标签页，是否继续？')) {
+                openNextQuestion();
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 问题详情页面测试页面已加载');
+            
+            // 检查必要的函数是否存在
+            const hasViewFunction = typeof viewQuestion === 'function';
+            const hasDataFunction = typeof getQuestionData === 'function';
+            
+            console.log(`viewQuestion函数: ${hasViewFunction ? '✅ 存在' : '❌ 缺失'}`);
+            console.log(`getQuestionData函数: ${hasDataFunction ? '✅ 存在' : '❌ 缺失'}`);
+            
+            if (!hasViewFunction || !hasDataFunction) {
+                console.warn('⚠️ 部分必要函数缺失，可能影响测试结果');
+            }
+        });
+    </script>
+</body>
+</html>

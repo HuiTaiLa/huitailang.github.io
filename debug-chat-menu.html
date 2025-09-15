@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天菜单调试页面</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/chat.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <div class="chat-info">
+                    <h1 id="chatTitle">移动云技术支持群</h1>
+                    <span class="online-count" id="onlineCount">89人在线</span>
+                </div>
+                <button class="more-btn" onclick="testShowChatMenu()">
+                    <span class="more-icon">⋯</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-messages">
+            <div class="message-item">
+                <div class="message-avatar">👨‍💼</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="sender-name">张工程师</span>
+                        <span class="message-time">14:30</span>
+                    </div>
+                    <div class="message-text">大家好，今天我们来讨论一下移动云平台的最新技术更新。</div>
+                </div>
+            </div>
+            
+            <div class="message-item">
+                <div class="message-avatar">👩‍💻</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="sender-name">李技术</span>
+                        <span class="message-time">14:32</span>
+                    </div>
+                    <div class="message-text">好的，我准备了一些技术文档，稍后分享给大家。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="chat-input-container">
+            <div class="input-toolbar">
+                <button class="tool-btn" onclick="showEmoji()">
+                    <span>😊</span>
+                </button>
+                <button class="tool-btn" onclick="uploadFile()">
+                    <span>📎</span>
+                </button>
+                <button class="tool-btn" onclick="showAIAssist()">
+                    <span>🤖</span>
+                </button>
+            </div>
+            <div class="input-area">
+                <input type="text" class="message-input" placeholder="输入消息..." id="messageInput">
+                <button class="send-btn" onclick="sendMessage()">
+                    <span>➤</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天菜单模态框 -->
+    <div id="chatMenuModal" class="modal" style="display: none;">
+        <div class="modal-content chat-menu-content">
+            <div class="modal-header">
+                <h3>聊天菜单</h3>
+                <button class="close-btn" onclick="closeChatMenu()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-info-section">
+                    <div class="chat-avatar-large">👥</div>
+                    <div class="chat-details">
+                        <h4>移动云技术支持群</h4>
+                        <p>群成员 89人</p>
+                    </div>
+                </div>
+                <div class="menu-list">
+                    <div class="menu-item" onclick="showGroupMembers()">
+                        <span class="menu-icon">👥</span>
+                        <span>群成员列表</span>
+                        <span class="menu-badge">89</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="showGroupInfo()">
+                        <span class="menu-icon">ℹ️</span>
+                        <span>群聊信息</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="showGroupFiles()">
+                        <span class="menu-icon">📁</span>
+                        <span>群文件</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="searchInChat()">
+                        <span class="menu-icon">🔍</span>
+                        <span>聊天记录搜索</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" onclick="clearChatHistory()">
+                        <span class="menu-icon">🗑️</span>
+                        <span>清空聊天记录</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 调试信息 -->
+    <div id="debugInfo" style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 2000;">
+        <div>调试模式</div>
+        <div id="debugLog"></div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 调试日志函数
+        function debugLog(message) {
+            console.log('[DEBUG]', message);
+            const debugLogElement = document.getElementById('debugLog');
+            debugLogElement.innerHTML += '<div>' + message + '</div>';
+        }
+
+        // 测试显示聊天菜单函数
+        function testShowChatMenu() {
+            debugLog('testShowChatMenu 被调用');
+            
+            const modal = document.getElementById('chatMenuModal');
+            debugLog('找到模态框: ' + (modal ? 'YES' : 'NO'));
+            
+            if (modal) {
+                debugLog('设置模态框显示');
+                modal.style.display = 'flex';
+                
+                // 添加动画效果
+                setTimeout(() => {
+                    debugLog('添加show类');
+                    modal.classList.add('show');
+                }, 10);
+            } else {
+                debugLog('模态框不存在，创建新的');
+                alert('模态框不存在！');
+            }
+        }
+
+        // 关闭聊天菜单
+        function closeChatMenu() {
+            debugLog('closeChatMenu 被调用');
+            const modal = document.getElementById('chatMenuModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // 群成员列表
+        function showGroupMembers() {
+            closeChatMenu();
+            alert('群成员列表功能');
+        }
+
+        // 群聊信息
+        function showGroupInfo() {
+            closeChatMenu();
+            alert('群聊信息功能');
+        }
+
+        // 群文件
+        function showGroupFiles() {
+            closeChatMenu();
+            alert('群文件功能');
+        }
+
+        // 搜索聊天记录
+        function searchInChat() {
+            closeChatMenu();
+            const keyword = prompt('请输入搜索关键词：');
+            if (keyword) {
+                alert('搜索关键词：' + keyword);
+            }
+        }
+
+        // 清空聊天记录
+        function clearChatHistory() {
+            closeChatMenu();
+            if (confirm('确定要清空聊天记录吗？')) {
+                alert('聊天记录已清空');
+            }
+        }
+
+        // 其他占位函数
+        function showEmoji() {
+            alert('表情功能');
+        }
+
+        function uploadFile() {
+            alert('文件上传功能');
+        }
+
+        function showAIAssist() {
+            alert('AI助手功能');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            if (input.value.trim()) {
+                alert('发送消息：' + input.value);
+                input.value = '';
+            }
+        }
+
+        // 添加点击背景关闭模态框的功能
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                debugLog('点击背景关闭模态框');
+                e.target.style.display = 'none';
+                e.target.classList.remove('show');
+            }
+        });
+
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('页面加载完成');
+            debugLog('模态框存在: ' + (document.getElementById('chatMenuModal') ? 'YES' : 'NO'));
+            
+            // 测试按钮点击
+            const moreBtn = document.querySelector('.more-btn');
+            debugLog('更多按钮存在: ' + (moreBtn ? 'YES' : 'NO'));
+            
+            if (moreBtn) {
+                debugLog('更多按钮onclick: ' + moreBtn.getAttribute('onclick'));
+            }
+        });
+
+        // 监听所有错误
+        window.addEventListener('error', function(e) {
+            debugLog('JavaScript错误: ' + e.message);
+        });
+    </script>
+</body>
+</html>

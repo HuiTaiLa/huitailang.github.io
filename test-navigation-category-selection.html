@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航分类选中功能测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .feature-summary {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .feature-icon {
+            color: #1976d2;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .test-btn.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .test-result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .url-demo {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        
+        .flow-diagram {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .flow-step-number {
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .category-mapping {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        
+        .category-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+        
+        .category-param {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #667eea;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🎯 导航分类自动选中功能</h2>
+            <p>从首页跳转到资源库时自动选中对应分类标签</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 功能总结 -->
+            <div class="feature-summary">
+                <h4 style="margin: 0 0 12px 0; color: #1976d2;">🎯 实现功能</h4>
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <span>为首页"培训资料"和"客户案例"添加点击跳转功能</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <span>跳转时携带category参数到资源库页面</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <span>资源库页面自动检测URL参数并选中对应分类</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <span>显示切换提示并滚动到分类导航区域</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <span>自动加载对应分类的文档内容</span>
+                </div>
+            </div>
+            
+            <!-- 分类映射关系 -->
+            <div class="test-section">
+                <div class="test-title">📋 分类映射关系</div>
+                <div class="test-content-inner">
+                    <div class="category-mapping">
+                        <div class="category-item">
+                            <div class="category-name">培训资料</div>
+                            <div class="category-param">category=training</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-name">客户案例</div>
+                            <div class="category-param">category=case</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-name">产品手册</div>
+                            <div class="category-param">category=manual</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-name">解决方案</div>
+                            <div class="category-param">category=solution</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-name">全部</div>
+                            <div class="category-param">category=all</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能流程 -->
+            <div class="test-section">
+                <div class="test-title">🔄 功能流程</div>
+                <div class="test-content-inner">
+                    <div class="flow-diagram">
+                        <div class="flow-step">
+                            <div class="flow-step-number">1</div>
+                            <span>用户在首页点击"培训资料"或"客户案例"</span>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-number">2</div>
+                            <span>触发navigateToResourceLibrary()函数</span>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-number">3</div>
+                            <span>跳转到resource-library.html?category=xxx</span>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-number">4</div>
+                            <span>资源库页面加载时执行checkUrlCategoryParameter()</span>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-number">5</div>
+                            <span>解析URL参数，找到对应的分类标签</span>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-number">6</div>
+                            <span>自动选中分类标签并加载对应内容</span>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-step-number">7</div>
+                            <span>显示切换提示并滚动到导航区域</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 测试链接 -->
+            <div class="test-section">
+                <div class="test-title">🧪 功能测试</div>
+                <div class="test-content-inner">
+                    <div class="test-result info">
+                        <span>📋</span>
+                        <span><strong>测试说明：</strong>点击下方按钮测试不同分类的跳转效果</span>
+                    </div>
+                    
+                    <button class="test-btn primary" onclick="openHomePage()">
+                        🏠 打开首页测试跳转功能
+                    </button>
+                    
+                    <button class="test-btn success" onclick="testTrainingCategory()">
+                        📚 直接测试培训资料分类
+                    </button>
+                    
+                    <button class="test-btn success" onclick="testCaseCategory()">
+                        📋 直接测试客户案例分类
+                    </button>
+                    
+                    <button class="test-btn info" onclick="testAllCategories()">
+                        🔄 测试所有分类链接
+                    </button>
+                    
+                    <div class="test-result warning">
+                        <span>💡</span>
+                        <span><strong>测试步骤：</strong>打开首页 → 点击"培训资料"或"客户案例" → 观察资源库页面是否自动选中对应分类</span>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- URL示例 -->
+            <div class="test-section">
+                <div class="test-title">🔗 URL参数示例</div>
+                <div class="test-content-inner">
+                    <div class="test-result success">
+                        <span>📚</span>
+                        <span><strong>培训资料：</strong></span>
+                    </div>
+                    <div class="url-demo">resource-library.html?category=training</div>
+                    
+                    <div class="test-result success">
+                        <span>📋</span>
+                        <span><strong>客户案例：</strong></span>
+                    </div>
+                    <div class="url-demo">resource-library.html?category=case</div>
+                    
+                    <div class="test-result success">
+                        <span>📖</span>
+                        <span><strong>产品手册：</strong></span>
+                    </div>
+                    <div class="url-demo">resource-library.html?category=manual</div>
+                    
+                    <div class="test-result success">
+                        <span>💡</span>
+                        <span><strong>解决方案：</strong></span>
+                    </div>
+                    <div class="url-demo">resource-library.html?category=solution</div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #155724;">🎉 功能实现完成！</h4>
+                <p style="margin: 0; color: #155724;">
+                    现在从首页点击"培训资料"或"客户案例"会自动跳转到资源库页面并选中对应的分类标签
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function openHomePage() {
+            window.open('index.html', '_blank');
+            addTestResult('🏠 已打开首页，请点击"培训资料"或"客户案例"测试跳转功能', 'success');
+        }
+        
+        function testTrainingCategory() {
+            window.open('resource-library.html?category=training', '_blank');
+            addTestResult('📚 已打开培训资料分类，观察是否自动选中"培训资料"标签', 'success');
+        }
+        
+        function testCaseCategory() {
+            window.open('resource-library.html?category=case', '_blank');
+            addTestResult('📋 已打开客户案例分类，观察是否自动选中"客户案例"标签', 'success');
+        }
+        
+        function testAllCategories() {
+            const categories = [
+                { name: '全部', param: 'all' },
+                { name: '产品手册', param: 'manual' },
+                { name: '解决方案', param: 'solution' },
+                { name: '培训资料', param: 'training' },
+                { name: '客户案例', param: 'case' }
+            ];
+            
+            categories.forEach((category, index) => {
+                setTimeout(() => {
+                    window.open(`resource-library.html?category=${category.param}`, '_blank');
+                    addTestResult(`🔗 已打开${category.name}分类 (category=${category.param})`, 'info');
+                }, index * 1000);
+            });
+            
+            addTestResult('🔄 正在依次打开所有分类，请观察每个页面的分类选中状态', 'success');
+        }
+        
+        function addTestResult(message, type) {
+            const results = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            results.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 导航分类自动选中功能测试页面已加载');
+            
+            setTimeout(() => {
+                addTestResult('🎯 导航分类自动选中功能已实现，可以开始测试', 'success');
+                addTestResult('💡 建议先打开首页，然后点击"培训资料"或"客户案例"测试完整流程', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

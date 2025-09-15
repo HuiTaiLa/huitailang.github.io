@@ -1,0 +1,391 @@
+/* 首页样式 */
+
+/* 搜索区域 */
+.search-section {
+    padding: 20px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 25px;
+    padding: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    padding: 12px 16px;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
+    color: #333;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.search-btn:hover {
+    transform: scale(1.05);
+}
+
+.search-btn img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.search-suggestions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.suggestion-tag {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.suggestion-tag:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* 主要模块 */
+.main-modules {
+    padding: 20px 16px;
+}
+
+.module-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.module-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.module-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.module-icon img {
+    width: 32px;
+    height: 32px;
+    filter: brightness(0) invert(1);
+}
+
+.module-info {
+    flex: 1;
+}
+
+.module-info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.module-info p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.module-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #e8f2ff;
+    color: #667eea;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* 快速入口 */
+.quick-access {
+    padding: 0 16px 20px;
+}
+
+.quick-access h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.quick-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quick-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.quick-item img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+}
+
+.quick-item span {
+    font-size: 12px;
+    color: #333;
+    text-align: center;
+}
+
+/* 最新动态 */
+.recent-updates {
+    padding: 0 16px 20px;
+}
+
+.recent-updates h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.update-list {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.update-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #f5f5f5;
+    gap: 12px;
+}
+
+.update-item:last-child {
+    border-bottom: none;
+}
+
+.update-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    background: #f8f9ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.update-content {
+    flex: 1;
+}
+
+.update-content p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.update-time {
+    font-size: 12px;
+    color: #999;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+    .search-section {
+        padding: 16px 12px;
+    }
+    
+    .main-modules {
+        padding: 16px 12px;
+    }
+    
+    .module-card {
+        padding: 16px;
+    }
+    
+    .module-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .module-icon img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .quick-access, .recent-updates {
+        padding: 0 12px 16px;
+    }
+    
+    .quick-grid {
+        gap: 12px;
+    }
+    
+    .quick-item {
+        padding: 12px 6px;
+    }
+}
+
+/* 用户菜单模态框样式 */
+.user-menu-content {
+    max-width: 320px;
+    width: 90%;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 16px;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #667eea;
+}
+
+.user-details h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.user-details p {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.user-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.user-status.online {
+    background: #d4edda;
+    color: #155724;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 8px;
+    padding: 12px 8px;
+}
+
+.menu-item:hover {
+    background: #f8f9fa;
+}
+
+.menu-item.logout {
+    color: #dc3545;
+}
+
+.menu-item.logout:hover {
+    background: #f8d7da;
+}
+
+.menu-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.menu-arrow {
+    margin-left: auto;
+    color: #999;
+    font-size: 16px;
+}
+
+.menu-badge {
+    margin-left: auto;
+    background: #dc3545;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-right: 8px;
+}
+
+.menu-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 8px 0;
+}

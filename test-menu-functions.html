@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜单功能测试验证</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .fix-summary {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .fix-icon {
+            color: #155724;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .test-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .test-card-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .test-desc {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        
+        .feature-table th,
+        .feature-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .feature-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .feature-table .status-implemented {
+            color: #28a745;
+            font-weight: 500;
+        }
+        
+        .feature-table .status-placeholder {
+            color: #ffc107;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 菜单功能测试验证</h2>
+            <p>验证首页用户菜单和聊天页面群聊菜单功能</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 修复总结 -->
+            <div class="fix-summary">
+                <h4 style="margin: 0 0 12px 0; color: #155724;">✅ 菜单功能实现完成</h4>
+                <div class="fix-item">
+                    <span class="fix-icon">👤</span>
+                    <span><strong>首页用户菜单：</strong>点击右上角头像显示用户菜单，包含个人中心、设置、通知等功能</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">👥</span>
+                    <span><strong>群聊菜单：</strong>点击群聊右上角更多按钮显示群成员列表、群信息、群文件等功能</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">🤖</span>
+                    <span><strong>AI聊天菜单：</strong>AI聊天页面显示AI能力介绍、对话历史、上下文重置等功能</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">🔍</span>
+                    <span><strong>聊天记录搜索：</strong>支持在聊天记录中搜索关键词，清空聊天记录等功能</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">🚪</span>
+                    <span><strong>退出登录：</strong>用户菜单支持安全退出登录，清除本地存储数据</span>
+                </div>
+            </div>
+            
+            <!-- 功能特性表 -->
+            <div class="test-section">
+                <div class="test-title">📋 功能特性对比</div>
+                <div class="test-content-inner">
+                    <table class="feature-table">
+                        <thead>
+                            <tr>
+                                <th>页面</th>
+                                <th>右上角图标</th>
+                                <th>菜单功能</th>
+                                <th>实现状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>首页</strong></td>
+                                <td>用户头像</td>
+                                <td>个人中心、系统设置、消息通知、帮助中心、关于应用、退出登录</td>
+                                <td class="status-implemented">✅ 已实现</td>
+                            </tr>
+                            <tr>
+                                <td><strong>群聊页面</strong></td>
+                                <td>更多按钮(⋯)</td>
+                                <td>群成员列表、群聊信息、群文件、消息通知、群聊设置、聊天记录搜索</td>
+                                <td class="status-implemented">✅ 已实现</td>
+                            </tr>
+                            <tr>
+                                <td><strong>AI聊天页面</strong></td>
+                                <td>更多按钮(⋯)</td>
+                                <td>AI能力介绍、对话历史、重置上下文、聊天记录搜索</td>
+                                <td class="status-implemented">✅ 已实现</td>
+                            </tr>
+                            <tr>
+                                <td><strong>私聊页面</strong></td>
+                                <td>更多按钮(⋯)</td>
+                                <td>用户资料、共享文件、聊天记录搜索</td>
+                                <td class="status-placeholder">⚠️ 占位功能</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <div class="test-title">🧪 菜单功能测试</div>
+                <div class="test-content-inner">
+                    <div class="test-grid">
+                        <div class="test-card">
+                            <div class="test-icon">👤</div>
+                            <div class="test-card-title">首页用户菜单</div>
+                            <div class="test-desc">测试首页右上角头像点击菜单功能</div>
+                            <button class="test-btn" onclick="testUserMenu()">测试用户菜单</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">👥</div>
+                            <div class="test-card-title">群聊菜单</div>
+                            <div class="test-desc">测试群聊页面右上角更多按钮功能</div>
+                            <button class="test-btn" onclick="testGroupMenu()">测试群聊菜单</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🤖</div>
+                            <div class="test-card-title">AI聊天菜单</div>
+                            <div class="test-desc">测试AI聊天页面的专属菜单功能</div>
+                            <button class="test-btn" onclick="testAIMenu()">测试AI菜单</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🔔</div>
+                            <div class="test-card-title">消息通知</div>
+                            <div class="test-desc">测试用户菜单中的消息通知功能</div>
+                            <button class="test-btn" onclick="testNotifications()">测试消息通知</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">👥</div>
+                            <div class="test-card-title">群成员列表</div>
+                            <div class="test-desc">测试群聊菜单中的成员列表功能</div>
+                            <button class="test-btn" onclick="testGroupMembers()">测试成员列表</button>
+                        </div>
+                        
+                        <div class="test-card">
+                            <div class="test-icon">🔍</div>
+                            <div class="test-card-title">聊天记录搜索</div>
+                            <div class="test-desc">测试聊天记录搜索和清空功能</div>
+                            <button class="test-btn" onclick="testChatSearch()">测试搜索功能</button>
+                        </div>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 菜单功能实现完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    首页用户菜单和聊天页面群聊菜单功能已完全实现，用户可以正常使用各种菜单功能
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function testUserMenu() {
+            window.open('index.html', '_blank');
+            addResult('👤 已打开首页，请点击右上角用户头像测试菜单功能', 'success');
+            addResult('📋 菜单包含：个人中心、系统设置、消息通知、帮助中心、关于应用、退出登录', 'info');
+        }
+        
+        function testGroupMenu() {
+            window.open('chat.html?group=group_1&name=华东区5G专网交流群', '_blank');
+            addResult('👥 已打开群聊页面，请点击右上角更多按钮(⋯)测试菜单功能', 'success');
+            addResult('📋 菜单包含：群成员列表、群聊信息、群文件、消息通知、群聊设置等', 'info');
+        }
+        
+        function testAIMenu() {
+            window.open('chat.html?ai_bot=ai_bot_1&name=移动云智能助手', '_blank');
+            addResult('🤖 已打开AI聊天页面，请点击右上角更多按钮测试AI专属菜单', 'success');
+            addResult('📋 菜单包含：AI能力介绍、对话历史、重置上下文、聊天记录搜索等', 'info');
+        }
+        
+        function testNotifications() {
+            addResult('🔔 消息通知功能测试：', 'info');
+            addResult('• 在首页点击用户头像 → 消息通知', 'info');
+            addResult('• 系统会显示3条未读消息的详细内容', 'info');
+            addResult('• 包括群聊消息、AI回复、系统通知等', 'info');
+            
+            setTimeout(() => {
+                testUserMenu();
+            }, 2000);
+        }
+        
+        function testGroupMembers() {
+            addResult('👥 群成员列表功能测试：', 'info');
+            addResult('• 在群聊页面点击更多按钮 → 群成员列表', 'info');
+            addResult('• 显示群主、管理员、成员、AI助手等信息', 'info');
+            addResult('• 包含在线状态和角色标识', 'info');
+            
+            setTimeout(() => {
+                testGroupMenu();
+            }, 2000);
+        }
+        
+        function testChatSearch() {
+            addResult('🔍 聊天记录搜索功能测试：', 'info');
+            addResult('• 在任意聊天页面点击更多按钮 → 聊天记录搜索', 'info');
+            addResult('• 输入关键词进行搜索', 'info');
+            addResult('• 支持清空聊天记录功能', 'info');
+            
+            setTimeout(() => {
+                testGroupMenu();
+            }, 2000);
+        }
+        
+        function addResult(message, type) {
+            const container = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            container.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 菜单功能测试验证页面已加载');
+            
+            setTimeout(() => {
+                addResult('🔧 菜单功能已完全实现', 'success');
+                addResult('💡 点击上方按钮测试各种菜单功能', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的提问 - 移动云业务支撑</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/user-pages.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- 头部导航 -->
+        <header class="page-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>我的提问</h1>
+                <button class="action-btn" onclick="showFilterOptions()">
+                    <span class="filter-icon">🔍</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 统计信息 -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">总提问</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">已解决</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">待回答</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">已关闭</div>
+            </div>
+        </div>
+
+        <!-- 筛选标签 -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">全部</button>
+            <button class="filter-tab" data-filter="answered">已回答</button>
+            <button class="filter-tab" data-filter="pending">待回答</button>
+            <button class="filter-tab" data-filter="solved">已解决</button>
+            <button class="filter-tab" data-filter="closed">已关闭</button>
+        </div>
+
+        <!-- 问题列表 -->
+        <div class="content-section">
+            <div class="question-list" id="questionList">
+                <!-- 问题项将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 浮动操作按钮 -->
+        <button class="fab" onclick="createNewQuestion()">
+            <span>+</span>
+        </button>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <img src="images/home-icon.png" alt="首页">
+                <span>首页</span>
+            </a>
+            <a href="resource-library.html" class="nav-item">
+                <img src="images/resource-nav-icon.png" alt="资源库">
+                <span>资源库</span>
+            </a>
+            <a href="work-circle.html" class="nav-item">
+                <img src="images/circle-nav-icon.png" alt="工作圈">
+                <span>工作圈</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <img src="images/profile-icon.png" alt="我的">
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- 筛选选项模态框 -->
+    <div id="filterModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>筛选选项</h3>
+                <button class="close-btn" onclick="closeFilterModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="filter-group">
+                    <h4>按状态筛选</h4>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="answered" checked>
+                        <span>已回答</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="pending" checked>
+                        <span>待回答</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="solved" checked>
+                        <span>已解决</span>
+                    </label>
+                </div>
+                <div class="filter-group">
+                    <h4>按时间筛选</h4>
+                    <select class="time-filter">
+                        <option value="all">全部时间</option>
+                        <option value="week">最近一周</option>
+                        <option value="month">最近一月</option>
+                        <option value="quarter">最近三月</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="resetFilters()">重置</button>
+                <button class="btn-primary" onclick="applyFilters()">应用</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/my-questions.js"></script>
+</body>
+</html>

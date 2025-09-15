@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头部图标显示测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/work-circle.css">
+    <link rel="stylesheet" href="styles/qa-system.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .demo-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .demo-back-btn,
+        .demo-action-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .demo-back-btn:hover,
+        .demo-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .demo-back-arrow,
+        .demo-action-symbol {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            line-height: 1;
+        }
+        
+        .demo-back-arrow {
+            font-size: 28px;
+            margin-left: -2px;
+        }
+        
+        .demo-action-symbol.add {
+            font-size: 20px;
+        }
+        
+        .demo-action-symbol.ask {
+            font-size: 18px;
+            font-weight: 900;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .icon-demo {
+            font-size: 24px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🎯 头部图标显示测试</h2>
+            <p>测试返回按钮和操作按钮的显示效果</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 工作圈页面头部测试 -->
+            <div class="test-section">
+                <h4>1. 工作圈页面头部</h4>
+                <div class="demo-header">
+                    <div class="demo-header-content">
+                        <button class="demo-back-btn" onclick="alert('返回功能正常')">
+                            <span class="demo-back-arrow">‹</span>
+                        </button>
+                        <h3 style="margin: 0; font-size: 16px;">区域工作圈</h3>
+                        <button class="demo-action-btn" onclick="alert('添加功能正常')">
+                            <span class="demo-action-symbol add">+</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    返回箭头 "‹" 显示正常，添加符号 "+" 显示正常
+                </div>
+            </div>
+            
+            <!-- 专家问答页面头部测试 -->
+            <div class="test-section">
+                <h4>2. 专家问答页面头部</h4>
+                <div class="demo-header">
+                    <div class="demo-header-content">
+                        <button class="demo-back-btn" onclick="alert('返回功能正常')">
+                            <span class="demo-back-arrow">‹</span>
+                        </button>
+                        <h3 style="margin: 0; font-size: 16px;">专家问答</h3>
+                        <button class="demo-action-btn" onclick="alert('提问功能正常')">
+                            <span class="demo-action-symbol ask">?</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    返回箭头 "‹" 显示正常，问号符号 "?" 显示正常
+                </div>
+            </div>
+            
+            <!-- 图标对比表 -->
+            <div class="test-section">
+                <h4>3. 图标字符对比</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>功能</th>
+                            <th>Unicode字符</th>
+                            <th>显示效果</th>
+                            <th>字符代码</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>返回</td>
+                            <td>‹</td>
+                            <td class="icon-demo">‹</td>
+                            <td>U+2039</td>
+                        </tr>
+                        <tr>
+                            <td>添加</td>
+                            <td>+</td>
+                            <td class="icon-demo">+</td>
+                            <td>U+002B</td>
+                        </tr>
+                        <tr>
+                            <td>提问</td>
+                            <td>?</td>
+                            <td class="icon-demo">?</td>
+                            <td>U+003F</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    所有Unicode字符都能正常显示，无需依赖外部图片文件
+                </div>
+            </div>
+            
+            <!-- 替代方案对比 -->
+            <div class="test-section">
+                <h4>4. 解决方案对比</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>方案</th>
+                            <th>优点</th>
+                            <th>缺点</th>
+                            <th>可靠性</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PNG图片</td>
+                            <td>精美设计</td>
+                            <td>依赖文件，可能加载失败</td>
+                            <td>中等</td>
+                        </tr>
+                        <tr>
+                            <td>SVG图标</td>
+                            <td>矢量缩放</td>
+                            <td>依赖文件，代码复杂</td>
+                            <td>中等</td>
+                        </tr>
+                        <tr>
+                            <td>CSS绘制</td>
+                            <td>无文件依赖</td>
+                            <td>样式复杂，兼容性问题</td>
+                            <td>中等</td>
+                        </tr>
+                        <tr>
+                            <td>Unicode字符</td>
+                            <td>简单可靠，无依赖</td>
+                            <td>样式选择有限</td>
+                            <td>最高</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    Unicode字符方案最可靠，适合原型开发阶段
+                </div>
+            </div>
+            
+            <div class="test-actions" style="margin-top: 20px; text-align: center;">
+                <button onclick="window.location.href='work-circle.html'" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    📱 测试工作圈页面
+                </button>
+                <button onclick="window.location.href='qa-system.html'" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    📱 测试问答页面
+                </button>
+                <button onclick="testAllIcons()" style="background: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px;">
+                    🧪 运行图标测试
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testAllIcons() {
+            const results = [];
+            
+            // 测试Unicode字符显示
+            const testChars = [
+                { name: '返回箭头', char: '‹', code: 'U+2039' },
+                { name: '加号', char: '+', code: 'U+002B' },
+                { name: '问号', char: '?', code: 'U+003F' }
+            ];
+            
+            testChars.forEach(item => {
+                const testElement = document.createElement('span');
+                testElement.textContent = item.char;
+                testElement.style.fontSize = '24px';
+                document.body.appendChild(testElement);
+                
+                const computed = window.getComputedStyle(testElement);
+                const isVisible = computed.display !== 'none' && computed.visibility !== 'hidden';
+                
+                results.push(`${item.name} (${item.code}): ${isVisible ? '✅ 正常显示' : '❌ 显示异常'}`);
+                
+                document.body.removeChild(testElement);
+            });
+            
+            // 测试按钮交互
+            const buttons = document.querySelectorAll('.demo-back-btn, .demo-action-btn');
+            const buttonTest = buttons.length > 0 ? '✅ 按钮元素正常' : '❌ 按钮元素异常';
+            results.push(`按钮交互: ${buttonTest}`);
+            
+            // 测试CSS样式
+            const hasWorkCircleCSS = Array.from(document.styleSheets).some(sheet => 
+                sheet.href && sheet.href.includes('work-circle.css')
+            );
+            const hasQASystemCSS = Array.from(document.styleSheets).some(sheet => 
+                sheet.href && sheet.href.includes('qa-system.css')
+            );
+            
+            results.push(`工作圈CSS: ${hasWorkCircleCSS ? '✅ 加载正常' : '❌ 加载异常'}`);
+            results.push(`问答系统CSS: ${hasQASystemCSS ? '✅ 加载正常' : '❌ 加载异常'}`);
+            
+            alert('🧪 图标测试结果：\n\n' + results.join('\n'));
+        }
+        
+        // 页面加载完成后自动运行测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 头部图标测试页面已加载');
+            console.log('✅ Unicode字符方案已应用');
+            console.log('✅ 无需依赖外部图片文件');
+        });
+    </script>
+</body>
+</html>

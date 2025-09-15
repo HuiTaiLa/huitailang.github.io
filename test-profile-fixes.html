@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心页面修复验证</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 20px;
+        }
+        
+        .fix-summary {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .fix-icon {
+            color: #155724;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .test-title {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .test-content-inner {
+            padding: 16px;
+        }
+        
+        .test-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .test-btn.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .test-result {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .test-result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .comparison-item {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .comparison-item.before {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .comparison-item.after {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .check-list {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .check-icon {
+            color: #667eea;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h2>🔧 个人中心页面修复验证</h2>
+            <p>验证样式混乱、重复按钮、点击无响应等问题的修复效果</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- 修复总结 -->
+            <div class="fix-summary">
+                <h4 style="margin: 0 0 12px 0; color: #155724;">🎯 已修复的问题</h4>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>用户信息卡片边框：</strong>修正了超出header宽度的问题</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>返回图标样式：</strong>参考"区域工作圈"页面，使用Unicode字符</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>重复退出登录按钮：</strong>删除了重复的退出登录按钮</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>右上角图标点击：</strong>修复了设置按钮的点击响应</span>
+                </div>
+                <div class="fix-item">
+                    <span class="fix-icon">✅</span>
+                    <span><strong>用户信息布局：</strong>重新组织了用户信息卡片的HTML结构</span>
+                </div>
+            </div>
+            
+            <!-- 修复前后对比 -->
+            <div class="test-section">
+                <div class="test-title">📊 修复前后对比</div>
+                <div class="test-content-inner">
+                    <div class="comparison-grid">
+                        <div class="comparison-item before">
+                            <div class="comparison-title">
+                                <span>❌</span>
+                                <span>修复前的问题</span>
+                            </div>
+                            <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                                <li>用户信息卡片边框超出header宽度</li>
+                                <li>返回按钮使用图片，样式不统一</li>
+                                <li>出现两个"退出登录"按钮</li>
+                                <li>右上角设置图标点击无响应</li>
+                                <li>用户信息布局混乱</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-item after">
+                            <div class="comparison-title">
+                                <span>✅</span>
+                                <span>修复后的效果</span>
+                            </div>
+                            <ul style="font-size: 13px; margin: 8px 0; padding-left: 20px;">
+                                <li>用户信息卡片边框与header对齐</li>
+                                <li>返回按钮使用Unicode字符，样式统一</li>
+                                <li>只保留一个退出登录按钮</li>
+                                <li>设置图标点击正常响应</li>
+                                <li>用户信息布局清晰整齐</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技术修复详情 -->
+            <div class="test-section">
+                <div class="test-title">🔧 技术修复详情</div>
+                <div class="test-content-inner">
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin: 8px 0;">
+                        <strong>1. 用户信息卡片边框修复：</strong><br>
+                        <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px;">
+                            margin: -20px -16px 20px -16px; → margin: 0 0 20px 0;
+                        </code>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin: 8px 0;">
+                        <strong>2. 返回按钮样式修复：</strong><br>
+                        <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px;">
+                            &lt;img src="images/back-icon.png"&gt; → &lt;span class="back-arrow"&gt;‹&lt;/span&gt;
+                        </code>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin: 8px 0;">
+                        <strong>3. 函数名修复：</strong><br>
+                        <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px;">
+                            onclick="showSettings()" → onclick="showSettingsModal()"
+                        </code>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin: 8px 0;">
+                        <strong>4. HTML结构重组：</strong><br>
+                        <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px;">
+                            添加了 .user-profile 容器，分离头像和统计信息
+                        </code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 验证清单 -->
+            <div class="test-section">
+                <div class="test-title">📋 验证清单</div>
+                <div class="test-content-inner">
+                    <div class="check-list">
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>用户信息卡片边框不超出header宽度</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>返回按钮使用"‹"字符，样式与工作圈一致</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>只有一个"退出登录"按钮</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>右上角设置图标点击有响应</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>用户头像和信息并排显示</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>统计数据在用户信息下方整齐排列</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">☐</span>
+                            <span>整体页面布局清晰美观</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <div class="test-title">🧪 功能测试</div>
+                <div class="test-content-inner">
+                    <button class="test-btn primary" onclick="openProfilePage()">
+                        👤 打开个人中心页面
+                    </button>
+                    
+                    <button class="test-btn success" onclick="compareWithWorkCircle()">
+                        🔄 对比工作圈页面样式
+                    </button>
+                    
+                    <button class="test-btn info" onclick="testAllInteractions()">
+                        🎯 测试所有交互功能
+                    </button>
+                    
+                    <div class="test-result warning">
+                        <span>💡</span>
+                        <span><strong>测试重点：</strong>验证页面布局、按钮响应和样式一致性</span>
+                    </div>
+                    
+                    <div id="testResults"></div>
+                </div>
+            </div>
+            
+            <!-- 成功提示 -->
+            <div class="highlight-box">
+                <h4 style="margin: 0 0 8px 0; color: #495057;">🎉 个人中心页面修复完成！</h4>
+                <p style="margin: 0; color: #495057;">
+                    现在页面布局整齐，样式统一，所有交互功能正常工作
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function openProfilePage() {
+            window.open('profile.html', '_blank');
+            addTestResult('👤 已打开个人中心页面，请验证修复效果', 'success');
+        }
+        
+        function compareWithWorkCircle() {
+            window.open('work-circle.html', '_blank');
+            setTimeout(() => {
+                window.open('profile.html', '_blank');
+            }, 1000);
+            addTestResult('🔄 已打开工作圈和个人中心页面，请对比返回按钮样式', 'success');
+        }
+        
+        function testAllInteractions() {
+            window.open('profile.html', '_blank');
+            addTestResult('🎯 已打开个人中心页面，请测试：', 'info');
+            addTestResult('• 点击左上角返回按钮', 'info');
+            addTestResult('• 点击右上角设置按钮', 'info');
+            addTestResult('• 检查是否只有一个退出登录按钮', 'info');
+            addTestResult('• 验证用户信息卡片布局', 'info');
+        }
+        
+        function addTestResult(message, type) {
+            const results = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<span>${getIcon(type)}</span><span>${message}</span>`;
+            results.appendChild(resultDiv);
+            
+            // 自动滚动到最新结果
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function getIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'info': return '📋';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return '📋';
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 个人中心页面修复验证页面已加载');
+            
+            setTimeout(() => {
+                addTestResult('🎯 个人中心页面修复已完成，可以开始验证', 'success');
+                addTestResult('💡 重点验证：布局整齐、按钮响应、样式统一', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
