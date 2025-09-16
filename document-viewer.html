@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档查看器</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/document-viewer.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1 id="documentTitle">文档查看器</h1>
+                <div class="header-actions">
+                    <button class="action-btn download-btn" onclick="downloadDocument()">
+                        <span class="download-icon">⬇</span>
+                    </button>
+                    <button class="action-btn share-btn" onclick="shareDocument()">
+                        <span class="share-icon">📤</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 文档信息 -->
+        <div class="document-info">
+            <div class="doc-meta">
+                <span class="doc-name" id="docName">5G专网部署最佳实践.pdf</span>
+                <span class="doc-size">2.3MB</span>
+                <span class="doc-date">2024-01-15</span>
+            </div>
+            <div class="doc-tags">
+                <span class="tag">5G网络</span>
+                <span class="tag">专网部署</span>
+                <span class="tag">最佳实践</span>
+                <span class="tag">技术指南</span>
+            </div>
+        </div>
+
+        <!-- 文档内容 -->
+        <div class="document-content">
+            <div class="content-header">
+                <h2>5G专网部署最佳实践</h2>
+                <div class="content-meta">
+                    <span class="author">技术专家组</span>
+                    <span class="version">版本 v2.1</span>
+                    <span class="update-date">更新时间：2024年1月15日</span>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <section class="content-section">
+                    <h3>1. 概述</h3>
+                    <p>5G专网作为新一代移动通信技术的重要应用形态，为企业提供了高速率、低时延、大连接的网络服务。本文档总结了5G专网部署的最佳实践，帮助企业快速、高效地构建专属的5G网络环境。</p>
+                    
+                    <h4>1.1 5G专网的优势</h4>
+                    <ul>
+                        <li><strong>网络隔离：</strong>独立的网络切片，确保数据安全和业务隔离</li>
+                        <li><strong>定制化服务：</strong>根据业务需求定制网络参数和服务质量</li>
+                        <li><strong>低时延：</strong>端到端时延可控制在10ms以内</li>
+                        <li><strong>高可靠性：</strong>99.99%的网络可用性保障</li>
+                    </ul>
+                </section>
+
+                <section class="content-section">
+                    <h3>2. 部署架构</h3>
+                    <p>5G专网部署采用分层架构设计，包括核心网、传输网和接入网三个层次。</p>
+                    
+                    <h4>2.1 核心网架构</h4>
+                    <div class="architecture-diagram">
+                        <div class="diagram-placeholder">
+                            <span class="diagram-icon">📊</span>
+                            <p>5G核心网架构图</p>
+                            <small>包含AMF、SMF、UPF等核心网元</small>
+                        </div>
+                    </div>
+                    
+                    <h4>2.2 关键网元功能</h4>
+                    <div class="function-list">
+                        <div class="function-item">
+                            <strong>AMF (Access and Mobility Management Function)</strong>
+                            <p>负责接入和移动性管理，处理用户注册、认证和移动性管理</p>
+                        </div>
+                        <div class="function-item">
+                            <strong>SMF (Session Management Function)</strong>
+                            <p>会话管理功能，负责PDU会话的建立、修改和释放</p>
+                        </div>
+                        <div class="function-item">
+                            <strong>UPF (User Plane Function)</strong>
+                            <p>用户面功能，负责数据包的转发、QoS控制和计费</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h3>3. 部署步骤</h3>
+                    
+                    <h4>3.1 前期准备</h4>
+                    <div class="step-list">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h5>需求分析</h5>
+                                <p>明确业务需求、覆盖范围、用户数量和性能指标</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h5>站址规划</h5>
+                                <p>根据覆盖需求进行基站选址和网络拓扑设计</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h5>频谱申请</h5>
+                                <p>向相关部门申请专用频谱资源</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4>3.2 设备部署</h4>
+                    <div class="deployment-checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" checked disabled>
+                            <span>核心网设备安装配置</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" checked disabled>
+                            <span>基站设备部署</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" checked disabled>
+                            <span>传输网络配置</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>终端设备接入测试</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h3>4. 性能优化</h3>
+                    
+                    <h4>4.1 网络参数优化</h4>
+                    <div class="optimization-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>参数类型</th>
+                                    <th>推荐值</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>载波聚合</td>
+                                    <td>3-5个载波</td>
+                                    <td>提升峰值速率</td>
+                                </tr>
+                                <tr>
+                                    <td>MIMO配置</td>
+                                    <td>4x4 MIMO</td>
+                                    <td>增强信号质量</td>
+                                </tr>
+                                <tr>
+                                    <td>切片配置</td>
+                                    <td>按业务分类</td>
+                                    <td>保障服务质量</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4>4.2 监控指标</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value">≤10ms</div>
+                            <div class="metric-label">端到端时延</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">≥1Gbps</div>
+                            <div class="metric-label">峰值速率</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">99.99%</div>
+                            <div class="metric-label">网络可用性</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">1000+</div>
+                            <div class="metric-label">并发连接数</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h3>5. 安全保障</h3>
+                    
+                    <h4>5.1 安全架构</h4>
+                    <p>5G专网安全架构采用多层防护体系，包括物理安全、网络安全、应用安全和数据安全。</p>
+                    
+                    <div class="security-layers">
+                        <div class="security-layer">
+                            <h5>🔒 物理安全</h5>
+                            <p>机房安全、设备防护、环境监控</p>
+                        </div>
+                        <div class="security-layer">
+                            <h5>🛡️ 网络安全</h5>
+                            <p>防火墙、入侵检测、流量分析</p>
+                        </div>
+                        <div class="security-layer">
+                            <h5>🔐 应用安全</h5>
+                            <p>身份认证、权限控制、安全审计</p>
+                        </div>
+                        <div class="security-layer">
+                            <h5>📊 数据安全</h5>
+                            <p>数据加密、备份恢复、隐私保护</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h3>6. 运维管理</h3>
+                    
+                    <h4>6.1 监控体系</h4>
+                    <p>建立完善的网络监控体系，实现7x24小时全天候监控。</p>
+                    
+                    <div class="monitoring-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">📈</span>
+                            <div class="feature-content">
+                                <h5>实时监控</h5>
+                                <p>网络性能、设备状态、业务质量实时监控</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">⚠️</span>
+                            <div class="feature-content">
+                                <h5>智能告警</h5>
+                                <p>多级告警机制，及时发现和处理网络异常</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔧</span>
+                            <div class="feature-content">
+                                <h5>自动运维</h5>
+                                <p>自动化运维工具，提升运维效率</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section">
+                    <h3>7. 总结</h3>
+                    <p>5G专网部署是一个系统性工程，需要从需求分析、架构设计、设备部署、性能优化、安全保障到运维管理等各个环节进行统筹规划。通过遵循本文档提供的最佳实践，可以有效提升5G专网部署的成功率和运行质量。</p>
+                    
+                    <div class="summary-points">
+                        <h4>关键要点：</h4>
+                        <ul>
+                            <li>充分的前期需求分析和规划设计</li>
+                            <li>选择合适的网络架构和设备配置</li>
+                            <li>重视网络安全和数据保护</li>
+                            <li>建立完善的运维监控体系</li>
+                            <li>持续的性能优化和技术升级</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- 相关文档推荐 -->
+        <div class="related-documents">
+            <h3>相关文档</h3>
+            <div class="related-list">
+                <div class="related-item" onclick="openRelatedDoc('5G网络规划指南.pdf')">
+                    <div class="related-icon">📋</div>
+                    <div class="related-info">
+                        <h4>5G网络规划指南</h4>
+                        <p>详细的5G网络规划方法和工具</p>
+                    </div>
+                </div>
+                <div class="related-item" onclick="openRelatedDoc('专网安全配置手册.pdf')">
+                    <div class="related-icon">🔒</div>
+                    <div class="related-info">
+                        <h4>专网安全配置手册</h4>
+                        <p>5G专网安全配置详细说明</p>
+                    </div>
+                </div>
+                <div class="related-item" onclick="openRelatedDoc('网络优化案例集.pdf')">
+                    <div class="related-icon">⚡</div>
+                    <div class="related-info">
+                        <h4>网络优化案例集</h4>
+                        <p>实际项目中的优化经验分享</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('resource-library.html')">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/document-viewer.js"></script>
+</body>
+</html>

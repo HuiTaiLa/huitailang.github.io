@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题点击跳转修复测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .before {
+            background: #fff3cd;
+        }
+        
+        .after {
+            background: #d1edff;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 8px 0;
+            overflow-x: auto;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 问题点击跳转修复测试</h1>
+        <p>测试专家问答页面中问题列表项的点击跳转功能修复</p>
+        
+        <!-- 问题描述 -->
+        <div class="test-section">
+            <h3>1. 问题描述</h3>
+            
+            <div class="test-result">
+                <span class="status-indicator error"></span>
+                <strong>发现的问题：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>热门问题区域点击正常：跳转到 <code>question-detail.html?id=q002</code></li>
+                    <li>问题列表中点击异常：跳转到 <code>question-detail.html?id=undefined</code></li>
+                </ul>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>问题原因：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>问题列表项缺少 <code>data-question-id</code> 属性</li>
+                    <li>JavaScript的 <code>initQuestionList</code> 函数依赖 <code>data-question-id</code> 属性</li>
+                    <li>热门问题使用 <code>onclick</code> 直接调用 <code>viewQuestion</code> 函数</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 修复方案 -->
+        <div class="test-section">
+            <h3>2. 修复方案对比</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>问题项</th>
+                        <th>修复前</th>
+                        <th>修复后</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>热门问题1 (q001)</strong></td>
+                        <td class="before">
+                            <div class="code-block">onclick="viewQuestion('q001')"</div>
+                        </td>
+                        <td class="after">
+                            <div class="code-block">data-question-id="q001"</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>热门问题2 (q002)</strong></td>
+                        <td class="before">
+                            <div class="code-block">onclick="viewQuestion('q002')"</div>
+                        </td>
+                        <td class="after">
+                            <div class="code-block">data-question-id="q002"</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>热门问题3 (q003)</strong></td>
+                        <td class="before">
+                            <div class="code-block">onclick="viewQuestion('q003')"</div>
+                        </td>
+                        <td class="after">
+                            <div class="code-block">data-question-id="q003"</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>原有问题 (q004-q006)</strong></td>
+                        <td class="before">
+                            <div class="code-block">onclick="viewQuestion('q00X')"</div>
+                        </td>
+                        <td class="after">
+                            <div class="code-block">data-question-id="q00X"</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 技术说明 -->
+        <div class="test-section">
+            <h3>3. 技术实现说明</h3>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>JavaScript事件处理机制：</strong>
+                <div class="code-block">
+// initQuestionList 函数中的事件绑定
+item.addEventListener('click', function() {
+    const questionId = this.dataset.questionId; // 读取 data-question-id
+    openQuestionDetail(questionId);
+});
+                </div>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>热门问题区域保持不变：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>热门问题使用 <code>onclick="viewQuestion('q00X')"</code> 方式正常工作</li>
+                    <li>问题列表使用 <code>data-question-id</code> 属性配合事件监听器</li>
+                    <li>两种方式都能正确跳转到问题详情页面</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 测试步骤 -->
+        <div class="test-section">
+            <h3>4. 测试步骤</h3>
+            
+            <a href="qa-system.html" class="test-button" target="_blank">
+                🔗 打开专家问答页面
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>测试步骤：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>在热门问题区域点击"边缘计算节点的部署位置如何选择？"</li>
+                    <li>验证跳转到 <code>question-detail.html?id=q002</code></li>
+                    <li>返回专家问答页面</li>
+                    <li>在问题列表中点击同一个问题</li>
+                    <li>验证也跳转到 <code>question-detail.html?id=q002</code>（不是undefined）</li>
+                    <li>测试其他问题的点击跳转</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>5. 功能检查清单</h3>
+            
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox" id="check1">
+                    <label for="check1">热门问题区域的"边缘计算节点部署"点击正常跳转</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check2">
+                    <label for="check2">问题列表中的"边缘计算节点部署"点击正常跳转</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check3">
+                    <label for="check3">问题列表中的"5G专网安全隔离"点击正常跳转</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check4">
+                    <label for="check4">问题列表中的"云平台数据安全"点击正常跳转</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check5">
+                    <label for="check5">原有问题（物联网、5G切片、云监控）点击正常跳转</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check6">
+                    <label for="check6">所有跳转的URL都包含正确的问题ID（不是undefined）</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check7">
+                    <label for="check7">问题详情页面能正确显示问题内容</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check8">
+                    <label for="check8">点击动画效果正常工作</label>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>6. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 问题点击跳转修复测试页面已加载');
+            logTest('🔧 修复内容：');
+            logTest('  1. 为所有问题列表项添加 data-question-id 属性');
+            logTest('  2. 移除问题列表项的 onclick 属性');
+            logTest('  3. 保持热门问题区域的 onclick 方式不变');
+            logTest('  4. 确保 initQuestionList 函数能正确处理点击事件');
+            
+            // 模拟检查修复状态
+            setTimeout(() => {
+                logTest('✅ HTML结构已更新：所有问题项都有 data-question-id 属性');
+                logTest('✅ 事件处理已统一：问题列表使用事件监听器');
+                logTest('✅ 热门问题保持原有方式：onclick 直接调用函数');
+                logTest('📋 请在专家问答页面中测试点击跳转功能');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,15 @@
+// 安全的commonUtils包装函数
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== "undefined") {
+        return window.commonUtils;
+    }
+    return {
+        showToast: function(m,t) { console.log(`[${t}] ${m}`); if(t==="error") alert(m); },
+        navigateTo: function(u) { window.location.href = u; },
+        mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); },
+        formatTime: function(ts,fmt) { return new Date(ts).toLocaleString("zh-CN"); }
+    };
+}
 // 我的提问页面JavaScript功能
 
 let currentFilter = 'all';
@@ -215,7 +227,7 @@ function initFilterTabs() {
             
             // 显示提示
             const filterText = this.textContent;
-            commonUtils.showToast(`已切换到：${filterText}`, 'info');
+            safeCommonUtils().showToast(`已切换到：${filterText}`, 'info');
         });
     });
 }
@@ -224,23 +236,23 @@ function initFilterTabs() {
 function viewQuestion(questionId) {
     const question = questions.find(q => q.id === questionId);
     if (question) {
-        commonUtils.showToast(`查看问题：${question.title}`, 'info');
+        safeCommonUtils().showToast(`查看问题：${question.title}`, 'info');
         
         // 这里可以跳转到问题详情页面
         setTimeout(() => {
-            // commonUtils.navigateTo(`question-detail.html?id=${questionId}`);
-            commonUtils.showToast('问题详情页面开发中...', 'info');
+            // safeCommonUtils().navigateTo(`question-detail.html?id=${questionId}`);
+            safeCommonUtils().showToast('问题详情页面开发中...', 'info');
         }, 1000);
     }
 }
 
 // 创建新问题
 function createNewQuestion() {
-    commonUtils.showToast('跳转到提问页面...', 'info');
+    safeCommonUtils().showToast('跳转到提问页面...', 'info');
     
     setTimeout(() => {
-        // commonUtils.navigateTo('create-question.html');
-        commonUtils.showToast('提问页面开发中...', 'info');
+        // safeCommonUtils().navigateTo('create-question.html');
+        safeCommonUtils().showToast('提问页面开发中...', 'info');
     }, 1000);
 }
 
@@ -271,7 +283,7 @@ function resetFilters() {
     const timeFilter = document.querySelector('.time-filter');
     timeFilter.value = 'all';
     
-    commonUtils.showToast('筛选条件已重置', 'success');
+    safeCommonUtils().showToast('筛选条件已重置', 'success');
 }
 
 // 应用筛选条件
@@ -282,7 +294,7 @@ function applyFilters() {
     const timeFilter = document.querySelector('.time-filter').value;
     
     // 这里可以实现更复杂的筛选逻辑
-    commonUtils.showToast('筛选条件已应用', 'success');
+    safeCommonUtils().showToast('筛选条件已应用', 'success');
     closeFilterModal();
     
     // 重新渲染列表（这里简化处理）

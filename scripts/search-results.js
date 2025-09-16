@@ -1,3 +1,15 @@
+// 安全的commonUtils包装函数
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== "undefined") {
+        return window.commonUtils;
+    }
+    return {
+        showToast: function(m,t) { console.log(`[${t}] ${m}`); if(t==="error") alert(m); },
+        navigateTo: function(u) { window.location.href = u; },
+        mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); },
+        formatTime: function(ts,fmt) { return new Date(ts).toLocaleString("zh-CN"); }
+    };
+}
 // 搜索结果页面JavaScript功能
 
 // 页面加载完成后初始化
@@ -69,8 +81,8 @@ function initFilterTabs() {
             filterResults(filterType);
             
             // 显示筛选反馈
-            if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-                commonUtils.showToast(`已筛选：${this.textContent}`, 'info');
+            if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+                safeCommonUtils().showToast(`已筛选：${this.textContent}`, 'info');
             }
         });
     });
@@ -116,9 +128,9 @@ function initSortOptions() {
             sortResults(sortType);
             
             // 显示排序反馈
-            if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
+            if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
                 const sortText = this.options[this.selectedIndex].text;
-                commonUtils.showToast(`已按${sortText}排序`, 'info');
+                safeCommonUtils().showToast(`已按${sortText}排序`, 'info');
             }
         });
     }
@@ -252,15 +264,15 @@ function performSearch() {
     const query = searchInput.value.trim();
     
     if (!query) {
-        if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-            commonUtils.showToast('请输入搜索关键词', 'error');
+        if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+            safeCommonUtils().showToast('请输入搜索关键词', 'error');
         }
         return;
     }
     
     // 显示搜索中状态
-    if (typeof commonUtils !== 'undefined' && commonUtils.showLoading) {
-        commonUtils.showLoading('搜索中...');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showLoading) {
+        safeCommonUtils().showLoading('搜索中...');
     }
     
     // 更新URL
@@ -272,15 +284,15 @@ function performSearch() {
     
     // 模拟搜索请求
     setTimeout(() => {
-        if (typeof commonUtils !== 'undefined' && commonUtils.hideLoading) {
-            commonUtils.hideLoading();
+        if (typeof commonUtils !== 'undefined' && safeCommonUtils().hideLoading) {
+            safeCommonUtils().hideLoading();
         }
         
         // 重新加载搜索结果
         loadSearchResults(query);
         
-        if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-            commonUtils.showToast(`搜索"${query}"完成`, 'success');
+        if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+            safeCommonUtils().showToast(`搜索"${query}"完成`, 'success');
         }
     }, 1000);
 }
@@ -500,8 +512,8 @@ function initActionButtons() {
 
 // 导航函数
 function navigateToDocument(title, resultId) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast(`正在打开文档：${title}`, 'info');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast(`正在打开文档：${title}`, 'info');
     }
 
     // 跳转到文档详情页
@@ -512,8 +524,8 @@ function navigateToDocument(title, resultId) {
 }
 
 function navigateToQA(title, resultId) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast(`正在打开问答：${title}`, 'info');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast(`正在打开问答：${title}`, 'info');
     }
 
     // 跳转到问答详情页
@@ -524,8 +536,8 @@ function navigateToQA(title, resultId) {
 }
 
 function navigateToVideo(title, resultId) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast(`正在打开视频：${title}`, 'info');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast(`正在打开视频：${title}`, 'info');
     }
 
     // 跳转到视频播放页（这里暂时跳转到资源库）
@@ -537,14 +549,14 @@ function navigateToVideo(title, resultId) {
 
 // 功能函数
 function previewDocument(title) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast(`预览文档：${title}`, 'info');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast(`预览文档：${title}`, 'info');
     }
 }
 
 function downloadDocument(title) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast(`下载文档：${title}`, 'success');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast(`下载文档：${title}`, 'success');
     }
 }
 
@@ -554,27 +566,27 @@ function collectDocument(title, button) {
     if (isCollected) {
         button.textContent = '收藏';
         button.style.background = '#ffc107';
-        if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-            commonUtils.showToast(`已取消收藏：${title}`, 'info');
+        if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+            safeCommonUtils().showToast(`已取消收藏：${title}`, 'info');
         }
     } else {
         button.textContent = '已收藏';
         button.style.background = '#28a745';
-        if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-            commonUtils.showToast(`已收藏：${title}`, 'success');
+        if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+            safeCommonUtils().showToast(`已收藏：${title}`, 'success');
         }
     }
 }
 
 function playVideo(title) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast(`播放视频：${title}`, 'info');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast(`播放视频：${title}`, 'info');
     }
 }
 
 function consultExpert() {
-    if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-        commonUtils.showToast('正在为您联系专家...', 'info');
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+        safeCommonUtils().showToast('正在为您联系专家...', 'info');
     }
 }
 
@@ -658,8 +670,8 @@ function initScrollLoading() {
             const currentCount = document.querySelectorAll('.result-item').length;
             updateResultStats(currentCount);
 
-            if (typeof commonUtils !== 'undefined' && commonUtils.showToast) {
-                commonUtils.showToast('已加载更多结果', 'success');
+            if (typeof commonUtils !== 'undefined' && safeCommonUtils().showToast) {
+                safeCommonUtils().showToast('已加载更多结果', 'success');
             }
         }, 1000);
     }
@@ -915,8 +927,8 @@ function createResultElement(result) {
 
 // 导航函数
 function navigateTo(page) {
-    if (typeof commonUtils !== 'undefined' && commonUtils.navigateTo) {
-        commonUtils.navigateTo(page);
+    if (typeof commonUtils !== 'undefined' && safeCommonUtils().navigateTo) {
+        safeCommonUtils().navigateTo(page);
     } else {
         window.location.href = page;
     }

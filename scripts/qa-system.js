@@ -1,3 +1,13 @@
+// 引入安全工具函数
+if (typeof safeCommonUtils === "undefined") {
+    function safeCommonUtils() {
+        return typeof window.commonUtils !== "undefined" ? window.commonUtils : {
+            showToast: function(m,t) { console.log(`[${t}] ${m}`); },
+            navigateTo: function(u) { window.location.href = u; },
+            mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); }
+        };
+    }
+}
 // 问答系统页面JavaScript功能
 
 let currentFilter = 'all';
@@ -45,7 +55,7 @@ function initCategoryTabs() {
             // 模拟加载延迟
             setTimeout(() => {
                 hideTabLoading();
-                commonUtils.showToast(`已切换到${this.textContent}`, 'success');
+                safeCommonUtils().showToast(`已切换到${this.textContent}`, 'success');
             }, 800);
         });
     });
@@ -181,7 +191,7 @@ function applyFilterAndSort() {
     // 更新计数
     updateQuestionCount(filteredItems.length);
 
-    commonUtils.showToast(`已应用筛选：${getFilterName(currentFilter)} | 排序：${getSortName(currentSort)}`, 'success');
+    safeCommonUtils().showToast(`已应用筛选：${getFilterName(currentFilter)} | 排序：${getSortName(currentSort)}`, 'success');
 }
 
 // 比较时间
@@ -520,7 +530,7 @@ function validateForm() {
 // 提交问题
 function submitQuestion() {
     if (!validateForm()) {
-        commonUtils.showToast('请完善问题信息', 'error');
+        safeCommonUtils().showToast('请完善问题信息', 'error');
         return;
     }
     
@@ -538,17 +548,17 @@ function submitQuestion() {
         timestamp: Date.now()
     };
     
-    commonUtils.showLoading('发布问题中...');
+    safeCommonUtils().showLoading('发布问题中...');
     
     // 模拟提交问题
-    commonUtils.mockApiRequest('/api/questions/create', {
+    safeCommonUtils().mockApiRequest('/api/questions/create', {
         method: 'POST',
         body: JSON.stringify(questionData)
     }).then(response => {
-        commonUtils.hideLoading();
+        safeCommonUtils().hideLoading();
         
         if (response.success) {
-            commonUtils.showToast('问题发布成功！', 'success');
+            safeCommonUtils().showToast('问题发布成功！', 'success');
             hideAskQuestion();
             
             // 刷新问题列表
@@ -559,18 +569,18 @@ function submitQuestion() {
             // 统计提问
             trackQuestionSubmit(questionData);
         } else {
-            commonUtils.showToast('发布失败，请重试', 'error');
+            safeCommonUtils().showToast('发布失败，请重试', 'error');
         }
     });
 }
 
 // 应用筛选
 function applyFilter() {
-    commonUtils.showLoading('筛选中...');
+    safeCommonUtils().showLoading('筛选中...');
     
-    commonUtils.mockApiRequest(`/api/questions/filter?type=${currentFilter}&sort=${currentSort}`)
+    safeCommonUtils().mockApiRequest(`/api/questions/filter?type=${currentFilter}&sort=${currentSort}`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 updateQuestionList(response.data.questions);
             }
@@ -579,7 +589,7 @@ function applyFilter() {
 
 // 加载问题列表
 function loadQuestions() {
-    commonUtils.mockApiRequest('/api/questions/list')
+    safeCommonUtils().mockApiRequest('/api/questions/list')
         .then(response => {
             if (response.success) {
                 questionList = response.data.questions || [];
@@ -608,7 +618,7 @@ function openQuestionDetail(questionId) {
     trackQuestionView(questionId);
     
     // 跳转到问题详情页面
-    commonUtils.navigateTo(`question-detail.html?id=${questionId}`);
+    safeCommonUtils().navigateTo(`question-detail.html?id=${questionId}`);
 }
 
 // 切换问题点赞
@@ -617,7 +627,7 @@ function toggleQuestionLike(questionId, likeBtn) {
     const countSpan = likeBtn.querySelector('.like-count');
     let count = parseInt(countSpan.textContent) || 0;
     
-    commonUtils.mockApiRequest(`/api/questions/${questionId}/like`, {
+    safeCommonUtils().mockApiRequest(`/api/questions/${questionId}/like`, {
         method: 'POST',
         body: JSON.stringify({
             liked: !isLiked
@@ -628,12 +638,12 @@ function toggleQuestionLike(questionId, likeBtn) {
                 likeBtn.classList.remove('liked');
                 count = Math.max(0, count - 1);
                 countSpan.textContent = count;
-                commonUtils.showToast('已取消点赞', 'info');
+                safeCommonUtils().showToast('已取消点赞', 'info');
             } else {
                 likeBtn.classList.add('liked');
                 count += 1;
                 countSpan.textContent = count;
-                commonUtils.showToast('点赞成功', 'success');
+                safeCommonUtils().showToast('点赞成功', 'success');
                 
                 // 添加点赞动画
                 likeBtn.style.transform = 'scale(1.2)';
@@ -649,7 +659,7 @@ function toggleQuestionLike(questionId, likeBtn) {
 function toggleQuestionFavorite(questionId, favoriteBtn) {
     const isFavorited = favoriteBtn.classList.contains('favorited');
     
-    commonUtils.mockApiRequest(`/api/questions/${questionId}/favorite`, {
+    safeCommonUtils().mockApiRequest(`/api/questions/${questionId}/favorite`, {
         method: 'POST',
         body: JSON.stringify({
             favorited: !isFavorited
@@ -659,11 +669,11 @@ function toggleQuestionFavorite(questionId, favoriteBtn) {
             if (isFavorited) {
                 favoriteBtn.classList.remove('favorited');
                 favoriteBtn.innerHTML = '☆';
-                commonUtils.showToast('已取消收藏', 'info');
+                safeCommonUtils().showToast('已取消收藏', 'info');
             } else {
                 favoriteBtn.classList.add('favorited');
                 favoriteBtn.innerHTML = '★';
-                commonUtils.showToast('收藏成功', 'success');
+                safeCommonUtils().showToast('收藏成功', 'success');
                 
                 // 添加收藏动画
                 favoriteBtn.style.transform = 'scale(1.2)';
@@ -688,16 +698,16 @@ function shareQuestion(questionId) {
     } else {
         // 复制链接到剪贴板
         navigator.clipboard.writeText(shareUrl).then(() => {
-            commonUtils.showToast('链接已复制到剪贴板', 'success');
+            safeCommonUtils().showToast('链接已复制到剪贴板', 'success');
         });
     }
 }
 
 // 显示用户资料
 function showUserProfile(userId) {
-    commonUtils.showToast('查看用户资料...', 'info');
+    safeCommonUtils().showToast('查看用户资料...', 'info');
     setTimeout(() => {
-        commonUtils.navigateTo(`user-profile.html?userId=${userId}`);
+        safeCommonUtils().navigateTo(`user-profile.html?userId=${userId}`);
     }, 500);
 }
 
@@ -714,21 +724,21 @@ function searchQuestions(query) {
         return;
     }
     
-    commonUtils.showLoading('搜索中...');
+    safeCommonUtils().showLoading('搜索中...');
     
-    commonUtils.mockApiRequest(`/api/questions/search?q=${encodeURIComponent(query)}`)
+    safeCommonUtils().mockApiRequest(`/api/questions/search?q=${encodeURIComponent(query)}`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 updateQuestionList(response.data.questions);
-                commonUtils.showToast(`找到 ${response.data.total} 个相关问题`, 'success');
+                safeCommonUtils().showToast(`找到 ${response.data.total} 个相关问题`, 'success');
             }
         });
 }
 
 // 统计筛选点击
 function trackFilterClick(filterType) {
-    commonUtils.mockApiRequest('/api/analytics/filter-click', {
+    safeCommonUtils().mockApiRequest('/api/analytics/filter-click', {
         method: 'POST',
         body: JSON.stringify({
             filterType: filterType,
@@ -740,7 +750,7 @@ function trackFilterClick(filterType) {
 
 // 统计问题查看
 function trackQuestionView(questionId) {
-    commonUtils.mockApiRequest(`/api/questions/${questionId}/view`, {
+    safeCommonUtils().mockApiRequest(`/api/questions/${questionId}/view`, {
         method: 'POST',
         body: JSON.stringify({
             timestamp: Date.now()
@@ -750,7 +760,7 @@ function trackQuestionView(questionId) {
 
 // 统计问题提交
 function trackQuestionSubmit(questionData) {
-    commonUtils.mockApiRequest('/api/analytics/question-submit', {
+    safeCommonUtils().mockApiRequest('/api/analytics/question-submit', {
         method: 'POST',
         body: JSON.stringify({
             category: questionData.category,
@@ -847,14 +857,14 @@ function showMyQuestions() {
     });
 
     if (myQuestionsCount === 0) {
-        commonUtils.showToast('您还没有发布过问题', 'info');
+        safeCommonUtils().showToast('您还没有发布过问题', 'info');
         // 恢复显示所有问题
         questionItems.forEach(item => {
             item.style.display = 'block';
             item.style.border = '';
         });
     } else {
-        commonUtils.showToast(`找到 ${myQuestionsCount} 个您发布的问题`, 'success');
+        safeCommonUtils().showToast(`找到 ${myQuestionsCount} 个您发布的问题`, 'success');
 
         // 3秒后恢复显示所有问题
         setTimeout(() => {
@@ -870,7 +880,7 @@ function showMyQuestions() {
 function viewQuestion(questionId) {
     // 验证问题ID
     if (!questionId || questionId === 'undefined') {
-        commonUtils.showToast('问题ID无效', 'error');
+        safeCommonUtils().showToast('问题ID无效', 'error');
         console.error('viewQuestion called with invalid questionId:', questionId);
         return;
     }
@@ -887,7 +897,7 @@ function viewQuestion(questionId) {
     // 检查是否存在问题数据
     const questionData = getQuestionData(questionId);
     if (!questionData) {
-        commonUtils.showToast('问题不存在', 'error');
+        safeCommonUtils().showToast('问题不存在', 'error');
         return;
     }
 
@@ -1022,9 +1032,8 @@ function getQuestionData(questionId) {
             status: 'answered',
             priority: 'high',
             username: '张工程师',
-            role: '华南区网络架构师',
             avatar: 'images/user1.png',
-            time: '2小时前',
+            time: '3天前',
             views: 234,
             followers: 12,
             answers: 3,
@@ -1054,13 +1063,12 @@ function getQuestionData(questionId) {
             content: '我们计划在全国范围内部署边缘计算节点，但对于节点的具体部署位置选择还不够明确。需要考虑哪些因素？如何平衡成本和性能？',
             status: 'answered',
             priority: 'medium',
-            username: '李经理',
-            role: '华东区产品经理',
+            username: '李工',
             avatar: 'images/user2.png',
-            time: '5小时前',
+            time: '4天前',
             views: 189,
             followers: 8,
-            answers: 2,
+            answers: 8,
             tags: ['边缘计算', '节点部署', '网络规划'],
             answerList: [
                 {
@@ -1077,15 +1085,14 @@ function getQuestionData(questionId) {
             id: 'q003',
             title: '云平台迁移过程中的数据安全如何保障？',
             content: '公司准备将现有业务系统迁移到云平台，担心迁移过程中的数据安全问题。请问有哪些最佳实践可以参考？',
-            status: 'solved',
+            status: 'answered',
             priority: 'high',
-            username: '赵主管',
-            role: '华北区运维主管',
+            username: '王总',
             avatar: 'images/user3.png',
-            time: '1天前',
+            time: '5天前',
             views: 156,
             followers: 15,
-            answers: 4,
+            answers: 15,
             tags: ['云计算', '数据安全', '系统迁移'],
             answerList: [
                 {
@@ -1105,7 +1112,6 @@ function getQuestionData(questionId) {
             status: 'pending',
             priority: 'high',
             username: '刘工程师',
-            role: '华南区技术专家',
             avatar: 'images/user5.png',
             time: '2小时前',
             views: 45,
@@ -1121,7 +1127,6 @@ function getQuestionData(questionId) {
             status: 'answered',
             priority: 'medium',
             username: '陈经理',
-            role: '华东区产品经理',
             avatar: 'images/user6.png',
             time: '5小时前',
             views: 89,
@@ -1146,7 +1151,6 @@ function getQuestionData(questionId) {
             status: 'solved',
             priority: 'low',
             username: '赵主管',
-            role: '华北区运维主管',
             avatar: 'images/user7.png',
             time: '1天前',
             views: 156,
@@ -1184,11 +1188,11 @@ function viewSolution(questionId) {
     }, 150);
 
     // 显示加载状态
-    commonUtils.showLoading('正在加载解决方案...');
+    safeCommonUtils().showLoading('正在加载解决方案...');
 
     // 模拟API调用
     setTimeout(() => {
-        commonUtils.hideLoading();
+        safeCommonUtils().hideLoading();
 
         const questionData = getQuestionData(questionId);
         if (questionData && questionData.status === 'solved') {
@@ -1197,7 +1201,7 @@ function viewSolution(questionId) {
             // 如果有回答但未标记为已解决，显示最佳回答
             showBestAnswerModal(questionData);
         } else {
-            commonUtils.showToast('该问题暂无解决方案', 'info');
+            safeCommonUtils().showToast('该问题暂无解决方案', 'info');
         }
     }, 800);
 }
@@ -1333,7 +1337,7 @@ function toggleBookmark(questionId, buttonElement) {
         // 取消收藏
         buttonElement.classList.remove('bookmarked');
         buttonElement.innerHTML = '🔖 收藏';
-        commonUtils.showToast('已取消收藏', 'info');
+        safeCommonUtils().showToast('已取消收藏', 'info');
 
         // 从本地存储中移除
         removeFromBookmarks(questionId);
@@ -1341,7 +1345,7 @@ function toggleBookmark(questionId, buttonElement) {
         // 添加收藏
         buttonElement.classList.add('bookmarked');
         buttonElement.innerHTML = '⭐ 已收藏';
-        commonUtils.showToast('收藏成功', 'success');
+        safeCommonUtils().showToast('收藏成功', 'success');
 
         // 添加到本地存储
         addToBookmarks(questionId);
@@ -1375,12 +1379,12 @@ function copySolution() {
     const solutionText = document.querySelector('.solution-text')?.textContent;
     if (solutionText && navigator.clipboard) {
         navigator.clipboard.writeText(solutionText).then(() => {
-            commonUtils.showToast('方案已复制到剪贴板', 'success');
+            safeCommonUtils().showToast('方案已复制到剪贴板', 'success');
         }).catch(() => {
-            commonUtils.showToast('复制失败，请手动复制', 'error');
+            safeCommonUtils().showToast('复制失败，请手动复制', 'error');
         });
     } else {
-        commonUtils.showToast('复制功能不可用', 'error');
+        safeCommonUtils().showToast('复制功能不可用', 'error');
     }
 }
 
@@ -1392,17 +1396,17 @@ function shareSolution() {
             url: window.location.href
         }).catch(console.error);
     } else {
-        commonUtils.showToast('分享功能开发中', 'info');
+        safeCommonUtils().showToast('分享功能开发中', 'info');
     }
 }
 
 function rateSolution() {
-    commonUtils.showToast('评价功能开发中', 'info');
+    safeCommonUtils().showToast('评价功能开发中', 'info');
 }
 
 // 回答问题
 function answerQuestion(questionId) {
-    commonUtils.showToast('跳转到回答页面...', 'info');
+    safeCommonUtils().showToast('跳转到回答页面...', 'info');
     // 这里可以跳转到回答页面或显示回答表单
     setTimeout(() => {
         alert(`功能开发中：回答问题 ${questionId}`);
@@ -1415,7 +1419,7 @@ function performSearch(modal) {
     const scope = modal.querySelector('.search-scope').value;
 
     if (!keyword) {
-        commonUtils.showToast('请输入搜索关键词', 'error');
+        safeCommonUtils().showToast('请输入搜索关键词', 'error');
         return;
     }
 
@@ -1459,14 +1463,14 @@ function performSearch(modal) {
     modal.remove();
 
     if (matchCount === 0) {
-        commonUtils.showToast('没有找到相关问题', 'info');
+        safeCommonUtils().showToast('没有找到相关问题', 'info');
         // 恢复显示所有问题
         questionItems.forEach(item => {
             item.style.display = 'block';
             item.style.backgroundColor = '';
         });
     } else {
-        commonUtils.showToast(`找到 ${matchCount} 个相关问题`, 'success');
+        safeCommonUtils().showToast(`找到 ${matchCount} 个相关问题`, 'success');
 
         // 5秒后恢复显示所有问题
         setTimeout(() => {
@@ -1485,25 +1489,24 @@ function loadMoreQuestions() {
     isLoading = true;
     currentPage++;
 
-    commonUtils.showLoading('正在加载更多问题...');
-
-    commonUtils.mockApiRequest(`/api/questions/list?page=${currentPage}&filter=${currentFilter}&sort=${currentSort}`)
+    // 静默加载，不显示加载提示
+    safeCommonUtils().mockApiRequest(`/api/questions/list?page=${currentPage}&filter=${currentFilter}&sort=${currentSort}`)
         .then(response => {
             isLoading = false;
-            commonUtils.hideLoading();
 
             if (response.success && response.data.questions.length > 0) {
                 appendQuestions(response.data.questions);
-                commonUtils.showToast(`已加载 ${response.data.questions.length} 个新问题`, 'success');
+                // 静默加载成功，不显示提示
             } else {
-                commonUtils.showToast('没有更多问题了', 'info');
+                // 没有更多数据时也不显示提示
+                console.log('没有更多问题了');
             }
         })
         .catch(() => {
             isLoading = false;
             currentPage--; // 回退页码
-            commonUtils.hideLoading();
-            commonUtils.showToast('加载失败，请重试', 'error');
+            // 加载失败时不显示错误提示，静默处理
+            console.log('加载失败，已静默处理');
         });
 }
 
@@ -1547,7 +1550,7 @@ function createQuestionElement(question) {
                 </div>
             </div>
             <div class="question-meta">
-                <span class="question-time">${commonUtils.formatTime(question.createdAt)}</span>
+                <span class="question-time">${safeCommonUtils().formatTime(question.createdAt)}</span>
                 <span class="urgency-badge ${urgencyClass}">${getUrgencyText(question.urgency)}</span>
             </div>
         </div>

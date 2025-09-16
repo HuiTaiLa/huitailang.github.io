@@ -1,3 +1,13 @@
+// 引入安全工具函数
+if (typeof safeCommonUtils === "undefined") {
+    function safeCommonUtils() {
+        return typeof window.commonUtils !== "undefined" ? window.commonUtils : {
+            showToast: function(m,t) { console.log(`[${t}] ${m}`); },
+            navigateTo: function(u) { window.location.href = u; },
+            mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); }
+        };
+    }
+}
 // 资源库页面JavaScript功能
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -38,7 +48,7 @@ function initSearchFunctionality() {
         });
         
         // 实时搜索建议
-        const debouncedSearch = commonUtils.debounce(function(query) {
+        const debouncedSearch = safeCommonUtils().debounce(function(query) {
             if (query.length > 2) {
                 showSearchSuggestions(query);
             }
@@ -61,7 +71,7 @@ function toggleSearch() {
         if (isVisible) {
             // 当前可见，需要隐藏
             searchSection.classList.remove('active');
-            commonUtils.showToast('搜索框已隐藏', 'info');
+            safeCommonUtils().showToast('搜索框已隐藏', 'info');
         } else {
             // 当前隐藏，需要显示
             searchSection.classList.add('active');
@@ -70,7 +80,7 @@ function toggleSearch() {
                     searchInput.focus();
                 }
             }, 100);
-            commonUtils.showToast('搜索框已展开', 'info');
+            safeCommonUtils().showToast('搜索框已展开', 'info');
         }
     }
 }
@@ -81,7 +91,7 @@ function performSearch() {
     const query = searchInput.value.trim();
     
     if (!query) {
-        commonUtils.showToast('请输入搜索关键词', 'error');
+        safeCommonUtils().showToast('请输入搜索关键词', 'error');
         return;
     }
     
@@ -94,7 +104,7 @@ function performSearch() {
 
 // 显示搜索建议
 function showSearchSuggestions(query) {
-    commonUtils.mockApiRequest(`/api/documents/suggestions?q=${query}`)
+    safeCommonUtils().mockApiRequest(`/api/documents/suggestions?q=${query}`)
         .then(response => {
             if (response.success) {
                 // 这里可以显示搜索建议下拉框
@@ -105,25 +115,25 @@ function showSearchSuggestions(query) {
 
 // 保存搜索历史
 function saveSearchHistory(query) {
-    let history = commonUtils.storage.get('documentSearchHistory', []);
+    let history = safeCommonUtils().storage.get('documentSearchHistory', []);
     history = history.filter(item => item !== query);
     history.unshift(query);
     if (history.length > 10) {
         history = history.slice(0, 10);
     }
-    commonUtils.storage.set('documentSearchHistory', history);
+    safeCommonUtils().storage.set('documentSearchHistory', history);
 }
 
 // 搜索文档
 function searchDocuments(query) {
-    commonUtils.showLoading('搜索中...');
+    safeCommonUtils().showLoading('搜索中...');
     
-    commonUtils.mockApiRequest(`/api/documents/search?q=${query}`)
+    safeCommonUtils().mockApiRequest(`/api/documents/search?q=${query}`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 updateDocumentList(response.data.results);
-                commonUtils.showToast(`找到 ${response.data.total} 个相关结果`, 'success');
+                safeCommonUtils().showToast(`找到 ${response.data.total} 个相关结果`, 'success');
             }
         });
 }
@@ -158,7 +168,7 @@ function checkUrlCategoryParameter() {
             };
 
             const categoryName = categoryNames[category] || category;
-            commonUtils.showToast(`已切换到：${categoryName}`, 'success');
+            safeCommonUtils().showToast(`已切换到：${categoryName}`, 'success');
 
             // 滚动到分类导航区域
             const categoryNav = document.querySelector('.category-nav');
@@ -197,7 +207,7 @@ function initCategoryTabs() {
             };
 
             const categoryName = categoryNames[category] || category;
-            commonUtils.showToast(`已切换到：${categoryName}`, 'info');
+            safeCommonUtils().showToast(`已切换到：${categoryName}`, 'info');
 
             // 统计分类点击
             trackCategoryClick(category);
@@ -207,11 +217,11 @@ function initCategoryTabs() {
 
 // 按分类加载文档
 function loadDocumentsByCategory(category) {
-    commonUtils.showLoading('加载中...');
+    safeCommonUtils().showLoading('加载中...');
     
-    commonUtils.mockApiRequest(`/api/documents/category/${category}`)
+    safeCommonUtils().mockApiRequest(`/api/documents/category/${category}`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 updateDocumentList(response.data.documents);
             }
@@ -289,16 +299,16 @@ function openDocumentDetail(docId, docTitle) {
     trackDocumentView(docId);
     
     // 跳转到文档详情页面
-    commonUtils.navigateTo(`document-detail.html?id=${docId}&title=${encodeURIComponent(docTitle)}`);
+    safeCommonUtils().navigateTo(`document-detail.html?id=${docId}&title=${encodeURIComponent(docTitle)}`);
 }
 
 // 下载文档
 function downloadDocument(docId, docTitle) {
-    commonUtils.showLoading('准备下载...');
+    safeCommonUtils().showLoading('准备下载...');
     
-    commonUtils.mockApiRequest(`/api/documents/${docId}/download`)
+    safeCommonUtils().mockApiRequest(`/api/documents/${docId}/download`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 // 模拟下载
                 const link = document.createElement('a');
@@ -306,12 +316,12 @@ function downloadDocument(docId, docTitle) {
                 link.download = docTitle + '.pdf';
                 link.click();
                 
-                commonUtils.showToast('下载开始', 'success');
+                safeCommonUtils().showToast('下载开始', 'success');
                 
                 // 记录下载统计
                 trackDocumentDownload(docId);
             } else {
-                commonUtils.showToast('下载失败，请重试', 'error');
+                safeCommonUtils().showToast('下载失败，请重试', 'error');
             }
         });
 }
@@ -396,7 +406,7 @@ function showDocumentPreview(docId, docTitle) {
 function toggleFavorite(docId, favoriteBtn) {
     const isFavorited = favoriteBtn.classList.contains('favorited');
     
-    commonUtils.mockApiRequest(`/api/documents/${docId}/favorite`, {
+    safeCommonUtils().mockApiRequest(`/api/documents/${docId}/favorite`, {
         method: 'POST',
         body: JSON.stringify({
             favorited: !isFavorited
@@ -406,11 +416,11 @@ function toggleFavorite(docId, favoriteBtn) {
             if (isFavorited) {
                 favoriteBtn.classList.remove('favorited');
                 favoriteBtn.innerHTML = '☆';
-                commonUtils.showToast('已取消收藏', 'info');
+                safeCommonUtils().showToast('已取消收藏', 'info');
             } else {
                 favoriteBtn.classList.add('favorited');
                 favoriteBtn.innerHTML = '★';
-                commonUtils.showToast('已添加收藏', 'success');
+                safeCommonUtils().showToast('已添加收藏', 'success');
                 
                 // 添加收藏动画
                 favoriteBtn.style.transform = 'scale(1.2)';
@@ -435,7 +445,7 @@ function shareDocument(docId, docTitle) {
     } else {
         // 复制链接到剪贴板
         navigator.clipboard.writeText(shareUrl).then(() => {
-            commonUtils.showToast('链接已复制到剪贴板', 'success');
+            safeCommonUtils().showToast('链接已复制到剪贴板', 'success');
         });
     }
 }
@@ -509,11 +519,11 @@ function initScrollLoading() {
 
 // 排序文档
 function sortDocuments(sortBy) {
-    commonUtils.showLoading('排序中...');
+    safeCommonUtils().showLoading('排序中...');
     
-    commonUtils.mockApiRequest(`/api/documents/sort?by=${sortBy}`)
+    safeCommonUtils().mockApiRequest(`/api/documents/sort?by=${sortBy}`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 updateDocumentList(response.data.documents);
             }
@@ -522,11 +532,11 @@ function sortDocuments(sortBy) {
 
 // 应用筛选
 function applyFilter(filterType) {
-    commonUtils.showLoading('筛选中...');
+    safeCommonUtils().showLoading('筛选中...');
     
-    commonUtils.mockApiRequest(`/api/documents/filter?type=${filterType}`)
+    safeCommonUtils().mockApiRequest(`/api/documents/filter?type=${filterType}`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 updateDocumentList(response.data.documents);
             }
@@ -536,7 +546,7 @@ function applyFilter(filterType) {
 // 加载资源数据
 function loadResourceData() {
     // 加载热门文档
-    commonUtils.mockApiRequest('/api/documents/popular')
+    safeCommonUtils().mockApiRequest('/api/documents/popular')
         .then(response => {
             if (response.success) {
                 updateDocumentList(response.data.documents);
@@ -544,7 +554,7 @@ function loadResourceData() {
         });
     
     // 加载分类统计
-    commonUtils.mockApiRequest('/api/documents/categories/stats')
+    safeCommonUtils().mockApiRequest('/api/documents/categories/stats')
         .then(response => {
             if (response.success) {
                 updateCategoryStats(response.data);
@@ -584,7 +594,7 @@ function updateCategoryStats(stats) {
 
 // 统计分类点击
 function trackCategoryClick(category) {
-    commonUtils.mockApiRequest('/api/analytics/category-click', {
+    safeCommonUtils().mockApiRequest('/api/analytics/category-click', {
         method: 'POST',
         body: JSON.stringify({
             category: category,
@@ -595,7 +605,7 @@ function trackCategoryClick(category) {
 
 // 统计文档查看
 function trackDocumentView(docId) {
-    commonUtils.mockApiRequest(`/api/documents/${docId}/view`, {
+    safeCommonUtils().mockApiRequest(`/api/documents/${docId}/view`, {
         method: 'POST',
         body: JSON.stringify({
             timestamp: Date.now()
@@ -605,7 +615,7 @@ function trackDocumentView(docId) {
 
 // 统计文档下载
 function trackDocumentDownload(docId) {
-    commonUtils.mockApiRequest(`/api/documents/${docId}/download-stats`, {
+    safeCommonUtils().mockApiRequest(`/api/documents/${docId}/download-stats`, {
         method: 'POST',
         body: JSON.stringify({
             timestamp: Date.now()
@@ -641,7 +651,7 @@ function loadMoreDocuments() {
                 resolve(hasMore);
             } else {
                 // 没有更多数据
-                commonUtils.showToast('没有更多文档了', 'info');
+                safeCommonUtils().showToast('没有更多文档了', 'info');
                 resolve(false);
             }
         }, 1000); // 模拟1秒加载时间
@@ -769,7 +779,7 @@ function trackDocumentView(docId) {
 
 function trackDocumentDownload(docId) {
     console.log('文档下载统计:', docId);
-    commonUtils.showToast('下载统计已记录', 'info');
+    safeCommonUtils().showToast('下载统计已记录', 'info');
 }
 
 function trackDocumentPreview(docId) {

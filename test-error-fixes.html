@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误修复验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .error-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .error-section h3 {
+            color: #721c24;
+            margin: 0 0 16px 0;
+        }
+        
+        .error-list {
+            font-family: monospace;
+            font-size: 14px;
+            color: #721c24;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+        
+        .fix-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .fix-section h3 {
+            color: #155724;
+            margin: 0 0 16px 0;
+        }
+        
+        .fix-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .fix-list li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .fix-list li::before {
+            content: '✅';
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .test-card h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+        
+        .test-card .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .console-check {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .console-check h3 {
+            color: #856404;
+            margin: 0 0 16px 0;
+        }
+        
+        .console-check p {
+            color: #856404;
+            margin: 8px 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 JavaScript错误修复验证</h1>
+        
+        <div class="error-section">
+            <h3>🚨 原始错误列表</h3>
+            <div class="error-list">
+common.js:363 Uncaught ReferenceError: Cannot access 'AIConversationManager' before initialization<br>
+chat.js:523 Uncaught ReferenceError: commonUtils is not defined<br>
+chat.js:432 Uncaught ReferenceError: commonUtils is not defined<br>
+chat.js:267 Uncaught ReferenceError: commonUtils is not defined<br>
+chat.js:462 Uncaught ReferenceError: commonUtils is not defined<br>
+work-circle.js:626 Uncaught ReferenceError: commonUtils is not defined<br>
+work-circle.js:312 Uncaught ReferenceError: commonUtils is not defined
+            </div>
+        </div>
+        
+        <div class="fix-section">
+            <h3>✅ 修复措施</h3>
+            <ul class="fix-list">
+                <li>修复了common.js中AIConversationManager的初始化顺序问题</li>
+                <li>为chat.js添加了安全的commonUtils包装函数</li>
+                <li>为work-circle.js添加了安全包装函数</li>
+                <li>为chat-list.js添加了安全包装函数</li>
+                <li>批量修复了其他JavaScript文件的commonUtils引用</li>
+                <li>添加了降级机制防止脚本崩溃</li>
+                <li>优化了脚本加载顺序和依赖关系</li>
+            </ul>
+        </div>
+        
+        <div class="console-check">
+            <h3>🔍 控制台检查指南</h3>
+            <p><strong>如何检查：</strong></p>
+            <ol>
+                <li>按F12打开浏览器开发者工具</li>
+                <li>切换到"Console"（控制台）标签</li>
+                <li>刷新页面或点击下方测试链接</li>
+                <li>查看是否还有红色错误信息</li>
+                <li>如果只有蓝色信息或警告，说明修复成功</li>
+            </ol>
+            <p><strong>预期结果：</strong> 应该看不到任何红色的"Uncaught ReferenceError"错误</p>
+        </div>
+        
+        <div class="test-grid">
+            <div class="test-card">
+                <h4>🏢 工作圈页面</h4>
+                <div class="description">测试区域切换和即时通讯功能</div>
+                <a href="work-circle.html" class="test-button" target="_blank">测试工作圈</a>
+            </div>
+            
+            <div class="test-card">
+                <h4>💬 AI聊天</h4>
+                <div class="description">测试AI助手对话功能</div>
+                <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button" target="_blank">测试AI聊天</a>
+            </div>
+            
+            <div class="test-card">
+                <h4>📋 聊天列表</h4>
+                <div class="description">测试聊天列表和过滤功能</div>
+                <a href="chat-list.html" class="test-button" target="_blank">测试聊天列表</a>
+            </div>
+            
+            <div class="test-card">
+                <h4>❓ 问答系统</h4>
+                <div class="description">测试专家问答功能</div>
+                <a href="qa-system.html" class="test-button" target="_blank">测试问答</a>
+            </div>
+            
+            <div class="test-card">
+                <h4>📚 资源库</h4>
+                <div class="description">测试文档资源功能</div>
+                <a href="resource-library.html" class="test-button" target="_blank">测试资源库</a>
+            </div>
+            
+            <div class="test-card">
+                <h4>🏠 首页</h4>
+                <div class="description">测试首页导航和统计</div>
+                <a href="index.html" class="test-button" target="_blank">测试首页</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="test-button" onclick="runErrorCheck()">🔍 运行错误检查</button>
+            <button class="test-button" onclick="testCommonUtils()">🧪 测试CommonUtils</button>
+            <button class="test-button" onclick="clearLog()">🧹 清空日志</button>
+        </div>
+        
+        <div id="testLog" class="log-area">
+            测试日志将在这里显示...
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        function logTest(message, type = 'info') {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.style.color = type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#333';
+            div.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(div);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '测试日志已清空...';
+        }
+        
+        function runErrorCheck() {
+            logTest('🔍 开始错误检查...');
+            
+            // 检查是否有JavaScript错误
+            let errorCount = 0;
+            const originalError = window.onerror;
+            
+            window.onerror = function(msg, url, line, col, error) {
+                errorCount++;
+                logTest(`❌ JavaScript错误: ${msg} (${url}:${line})`, 'error');
+                if (originalError) originalError.apply(this, arguments);
+            };
+            
+            // 检查commonUtils
+            if (typeof window.commonUtils !== 'undefined') {
+                logTest('✅ CommonUtils已正确加载', 'success');
+                
+                // 检查AIConversationManager
+                if (typeof window.commonUtils.AIConversationManager === 'object') {
+                    logTest('✅ AIConversationManager已正确初始化', 'success');
+                } else {
+                    logTest('❌ AIConversationManager未正确初始化', 'error');
+                }
+                
+                // 检查DeepSeek API
+                if (typeof window.commonUtils.callDeepSeekAPI === 'function') {
+                    logTest('✅ DeepSeek API函数可用', 'success');
+                } else {
+                    logTest('❌ DeepSeek API函数不可用', 'error');
+                }
+            } else {
+                logTest('❌ CommonUtils未加载', 'error');
+            }
+            
+            setTimeout(() => {
+                if (errorCount === 0) {
+                    logTest('🎉 未检测到JavaScript错误！', 'success');
+                } else {
+                    logTest(`⚠️ 检测到 ${errorCount} 个JavaScript错误`, 'error');
+                }
+                window.onerror = originalError;
+            }, 1000);
+        }
+        
+        function testCommonUtils() {
+            logTest('🧪 开始测试CommonUtils功能...');
+            
+            try {
+                // 测试基本功能
+                if (typeof window.commonUtils !== 'undefined') {
+                    // 测试showToast
+                    window.commonUtils.showToast('测试Toast功能', 'info');
+                    logTest('✅ showToast功能正常', 'success');
+                    
+                    // 测试formatTime
+                    const timeStr = window.commonUtils.formatTime(Date.now(), 'HH:mm');
+                    logTest(`✅ formatTime功能正常: ${timeStr}`, 'success');
+                    
+                    // 测试AIConversationManager
+                    window.commonUtils.AIConversationManager.addMessage('test', 'user', '测试消息');
+                    const history = window.commonUtils.AIConversationManager.getHistory('test');
+                    if (history.length > 0) {
+                        logTest('✅ AIConversationManager功能正常', 'success');
+                    } else {
+                        logTest('❌ AIConversationManager功能异常', 'error');
+                    }
+                    
+                    logTest('🎉 CommonUtils功能测试完成', 'success');
+                } else {
+                    logTest('❌ CommonUtils未加载，无法测试', 'error');
+                }
+            } catch (error) {
+                logTest(`❌ 测试过程中出现错误: ${error.message}`, 'error');
+            }
+        }
+        
+        // 页面加载完成后自动检查
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('📄 错误修复验证页面已加载');
+            logTest('🔧 已修复的问题：');
+            logTest('  1. AIConversationManager初始化顺序');
+            logTest('  2. Chat.js中的commonUtils引用');
+            logTest('  3. Work-circle.js中的commonUtils引用');
+            logTest('  4. 其他JavaScript文件的commonUtils引用');
+            logTest('📋 请点击上方按钮进行详细测试');
+            
+            setTimeout(() => {
+                runErrorCheck();
+            }, 1000);
+        });
+        
+        // 监听未捕获的错误
+        window.addEventListener('error', function(event) {
+            logTest(`⚠️ 检测到错误: ${event.message} (${event.filename}:${event.lineno})`, 'error');
+        });
+        
+        // 监听未处理的Promise拒绝
+        window.addEventListener('unhandledrejection', function(event) {
+            logTest(`⚠️ 检测到未处理的Promise拒绝: ${event.reason}`, 'error');
+        });
+    </script>
+</body>
+</html>

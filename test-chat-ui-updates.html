@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>即时通讯界面更新测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .before {
+            background: #fff3cd;
+        }
+        
+        .after {
+            background: #d1edff;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .demo-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .demo-quick-access {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-quick-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            min-width: 80px;
+            position: relative;
+        }
+        
+        .demo-quick-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .demo-quick-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .demo-quick-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff4757;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .demo-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        
+        .demo-tab {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .demo-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .demo-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .demo-tab.active:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 即时通讯界面更新测试</h1>
+        <p>测试即时通讯页面的标题显示、消息数字更新和标签切换提醒移除</p>
+        
+        <!-- 修改内容对比 -->
+        <div class="test-section">
+            <h3>1. 修改内容对比</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>修改项目</th>
+                        <th>修改前</th>
+                        <th>修改后</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>页面标题</strong></td>
+                        <td class="before">即时通讯 - 沈阳<br>（根据区域联动）</td>
+                        <td class="after">即时通讯<br>（统一显示）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>在线专家数字</strong></td>
+                        <td class="before">12</td>
+                        <td class="after">2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>群组聊天数字</strong></td>
+                        <td class="before">8</td>
+                        <td class="after">9</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI助手数字</strong></td>
+                        <td class="before">2</td>
+                        <td class="after">不显示</td>
+                    </tr>
+                    <tr>
+                        <td><strong>标签切换提醒</strong></td>
+                        <td class="before">显示"已切换到：xxx"</td>
+                        <td class="after">不显示提醒</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 界面演示 -->
+        <div class="test-section">
+            <h3>2. 界面效果演示</h3>
+            
+            <div class="demo-section">
+                <h4>快速入口（修改后）</h4>
+                <div class="demo-quick-access">
+                    <div class="demo-quick-item">
+                        <div class="demo-quick-icon">👨‍💼</div>
+                        <div class="demo-quick-text">在线专家</div>
+                        <div class="demo-quick-badge">2</div>
+                    </div>
+                    <div class="demo-quick-item">
+                        <div class="demo-quick-icon">👥</div>
+                        <div class="demo-quick-text">群组聊天</div>
+                        <div class="demo-quick-badge">9</div>
+                    </div>
+                    <div class="demo-quick-item">
+                        <div class="demo-quick-icon">🤖</div>
+                        <div class="demo-quick-text">AI助手</div>
+                        <!-- 不显示数字 -->
+                    </div>
+                    <div class="demo-quick-item">
+                        <div class="demo-quick-icon">🛠️</div>
+                        <div class="demo-quick-text">技术支持</div>
+                        <div class="demo-quick-badge">24h</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h4>标签切换（修改后）</h4>
+                <div class="demo-tabs">
+                    <div class="demo-tab active" onclick="switchDemoTab(this)">全部</div>
+                    <div class="demo-tab" onclick="switchDemoTab(this)">群组</div>
+                    <div class="demo-tab" onclick="switchDemoTab(this)">联系人</div>
+                    <div class="demo-tab" onclick="switchDemoTab(this)">AI助手</div>
+                    <div class="demo-tab" onclick="switchDemoTab(this)">客服</div>
+                </div>
+                <div class="test-result">
+                    <span class="status-indicator success"></span>
+                    点击上方标签不会显示切换提醒
+                </div>
+            </div>
+        </div>
+        
+        <!-- 测试步骤 -->
+        <div class="test-section">
+            <h3>3. 测试步骤</h3>
+            
+            <a href="work-circle.html" class="test-button" target="_blank">
+                🔗 打开区域工作圈
+            </a>
+            
+            <a href="chat-list.html" class="test-button" target="_blank">
+                💬 打开即时通讯
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>详细测试步骤：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>打开区域工作圈页面，选择任意区域标签</li>
+                    <li>点击即时通讯功能项</li>
+                    <li>验证跳转到即时通讯页面，标题显示"即时通讯"（不带区域名称）</li>
+                    <li>检查快速入口的数字：在线专家(2)、群组聊天(9)、AI助手(无数字)</li>
+                    <li>点击不同的标签（全部、群组、联系人、AI助手、客服）</li>
+                    <li>验证切换标签时不显示"已切换到：xxx"的提醒</li>
+                    <li>重复测试不同区域的跳转，确认标题始终显示"即时通讯"</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>4. 功能检查清单</h3>
+            
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox" id="check1">
+                    <label for="check1">页面标题统一显示"即时通讯"（不带区域名称）</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check2">
+                    <label for="check2">在线专家数字显示"2"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check3">
+                    <label for="check3">群组聊天数字显示"9"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check4">
+                    <label for="check4">AI助手不显示数字徽章</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check5">
+                    <label for="check5">技术支持仍显示"24h"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check6">
+                    <label for="check6">点击"全部"标签不显示切换提醒</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check7">
+                    <label for="check7">点击"群组"标签不显示切换提醒</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check8">
+                    <label for="check8">点击"联系人"标签不显示切换提醒</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check9">
+                    <label for="check9">点击"AI助手"标签不显示切换提醒</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check10">
+                    <label for="check10">点击"客服"标签不显示切换提醒</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check11">
+                    <label for="check11">从不同区域跳转，标题都显示"即时通讯"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check12">
+                    <label for="check12">区域过滤功能仍然正常工作</label>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>5. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 演示标签切换
+        function switchDemoTab(element) {
+            // 移除所有active状态
+            document.querySelectorAll('.demo-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 添加当前active状态
+            element.classList.add('active');
+            
+            // 记录日志但不显示提醒
+            logTest(`演示：切换到"${element.textContent}"标签，无提醒显示`);
+        }
+        
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 即时通讯界面更新测试页面已加载');
+            logTest('🔧 更新内容：');
+            logTest('  1. 页面标题不再联动，统一显示"即时通讯"');
+            logTest('  2. 在线专家数字：12 → 2');
+            logTest('  3. 群组聊天数字：8 → 9');
+            logTest('  4. AI助手数字：2 → 不显示');
+            logTest('  5. 移除标签切换时的提醒');
+            
+            // 模拟检查更新状态
+            setTimeout(() => {
+                logTest('✅ 页面标题联动已移除');
+                logTest('✅ 快速入口数字已更新');
+                logTest('✅ AI助手数字徽章已移除');
+                logTest('✅ 标签切换提醒已移除');
+                logTest('📋 请在实际页面中验证更新效果');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

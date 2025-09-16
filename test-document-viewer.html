@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档查看器测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .attachment-demo {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e9ecef;
+            margin: 8px 0;
+        }
+        
+        .attachment-demo:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+        
+        .attachment-demo img {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>📄 文档查看器功能测试</h1>
+        <p>测试区域工作圈页面的文档查看功能和document-viewer.html页面</p>
+        
+        <!-- 直接链接测试 -->
+        <div class="test-section">
+            <h3>1. 直接链接测试</h3>
+            <p>直接打开document-viewer.html页面测试不同文档</p>
+            
+            <a href="document-viewer.html?file=5G专网部署最佳实践.pdf" class="test-button" target="_blank">
+                📄 5G专网部署最佳实践.pdf
+            </a>
+            
+            <a href="document-viewer.html?file=5G网络规划指南.pdf" class="test-button" target="_blank">
+                📋 5G网络规划指南.pdf
+            </a>
+            
+            <a href="document-viewer.html?file=专网安全配置手册.pdf" class="test-button" target="_blank">
+                🔒 专网安全配置手册.pdf
+            </a>
+            
+            <a href="document-viewer.html?file=网络优化案例集.pdf" class="test-button" target="_blank">
+                ⚡ 网络优化案例集.pdf
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                点击上方按钮应该能正常打开对应的文档查看页面
+            </div>
+        </div>
+        
+        <!-- 附件点击模拟测试 -->
+        <div class="test-section">
+            <h3>2. 附件点击模拟测试</h3>
+            <p>模拟工作圈页面中的附件点击功能</p>
+            
+            <div class="attachment-demo activity-attachment" onclick="testAttachmentClick(this)">
+                <img src="images/doc-thumb.png" alt="文档">
+                <span>5G专网部署最佳实践.pdf</span>
+            </div>
+            
+            <div class="attachment-demo activity-attachment" onclick="testAttachmentClick(this)">
+                <img src="images/doc-thumb.png" alt="文档">
+                <span>网络优化案例集.pdf</span>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                点击上方附件应该能触发文档查看器打开
+            </div>
+        </div>
+        
+        <!-- 工作圈页面测试 -->
+        <div class="test-section">
+            <h3>3. 工作圈页面测试</h3>
+            <p>测试实际的工作圈页面功能</p>
+            
+            <a href="work-circle.html" class="test-button" target="_blank">
+                🔗 打开工作圈页面
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                在工作圈页面中，找到"最新动态"部分，点击"5G专网部署最佳实践.pdf"附件
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>4. 功能检查清单</h3>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check1"> 
+                <label for="check1">document-viewer.html页面能正常加载</label>
+            </div>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check2"> 
+                <label for="check2">文档标题和元数据正确显示</label>
+            </div>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check3"> 
+                <label for="check3">文档内容完整显示（包含章节、表格、列表等）</label>
+            </div>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check4"> 
+                <label for="check4">下载和分享按钮功能正常</label>
+            </div>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check5"> 
+                <label for="check5">相关文档推荐可以点击</label>
+            </div>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check6"> 
+                <label for="check6">工作圈页面附件点击能跳转到文档查看器</label>
+            </div>
+            
+            <div style="margin: 16px 0;">
+                <input type="checkbox" id="check7"> 
+                <label for="check7">最新动态中已去除人员角色显示</label>
+            </div>
+        </div>
+        
+        <!-- 问题报告 -->
+        <div class="test-section">
+            <h3>5. 问题报告</h3>
+            <p>如果发现任何问题，请在此记录：</p>
+            <textarea id="issueReport" style="width: 100%; height: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="请描述遇到的问题..."></textarea>
+            <button class="test-button" onclick="reportIssue()" style="margin-top: 12px;">提交问题报告</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 测试附件点击功能
+        function testAttachmentClick(element) {
+            const fileName = element.querySelector('span').textContent;
+            console.log('测试点击附件:', fileName);
+            
+            if (typeof commonUtils !== 'undefined') {
+                commonUtils.showToast('正在打开文档...', 'info');
+                setTimeout(() => {
+                    const url = `document-viewer.html?file=${encodeURIComponent(fileName)}`;
+                    window.open(url, '_blank');
+                }, 1000);
+            } else {
+                alert('正在打开文档: ' + fileName);
+                const url = `document-viewer.html?file=${encodeURIComponent(fileName)}`;
+                window.open(url, '_blank');
+            }
+        }
+        
+        // 提交问题报告
+        function reportIssue() {
+            const issue = document.getElementById('issueReport').value.trim();
+            if (issue) {
+                console.log('问题报告:', issue);
+                if (typeof commonUtils !== 'undefined') {
+                    commonUtils.showToast('问题报告已记录', 'success');
+                } else {
+                    alert('问题报告已记录: ' + issue);
+                }
+                document.getElementById('issueReport').value = '';
+            } else {
+                if (typeof commonUtils !== 'undefined') {
+                    commonUtils.showToast('请输入问题描述', 'warning');
+                } else {
+                    alert('请输入问题描述');
+                }
+            }
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('文档查看器测试页面加载完成');
+            
+            // 检查必要的文件是否存在
+            const requiredFiles = [
+                'document-viewer.html',
+                'styles/document-viewer.css',
+                'scripts/document-viewer.js'
+            ];
+            
+            console.log('检查必要文件:', requiredFiles);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI流式输出测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .feature-section {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-section h3 {
+            color: #0c5460;
+            margin: 0 0 16px 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li::before {
+            content: '🚀';
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        .demo-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .demo-section h3 {
+            color: #856404;
+            margin: 0 0 16px 0;
+        }
+        
+        .demo-preview {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
+            position: relative;
+        }
+        
+        .typing-cursor-demo {
+            display: inline-block;
+            animation: blink 1s infinite;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .test-card h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+        }
+        
+        .test-card .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .test-card .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .comparison-item {
+            padding: 16px;
+            border-radius: 8px;
+        }
+        
+        .comparison-item.before {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .comparison-item.after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .comparison-item h4 {
+            margin: 0 0 12px 0;
+        }
+        
+        .comparison-item.before h4 {
+            color: #721c24;
+        }
+        
+        .comparison-item.after h4 {
+            color: #155724;
+        }
+        
+        .comparison-item ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .comparison-item li {
+            margin: 8px 0;
+        }
+        
+        .comparison-item.before li {
+            color: #721c24;
+        }
+        
+        .comparison-item.after li {
+            color: #155724;
+        }
+        
+        .technical-details {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .technical-details h3 {
+            color: #495057;
+            margin: 0 0 16px 0;
+        }
+        
+        .technical-details code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .technical-details pre {
+            background: #f1f3f4;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        
+        .benefits-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .benefits-section h3 {
+            color: #155724;
+            margin: 0 0 16px 0;
+        }
+        
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .benefits-list li {
+            margin: 8px 0;
+            color: #155724;
+            display: flex;
+            align-items: center;
+        }
+        
+        .benefits-list li::before {
+            content: '✅';
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 AI智能助手流式输出功能</h1>
+        
+        <div class="feature-section">
+            <h3>🚀 流式输出特性</h3>
+            <ul class="feature-list">
+                <li>实时文本流式显示，如同真人打字</li>
+                <li>支持Markdown格式渲染（粗体、斜体、代码块等）</li>
+                <li>打字机光标效果，增强视觉体验</li>
+                <li>流式传输完成后自动保存到聊天历史</li>
+                <li>错误处理机制，确保用户体验</li>
+                <li>支持长文本内容的逐步显示</li>
+            </ul>
+        </div>
+        
+        <div class="demo-section">
+            <h3>💡 流式输出演示</h3>
+            <p>以下是流式输出的视觉效果演示：</p>
+            <div class="demo-preview">
+                <div id="streamDemo">正在生成回复</div>
+                <span class="typing-cursor-demo">|</span>
+            </div>
+            <button class="test-button" onclick="startStreamDemo()">▶️ 开始演示</button>
+            <button class="test-button" onclick="stopStreamDemo()">⏹️ 停止演示</button>
+        </div>
+        
+        <div class="comparison-grid">
+            <div class="comparison-item before">
+                <h4>❌ 传统方式</h4>
+                <ul>
+                    <li>用户发送消息后需要等待</li>
+                    <li>AI回复一次性全部显示</li>
+                    <li>无法感知AI的"思考"过程</li>
+                    <li>长回复显得突兀</li>
+                    <li>用户体验不够自然</li>
+                </ul>
+            </div>
+            <div class="comparison-item after">
+                <h4>✅ 流式输出</h4>
+                <ul>
+                    <li>AI回复逐字逐句显示</li>
+                    <li>模拟真人打字的自然感</li>
+                    <li>用户可以实时看到回复进度</li>
+                    <li>长回复更容易阅读和理解</li>
+                    <li>提供更好的交互体验</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="technical-details">
+            <h3>🔧 技术实现细节</h3>
+            <p><strong>API调用方式：</strong></p>
+            <pre><code>// 启用流式传输
+{
+    "model": "deepseek-chat",
+    "messages": [...],
+    "stream": true  // 关键参数
+}</code></pre>
+            
+            <p><strong>流式数据处理：</strong></p>
+            <ul>
+                <li>使用 <code>fetch</code> API 的 <code>ReadableStream</code></li>
+                <li>逐行解析 Server-Sent Events (SSE) 格式</li>
+                <li>实时更新DOM元素内容</li>
+                <li>支持Markdown格式的实时渲染</li>
+            </ul>
+        </div>
+        
+        <div class="benefits-section">
+            <h3>🎯 用户体验提升</h3>
+            <ul class="benefits-list">
+                <li>降低用户等待焦虑感</li>
+                <li>提供实时反馈，增强互动性</li>
+                <li>模拟人类对话的自然节奏</li>
+                <li>支持长文本的渐进式阅读</li>
+                <li>增强AI助手的"智能感"</li>
+                <li>提升整体产品的专业度</li>
+            </ul>
+        </div>
+        
+        <div class="test-grid">
+            <div class="test-card">
+                <div class="icon">🤖</div>
+                <h4>AI智能助手</h4>
+                <div class="description">体验流式输出的AI对话</div>
+                <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button" target="_blank">测试流式对话</a>
+            </div>
+            
+            <div class="test-card">
+                <div class="icon">⚡</div>
+                <h4>性能测试</h4>
+                <div class="description">测试流式输出的响应速度</div>
+                <button class="test-button" onclick="testStreamPerformance()">性能测试</button>
+            </div>
+            
+            <div class="test-card">
+                <div class="icon">🎨</div>
+                <h4>格式测试</h4>
+                <div class="description">测试Markdown格式渲染</div>
+                <button class="test-button" onclick="testMarkdownStream()">格式测试</button>
+            </div>
+            
+            <div class="test-card">
+                <div class="icon">🔍</div>
+                <h4>控制台监控</h4>
+                <div class="description">查看流式传输的技术细节</div>
+                <button class="test-button" onclick="openConsole()">打开控制台</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <p><strong>🎉 现在就去体验全新的AI流式对话吧！</strong></p>
+            <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button" target="_blank" style="font-size: 16px; padding: 16px 32px;">🚀 开始体验</a>
+        </div>
+    </div>
+
+    <script>
+        let streamDemoInterval;
+        let demoTexts = [
+            "您好！我是移动云智能助手",
+            "很高兴为您服务！",
+            "我可以帮助您解答关于5G网络、云计算、边缘计算等技术问题",
+            "请随时向我提问，我会尽力为您提供专业的技术支持！"
+        ];
+        let currentTextIndex = 0;
+        let currentCharIndex = 0;
+        
+        function startStreamDemo() {
+            const demoElement = document.getElementById('streamDemo');
+            demoElement.textContent = '';
+            currentTextIndex = 0;
+            currentCharIndex = 0;
+            
+            streamDemoInterval = setInterval(() => {
+                if (currentTextIndex >= demoTexts.length) {
+                    stopStreamDemo();
+                    return;
+                }
+                
+                const currentText = demoTexts[currentTextIndex];
+                if (currentCharIndex < currentText.length) {
+                    demoElement.textContent += currentText[currentCharIndex];
+                    currentCharIndex++;
+                } else {
+                    demoElement.textContent += '\n';
+                    currentTextIndex++;
+                    currentCharIndex = 0;
+                }
+            }, 50);
+        }
+        
+        function stopStreamDemo() {
+            if (streamDemoInterval) {
+                clearInterval(streamDemoInterval);
+                streamDemoInterval = null;
+            }
+        }
+        
+        function testStreamPerformance() {
+            alert('性能测试说明：\n\n1. 打开AI聊天页面\n2. 发送一条较长的技术问题\n3. 观察流式输出的响应时间\n4. 检查控制台的性能日志\n\n流式输出通常比传统方式感觉更快，因为用户可以立即看到回复开始！');
+        }
+        
+        function testMarkdownStream() {
+            alert('Markdown格式测试：\n\n请在AI聊天中发送包含以下格式的问题：\n• **粗体文本**\n• *斜体文本*\n• `代码片段`\n• 列表项目\n\nAI回复将实时渲染这些格式！');
+        }
+        
+        function openConsole() {
+            alert('请按F12打开开发者工具，在Console标签页中可以看到：\n\n• 流式数据接收日志\n• API调用详情\n• 性能监控信息\n• 错误处理信息\n\n这些信息有助于了解流式输出的技术实现！');
+        }
+        
+        // 页面加载完成后自动开始演示
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(startStreamDemo, 1000);
+        });
+    </script>
+</body>
+</html>

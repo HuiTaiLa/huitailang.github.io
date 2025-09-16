@@ -1,3 +1,15 @@
+// 安全的commonUtils包装函数
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== "undefined") {
+        return window.commonUtils;
+    }
+    return {
+        showToast: function(m,t) { console.log(`[${t}] ${m}`); if(t==="error") alert(m); },
+        navigateTo: function(u) { window.location.href = u; },
+        mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); },
+        formatTime: function(ts,fmt) { return new Date(ts).toLocaleString("zh-CN"); }
+    };
+}
 // 个人中心页面JavaScript功能
 
 let userProfile = {
@@ -109,7 +121,7 @@ function initSettingsModal() {
 
 // 加载用户资料
 function loadUserProfile() {
-    commonUtils.mockApiRequest('/api/user/profile')
+    safeCommonUtils().mockApiRequest('/api/user/profile')
         .then(response => {
             if (response.success) {
                 userProfile = { ...userProfile, ...response.data };
@@ -146,28 +158,28 @@ function handleMenuClick(action, menuItem) {
             showEditProfileModal();
             break;
         case 'my-questions':
-            commonUtils.navigateTo('my-questions.html');
+            safeCommonUtils().navigateTo('my-questions.html');
             break;
         case 'my-answers':
-            commonUtils.navigateTo('my-answers.html');
+            safeCommonUtils().navigateTo('my-answers.html');
             break;
         case 'my-favorites':
-            commonUtils.navigateTo('my-favorites.html');
+            safeCommonUtils().navigateTo('my-favorites.html');
             break;
         case 'my-downloads':
-            commonUtils.navigateTo('my-downloads.html');
+            safeCommonUtils().navigateTo('my-downloads.html');
             break;
         case 'my-circles':
-            commonUtils.navigateTo('my-circles.html');
+            safeCommonUtils().navigateTo('my-circles.html');
             break;
         case 'learning-progress':
-            commonUtils.navigateTo('learning-progress.html');
+            safeCommonUtils().navigateTo('learning-progress.html');
             break;
         case 'my-certificates':
-            commonUtils.navigateTo('my-certificates.html');
+            safeCommonUtils().navigateTo('my-certificates.html');
             break;
         case 'skill-assessment':
-            commonUtils.navigateTo('skill-assessment.html');
+            safeCommonUtils().navigateTo('skill-assessment.html');
             break;
         case 'settings':
             showSettingsModal();
@@ -191,7 +203,7 @@ function handleMenuClick(action, menuItem) {
             confirmLogout();
             break;
         default:
-            commonUtils.showToast('功能开发中...', 'info');
+            safeCommonUtils().showToast('功能开发中...', 'info');
     }
     
     // 统计菜单点击
@@ -240,17 +252,17 @@ function changeAvatar() {
 // 上传头像
 function uploadAvatar(file) {
     if (file.size > 5 * 1024 * 1024) {
-        commonUtils.showToast('图片大小不能超过5MB', 'error');
+        safeCommonUtils().showToast('图片大小不能超过5MB', 'error');
         return;
     }
     
-    commonUtils.showLoading('上传头像中...');
+    safeCommonUtils().showLoading('上传头像中...');
     
     const reader = new FileReader();
     reader.onload = function(e) {
         // 模拟上传
         setTimeout(() => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             
             // 更新头像显示
             const avatarImg = document.querySelector('.user-avatar img');
@@ -259,7 +271,7 @@ function uploadAvatar(file) {
                 userProfile.avatar = e.target.result;
             }
             
-            commonUtils.showToast('头像更新成功', 'success');
+            safeCommonUtils().showToast('头像更新成功', 'success');
             
             // 保存到服务器
             saveAvatarToServer(e.target.result);
@@ -271,7 +283,7 @@ function uploadAvatar(file) {
 
 // 保存头像到服务器
 function saveAvatarToServer(avatarData) {
-    commonUtils.mockApiRequest('/api/user/avatar', {
+    safeCommonUtils().mockApiRequest('/api/user/avatar', {
         method: 'POST',
         body: JSON.stringify({
             avatar: avatarData
@@ -320,10 +332,10 @@ function previewAvatar() {
 // 拍照
 function takePhoto() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        commonUtils.showToast('启动相机功能...', 'info');
+        safeCommonUtils().showToast('启动相机功能...', 'info');
         // 这里可以实现相机功能
     } else {
-        commonUtils.showToast('设备不支持相机功能', 'error');
+        safeCommonUtils().showToast('设备不支持相机功能', 'error');
     }
 }
 
@@ -403,23 +415,23 @@ function saveProfile(event) {
         phone: formData.get('phone')
     };
     
-    commonUtils.showLoading('保存中...');
+    safeCommonUtils().showLoading('保存中...');
     
-    commonUtils.mockApiRequest('/api/user/profile', {
+    safeCommonUtils().mockApiRequest('/api/user/profile', {
         method: 'PUT',
         body: JSON.stringify(profileData)
     }).then(response => {
-        commonUtils.hideLoading();
+        safeCommonUtils().hideLoading();
         
         if (response.success) {
             // 更新本地数据
             Object.assign(userProfile, profileData);
             updateProfileDisplay();
             
-            commonUtils.showToast('资料保存成功', 'success');
+            safeCommonUtils().showToast('资料保存成功', 'success');
             closeEditModal(event.target.querySelector('.btn-secondary'));
         } else {
-            commonUtils.showToast('保存失败，请重试', 'error');
+            safeCommonUtils().showToast('保存失败，请重试', 'error');
         }
     });
 }
@@ -454,17 +466,17 @@ function handleSettingToggle(setting, enabled) {
     };
     
     // 保存设置
-    commonUtils.storage.set(`setting_${setting}`, enabled);
+    safeCommonUtils().storage.set(`setting_${setting}`, enabled);
     
     // 发送到服务器
-    commonUtils.mockApiRequest('/api/user/settings', {
+    safeCommonUtils().mockApiRequest('/api/user/settings', {
         method: 'POST',
         body: JSON.stringify({
             [setting]: enabled
         })
     });
     
-    commonUtils.showToast(
+    safeCommonUtils().showToast(
         `${getSettingName(setting)}已${enabled ? '开启' : '关闭'}`, 
         'success'
     );
@@ -492,37 +504,37 @@ function showStatDetails(statType) {
 
     const info = mapping[statType];
     if (!info) {
-        commonUtils.showToast('暂不支持的统计项', 'error');
+        safeCommonUtils().showToast('暂不支持的统计项', 'error');
         return;
     }
 
-    commonUtils.showToast(`查看${info.title}...`, 'info');
+    safeCommonUtils().showToast(`查看${info.title}...`, 'info');
     setTimeout(() => {
-        commonUtils.navigateTo(info.url);
+        safeCommonUtils().navigateTo(info.url);
     }, 500);
 }
 
 // 显示通知设置
 function showNotificationSettings() {
-    commonUtils.showToast('通知设置功能开发中...', 'info');
+    safeCommonUtils().showToast('通知设置功能开发中...', 'info');
 }
 
 // 显示隐私设置
 function showPrivacySettings() {
-    commonUtils.showToast('隐私设置功能开发中...', 'info');
+    safeCommonUtils().showToast('隐私设置功能开发中...', 'info');
 }
 
 // 显示帮助中心
 function showHelpCenter() {
-    commonUtils.navigateTo('help.html');
+    safeCommonUtils().navigateTo('help.html');
 }
 
 // 显示反馈表单
 function showFeedbackForm() {
-    commonUtils.showConfirm(
+    safeCommonUtils().showConfirm(
         '要提交意见反馈吗？',
         () => {
-            commonUtils.navigateTo('feedback.html');
+            safeCommonUtils().navigateTo('feedback.html');
         }
     );
 }
@@ -541,12 +553,12 @@ function showAboutInfo() {
         </div>
     `;
     
-    commonUtils.showAlert('关于应用', aboutInfo);
+    safeCommonUtils().showAlert('关于应用', aboutInfo);
 }
 
 // 确认退出登录
 function confirmLogout() {
-    commonUtils.showConfirm(
+    safeCommonUtils().showConfirm(
         '确定要退出登录吗？',
         () => {
             performLogout();
@@ -556,19 +568,19 @@ function confirmLogout() {
 
 // 执行退出登录
 function performLogout() {
-    commonUtils.showLoading('退出中...');
+    safeCommonUtils().showLoading('退出中...');
     
     // 清除本地存储
-    commonUtils.storage.clear();
+    safeCommonUtils().storage.clear();
     
     // 发送退出请求
-    commonUtils.mockApiRequest('/api/auth/logout', {
+    safeCommonUtils().mockApiRequest('/api/auth/logout', {
         method: 'POST'
     }).then(response => {
-        commonUtils.hideLoading();
+        safeCommonUtils().hideLoading();
         
         if (response.success) {
-            commonUtils.showToast('已退出登录', 'success');
+            safeCommonUtils().showToast('已退出登录', 'success');
             
             setTimeout(() => {
                 // 跳转到登录页面
@@ -683,7 +695,7 @@ function showActionSheet(title, options, callback) {
 
 // 统计菜单点击
 function trackMenuClick(action) {
-    commonUtils.mockApiRequest('/api/analytics/menu-click', {
+    safeCommonUtils().mockApiRequest('/api/analytics/menu-click', {
         method: 'POST',
         body: JSON.stringify({
             page: 'profile',

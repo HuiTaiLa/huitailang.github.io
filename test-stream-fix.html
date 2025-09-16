@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI流式输出闪屏问题修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .problem-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .problem-section h3 {
+            color: #721c24;
+            margin: 0 0 16px 0;
+        }
+        
+        .solution-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .solution-section h3 {
+            color: #155724;
+            margin: 0 0 16px 0;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .error-log {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .error-log .error {
+            color: #fc8181;
+        }
+        
+        .error-log .warning {
+            color: #f6e05e;
+        }
+        
+        .error-log .info {
+            color: #63b3ed;
+        }
+        
+        .test-steps {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .test-steps li {
+            margin: 12px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .test-steps li::before {
+            content: attr(data-step);
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .fix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .fix-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .fix-card h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+        }
+        
+        .fix-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .fix-card .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .comparison-table .before {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .comparison-table .after {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 AI流式输出闪屏问题修复</h1>
+        
+        <div class="problem-section">
+            <h3>❌ 问题描述</h3>
+            <p>当用户在AI流式回复过程中离开页面，再回到聊天页面时，会出现以下问题：</p>
+            <ul>
+                <li><strong>闪屏现象</strong>：页面快速闪烁，用户体验不佳</li>
+                <li><strong>AbortError错误</strong>：控制台显示流式传输被中断的错误</li>
+                <li><strong>重复中断</strong>：使用已中断的AbortController导致立即失败</li>
+                <li><strong>状态不一致</strong>：流式传输状态与实际情况不匹配</li>
+            </ul>
+            
+            <h4>错误日志示例：</h4>
+            <div class="error-log">
+                <div class="info">页面隐藏，中断流式传输</div>
+                <div class="info">已中断流式传输</div>
+                <div class="error">流式读取失败: AbortError: BodyStreamBuffer was aborted</div>
+                <div class="error">AI流式回复失败: AbortError: BodyStreamBuffer was aborted</div>
+                <div class="warning">流式传输被用户中断（页面隐藏）</div>
+            </div>
+        </div>
+        
+        <div class="solution-section">
+            <h3>✅ 解决方案</h3>
+            <p>通过以下技术手段解决了闪屏和错误问题：</p>
+            <ul>
+                <li><strong>AbortController管理</strong>：正确处理已中断的控制器</li>
+                <li><strong>状态清理</strong>：页面隐藏时清理中断的控制器</li>
+                <li><strong>智能恢复</strong>：页面可见时创建新的控制器</li>
+                <li><strong>防抖处理</strong>：避免快速页面切换的重复操作</li>
+                <li><strong>错误过滤</strong>：不显示用户主动中断的错误信息</li>
+            </ul>
+        </div>
+        
+        <div class="fix-grid">
+            <div class="fix-card">
+                <div class="icon">🛡️</div>
+                <h4>AbortController管理</h4>
+                <div class="description">页面隐藏时清除已中断的控制器，恢复时创建新的控制器</div>
+                <div class="code-block">
+// 页面隐藏时清理
+currentStreamingState.abortController = null;
+
+// 恢复时创建新的
+currentStreamingState.abortController = new AbortController();
+                </div>
+            </div>
+            
+            <div class="fix-card">
+                <div class="icon">⏱️</div>
+                <h4>防抖处理</h4>
+                <div class="description">延迟页面可见性处理，避免快速切换导致的重复操作</div>
+                <div class="code-block">
+// 延迟200ms处理页面可见
+visibilityChangeTimeout = setTimeout(() => {
+    handlePageVisible();
+}, 200);
+                </div>
+            </div>
+            
+            <div class="fix-card">
+                <div class="icon">🔍</div>
+                <h4>状态检查</h4>
+                <div class="description">确保只在AI聊天页面进行流式传输恢复</div>
+                <div class="code-block">
+// 检查页面类型
+if (currentChatInfo.type !== 'ai_bot') {
+    return; // 跳过恢复
+}
+                </div>
+            </div>
+            
+            <div class="fix-card">
+                <div class="icon">🚫</div>
+                <h4>错误过滤</h4>
+                <div class="description">过滤用户主动中断的错误，避免显示误导信息</div>
+                <div class="code-block">
+if (error.name === 'AbortError') {
+    // 不显示错误消息
+    return;
+}
+                </div>
+            </div>
+        </div>
+        
+        <h3>🔄 修复前后对比</h3>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>问题</th>
+                    <th>修复前</th>
+                    <th>修复后</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>页面切换体验</strong></td>
+                    <td class="before">闪屏、卡顿</td>
+                    <td class="after">流畅、无闪屏</td>
+                </tr>
+                <tr>
+                    <td><strong>控制台错误</strong></td>
+                    <td class="before">大量AbortError</td>
+                    <td class="after">无错误日志</td>
+                </tr>
+                <tr>
+                    <td><strong>流式传输恢复</strong></td>
+                    <td class="before">立即失败</td>
+                    <td class="after">正常恢复</td>
+                </tr>
+                <tr>
+                    <td><strong>用户体验</strong></td>
+                    <td class="before">困惑、不稳定</td>
+                    <td class="after">流畅、可靠</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3>🧪 测试步骤</h3>
+        <ol class="test-steps">
+            <li data-step="1">打开AI智能助手聊天页面</li>
+            <li data-step="2">发送一个需要较长回复的问题（如"详细介绍5G网络技术"）</li>
+            <li data-step="3">在AI开始流式回复时，快速点击浏览器后退按钮</li>
+            <li data-step="4">立即再次进入AI聊天页面</li>
+            <li data-step="5">观察是否有闪屏现象，检查控制台是否有错误</li>
+            <li data-step="6">验证AI回复是否正常继续或完整显示</li>
+        </ol>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <p><strong>🚀 现在就去测试修复效果吧！</strong></p>
+            <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button" target="_blank" style="font-size: 16px; padding: 16px 32px;">开始测试</a>
+        </div>
+        
+        <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px; padding: 16px; margin: 20px 0;">
+            <h4 style="color: #1565c0; margin: 0 0 12px 0;">💡 测试要点</h4>
+            <ul style="margin: 0; color: #1565c0;">
+                <li>重点观察页面切换时是否有闪屏现象</li>
+                <li>检查浏览器控制台是否还有AbortError错误</li>
+                <li>验证AI回复内容是否完整显示</li>
+                <li>测试多次快速页面切换的稳定性</li>
+                <li>确认流式输出的打字机效果是否正常</li>
+            </ul>
+        </div>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 16px; margin: 20px 0;">
+            <h4 style="color: #856404; margin: 0 0 12px 0;">⚠️ 注意事项</h4>
+            <ul style="margin: 0; color: #856404;">
+                <li>建议在不同浏览器中测试兼容性</li>
+                <li>可以打开开发者工具监控网络请求</li>
+                <li>测试时注意观察内存使用情况</li>
+                <li>如发现问题，请记录具体的操作步骤</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

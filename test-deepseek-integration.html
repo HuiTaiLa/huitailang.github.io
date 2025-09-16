@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek API集成测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-button.ai {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        }
+        
+        .config-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 16px 0;
+        }
+        
+        .config-item {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .config-key {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .config-value {
+            color: #28a745;
+            background: #d4edda;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .api-test-area {
+            background: #fff;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .test-result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .result-success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .result-error {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li::before {
+            content: '🤖';
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        .integration-steps {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .integration-steps h4 {
+            color: #0c5460;
+            margin: 0 0 12px 0;
+        }
+        
+        .integration-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .integration-steps li {
+            color: #0c5460;
+            margin: 8px 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .api-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .api-info h4 {
+            color: #856404;
+            margin: 0 0 12px 0;
+        }
+        
+        .api-info p {
+            color: #856404;
+            margin: 8px 0;
+        }
+        
+        .test-scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .scenario-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .scenario-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .scenario-card h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+        
+        .scenario-card .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .scenario-card .description {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🤖 DeepSeek API集成测试</h1>
+        <p>测试AI智能助手与DeepSeek API的集成功能</p>
+        
+        <!-- API配置信息 -->
+        <div class="test-section">
+            <h3>1. API配置信息</h3>
+            
+            <div class="config-display">
+                <div class="config-item">
+                    <span class="config-key">API密钥:</span>
+                    <span class="config-value">sk-efa9847cabe74bad83d8e7ee2a4a5786</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-key">API地址:</span>
+                    <span class="config-value">https://api.deepseek.com/v1/chat/completions</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-key">模型:</span>
+                    <span class="config-value">deepseek-chat</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-key">最大Token:</span>
+                    <span class="config-value">1000</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-key">温度参数:</span>
+                    <span class="config-value">0.7</span>
+                </div>
+            </div>
+            
+            <div class="api-info">
+                <h4>🔑 API配置说明</h4>
+                <p>• API密钥已配置在全局配置中，支持自动认证</p>
+                <p>• 系统提示词针对移动云业务支撑平台进行了优化</p>
+                <p>• 支持对话历史管理，保持上下文连贯性</p>
+                <p>• 包含错误处理和降级机制</p>
+            </div>
+        </div>
+        
+        <!-- 集成功能特性 -->
+        <div class="test-section">
+            <h3>2. 集成功能特性</h3>
+            
+            <ul class="feature-list">
+                <li>真实AI对话：使用DeepSeek API进行智能回复</li>
+                <li>上下文记忆：保持对话历史，支持多轮对话</li>
+                <li>专业领域：针对5G、云计算、边缘计算等技术领域优化</li>
+                <li>错误处理：API失败时显示友好错误信息</li>
+                <li>Token统计：开发模式下显示API使用情况</li>
+                <li>异步处理：不阻塞用户界面，支持实时输入状态</li>
+                <li>降级机制：API不可用时提供备用回复</li>
+            </ul>
+        </div>
+        
+        <!-- 测试场景 -->
+        <div class="test-section">
+            <h3>3. 测试场景</h3>
+            
+            <div class="test-scenarios">
+                <div class="scenario-card" onclick="testScenario('5G')">
+                    <div class="icon">📡</div>
+                    <h4>5G技术咨询</h4>
+                    <div class="description">测试5G专网相关问题</div>
+                </div>
+                
+                <div class="scenario-card" onclick="testScenario('cloud')">
+                    <div class="icon">☁️</div>
+                    <h4>云计算问题</h4>
+                    <div class="description">测试云服务技术支持</div>
+                </div>
+                
+                <div class="scenario-card" onclick="testScenario('edge')">
+                    <div class="icon">⚡</div>
+                    <h4>边缘计算</h4>
+                    <div class="description">测试边缘计算部署</div>
+                </div>
+                
+                <div class="scenario-card" onclick="testScenario('network')">
+                    <div class="icon">🌐</div>
+                    <h4>网络配置</h4>
+                    <div class="description">测试网络优化建议</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- API测试区域 -->
+        <div class="test-section">
+            <h3>4. API测试区域</h3>
+            
+            <div class="api-test-area">
+                <h4>💬 直接测试DeepSeek API</h4>
+                <textarea id="testInput" class="test-input" placeholder="输入您的问题，例如：请介绍一下5G专网的部署要点"></textarea>
+                <button id="testApiBtn" class="test-button ai" onclick="testDeepSeekAPI()">
+                    🤖 发送到DeepSeek API
+                </button>
+                <button class="test-button" onclick="clearTestResult()">清空结果</button>
+                
+                <div id="testResult" class="test-result" style="display: none;">
+                    <div id="testResultContent"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 聊天界面测试 -->
+        <div class="test-section">
+            <h3>5. 聊天界面测试</h3>
+            
+            <div class="integration-steps">
+                <h4>🔗 集成测试步骤</h4>
+                <ol>
+                    <li>点击下方按钮进入AI助手聊天界面</li>
+                    <li>发送消息测试DeepSeek API回复</li>
+                    <li>观察AI头像是否正确显示（🤖图标）</li>
+                    <li>验证对话历史是否保持连贯</li>
+                    <li>测试错误处理机制（断网等情况）</li>
+                </ol>
+            </div>
+            
+            <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button ai" target="_blank">
+                🤖 测试AI助手聊天
+            </a>
+            
+            <a href="chat.html?group=group_1&name=技术交流群" class="test-button" target="_blank">
+                👥 测试群聊@AI功能
+            </a>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>6. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 清空测试结果
+        function clearTestResult() {
+            const testResult = document.getElementById('testResult');
+            testResult.style.display = 'none';
+            logTest('🧹 测试结果已清空');
+        }
+        
+        // 测试场景
+        function testScenario(type) {
+            const scenarios = {
+                '5G': '请详细介绍5G专网的部署要点和注意事项',
+                'cloud': '移动云平台的API调用超时问题如何解决？',
+                'edge': '边缘计算节点的部署架构有哪些最佳实践？',
+                'network': '网络切片配置需要注意哪些关键参数？'
+            };
+            
+            const question = scenarios[type];
+            document.getElementById('testInput').value = question;
+            logTest(`📝 已填入${type}测试场景问题`);
+        }
+        
+        // 测试DeepSeek API
+        async function testDeepSeekAPI() {
+            const input = document.getElementById('testInput');
+            const button = document.getElementById('testApiBtn');
+            const result = document.getElementById('testResult');
+            const resultContent = document.getElementById('testResultContent');
+            
+            const question = input.value.trim();
+            if (!question) {
+                alert('请输入测试问题');
+                return;
+            }
+            
+            // 显示加载状态
+            button.innerHTML = '<div class="loading"></div>正在调用API...';
+            button.disabled = true;
+            result.style.display = 'block';
+            result.className = 'test-result';
+            resultContent.innerHTML = '<div class="loading"></div>正在等待DeepSeek API响应...';
+            
+            logTest(`🚀 开始测试DeepSeek API，问题：${question}`);
+            
+            try {
+                // 调用API
+                const response = await commonUtils.callDeepSeekAPI(question);
+                
+                if (response.success) {
+                    result.className = 'test-result result-success';
+                    resultContent.innerHTML = `
+                        <h4>✅ API调用成功</h4>
+                        <p><strong>AI回复：</strong></p>
+                        <div style="background: white; padding: 12px; border-radius: 6px; margin: 8px 0; white-space: pre-wrap;">${response.message}</div>
+                        ${response.usage ? `
+                        <p><strong>Token使用情况：</strong></p>
+                        <div style="font-family: monospace; font-size: 12px;">
+                            输入Token: ${response.usage.prompt_tokens}<br>
+                            输出Token: ${response.usage.completion_tokens}<br>
+                            总计Token: ${response.usage.total_tokens}
+                        </div>
+                        ` : ''}
+                    `;
+                    logTest(`✅ API调用成功，使用Token: ${response.usage?.total_tokens || '未知'}`);
+                } else {
+                    result.className = 'test-result result-error';
+                    resultContent.innerHTML = `
+                        <h4>❌ API调用失败</h4>
+                        <p><strong>错误信息：</strong> ${response.error}</p>
+                        <p><strong>降级回复：</strong> ${response.fallbackMessage}</p>
+                    `;
+                    logTest(`❌ API调用失败：${response.error}`);
+                }
+            } catch (error) {
+                result.className = 'test-result result-error';
+                resultContent.innerHTML = `
+                    <h4>💥 测试异常</h4>
+                    <p><strong>异常信息：</strong> ${error.message}</p>
+                `;
+                logTest(`💥 测试异常：${error.message}`);
+            }
+            
+            // 恢复按钮状态
+            button.innerHTML = '🤖 发送到DeepSeek API';
+            button.disabled = false;
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 DeepSeek API集成测试页面已加载');
+            logTest('🔧 配置信息：');
+            logTest(`  API密钥: ${GlobalConfig.DEEPSEEK_API_KEY.substring(0, 20)}...`);
+            logTest(`  模型: ${GlobalConfig.AI_MODEL}`);
+            logTest(`  最大Token: ${GlobalConfig.AI_MAX_TOKENS}`);
+            logTest(`  温度参数: ${GlobalConfig.AI_TEMPERATURE}`);
+            logTest('📋 请选择测试场景或直接输入问题进行测试');
+        });
+    </script>
+</body>
+</html>

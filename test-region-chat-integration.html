@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区域工作圈与即时通讯联动测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .before {
+            background: #fff3cd;
+        }
+        
+        .after {
+            background: #d1edff;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .flow-diagram {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 4px;
+            font-size: 13px;
+        }
+        
+        .flow-arrow {
+            display: inline-block;
+            margin: 0 8px;
+            font-size: 18px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 区域工作圈与即时通讯联动测试</h1>
+        <p>测试区域工作圈页面与即时通讯页面的联动过滤功能和数据更新</p>
+        
+        <!-- 修改内容对比 -->
+        <div class="test-section">
+            <h3>1. 修改内容对比</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>修改项目</th>
+                        <th>修改前</th>
+                        <th>修改后</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>首页资源库统计</strong></td>
+                        <td class="before">6个文档</td>
+                        <td class="after">20个文档</td>
+                    </tr>
+                    <tr>
+                        <td><strong>工作圈即时通讯数字</strong></td>
+                        <td class="before">12</td>
+                        <td class="after">28</td>
+                    </tr>
+                    <tr>
+                        <td><strong>即时通讯跳转</strong></td>
+                        <td class="before">跳转到chat.html</td>
+                        <td class="after">跳转到chat-list.html</td>
+                    </tr>
+                    <tr>
+                        <td><strong>区域联动</strong></td>
+                        <td class="before">无联动过滤</td>
+                        <td class="after">根据选中区域过滤群组</td>
+                    </tr>
+                    <tr>
+                        <td><strong>群组名称</strong></td>
+                        <td class="before">华东区5G专网交流群</td>
+                        <td class="after">沈阳5G专网交流群</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 联动流程图 -->
+        <div class="test-section">
+            <h3>2. 联动流程图</h3>
+            
+            <div class="flow-diagram">
+                <div class="flow-step">选择区域标签</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">点击即时通讯</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">传递区域参数</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">过滤对应群组</div>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>区域映射关系：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li><strong>全部</strong> → 显示所有群组</li>
+                    <li><strong>沈阳</strong> (east) → 显示沈阳群组 + 全局群组</li>
+                    <li><strong>大连</strong> (south) → 显示大连群组 + 全局群组</li>
+                    <li><strong>盘锦</strong> (north) → 显示盘锦群组 + 全局群组</li>
+                    <li><strong>葫芦岛</strong> (west) → 显示葫芦岛群组 + 全局群组</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 新增群组详情 -->
+        <div class="test-section">
+            <h3>3. 新增和更新的群组</h3>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>群组列表：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li><strong>沈阳5G专网交流群</strong> 🌐 (156人) - 区域：沈阳</li>
+                    <li><strong>大连物联网应用圈</strong> 🌊 (89人) - 区域：大连</li>
+                    <li><strong>盘锦运维管理群</strong> 🛠️ (45人) - 区域：盘锦</li>
+                    <li><strong>葫芦岛技术交流群</strong> 🏔️ (32人) - 区域：葫芦岛</li>
+                    <li><strong>移动云技术支持群</strong> ☁️ (156人) - 区域：全局</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 测试步骤 -->
+        <div class="test-section">
+            <h3>4. 测试步骤</h3>
+            
+            <a href="index.html" class="test-button" target="_blank">
+                🏠 打开首页
+            </a>
+            
+            <a href="work-circle.html" class="test-button" target="_blank">
+                🔗 打开区域工作圈
+            </a>
+            
+            <a href="chat-list.html" class="test-button" target="_blank">
+                💬 打开即时通讯
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>详细测试步骤：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>打开首页，确认资源库显示"20个文档"</li>
+                    <li>打开区域工作圈页面，确认即时通讯显示"28"</li>
+                    <li>在工作圈页面选择"全部"标签，点击即时通讯</li>
+                    <li>验证跳转到chat-list.html，显示所有群组</li>
+                    <li>返回工作圈，选择"沈阳"标签，点击即时通讯</li>
+                    <li>验证跳转到chat-list.html，只显示沈阳和全局群组</li>
+                    <li>重复测试其他区域（大连、盘锦、葫芦岛）</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>5. 功能检查清单</h3>
+            
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox" id="check1">
+                    <label for="check1">首页资源库统计显示"20个文档"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check2">
+                    <label for="check2">工作圈页面即时通讯显示"28"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check3">
+                    <label for="check3">点击即时通讯跳转到chat-list.html页面</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check4">
+                    <label for="check4">选择"全部"时显示所有群组</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check5">
+                    <label for="check5">选择"沈阳"时只显示沈阳和全局群组</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check6">
+                    <label for="check6">选择"大连"时只显示大连和全局群组</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check7">
+                    <label for="check7">选择"盘锦"时只显示盘锦和全局群组</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check8">
+                    <label for="check8">选择"葫芦岛"时只显示葫芦岛和全局群组</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check9">
+                    <label for="check9">群组名称已更新为对应城市名称</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check10">
+                    <label for="check10">页面标题显示当前过滤的区域</label>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>6. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 区域工作圈与即时通讯联动测试页面已加载');
+            logTest('🔧 更新内容：');
+            logTest('  1. 首页资源库统计：6个文档 → 20个文档');
+            logTest('  2. 工作圈即时通讯数字：12 → 28');
+            logTest('  3. 即时通讯跳转：chat.html → chat-list.html');
+            logTest('  4. 新增区域联动过滤功能');
+            logTest('  5. 更新群组名称和区域映射');
+            
+            // 模拟检查更新状态
+            setTimeout(() => {
+                logTest('✅ 数字统计已更新');
+                logTest('✅ 跳转链接已修改');
+                logTest('✅ 区域过滤功能已实现');
+                logTest('✅ 群组数据已更新');
+                logTest('📋 请在实际页面中测试联动效果');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

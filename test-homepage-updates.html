@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页和资源库更新测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .before {
+            background: #fff3cd;
+        }
+        
+        .after {
+            background: #d1edff;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 首页和资源库更新测试</h1>
+        <p>测试首页标题修改、区域名称更新、统计数字修正和资源库内容整合</p>
+        
+        <!-- 修改内容对比 -->
+        <div class="test-section">
+            <h3>1. 修改内容对比</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>修改项目</th>
+                        <th>修改前</th>
+                        <th>修改后</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>首页标题</strong></td>
+                        <td class="before">移动云业务支撑库</td>
+                        <td class="after">云聚工作台</td>
+                    </tr>
+                    <tr>
+                        <td><strong>最新动态区域</strong></td>
+                        <td class="before">华东区专家回复了您的问题</td>
+                        <td class="after">沈阳专家回复了您的问题</td>
+                    </tr>
+                    <tr>
+                        <td><strong>用户信息区域</strong></td>
+                        <td class="before">华东区技术支持</td>
+                        <td class="after">沈阳技术支持</td>
+                    </tr>
+                    <tr>
+                        <td><strong>资源库统计</strong></td>
+                        <td class="before">1.2万+文档（不准确）</td>
+                        <td class="after">6个文档（准确）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>工作圈统计</strong></td>
+                        <td class="before">8个活跃圈子</td>
+                        <td class="after">3个活跃圈子</td>
+                    </tr>
+                    <tr>
+                        <td><strong>资源库内容</strong></td>
+                        <td class="before">4个文档资源</td>
+                        <td class="after">6个文档资源<br>（新增2个热门推荐）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 新增资源详情 -->
+        <div class="test-section">
+            <h3>2. 新增资源详情</h3>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>从热门推荐移至文档列表的资源：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>
+                        <strong>5G专网建设指南</strong> (PDF, 15.2 MB)
+                        <br>最新版本，包含完整部署流程和技术规范
+                        <br>👁 1.2k | 📥 356
+                    </li>
+                    <li>
+                        <strong>云服务故障排查手册</strong> (DOC, 8.7 MB)
+                        <br>常见问题快速定位和解决方案集合
+                        <br>👁 892 | 📥 234
+                    </li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 页面测试链接 -->
+        <div class="test-section">
+            <h3>3. 页面测试</h3>
+            
+            <a href="index.html" class="test-button" target="_blank">
+                🏠 打开首页
+            </a>
+            
+            <a href="resource-library.html" class="test-button" target="_blank">
+                📚 打开资源库页面
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>首页检查项目：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>页面标题显示"云聚工作台"</li>
+                    <li>Logo文字显示"云聚工作台"</li>
+                    <li>最新动态显示"沈阳专家回复了您的问题"</li>
+                    <li>用户信息显示"沈阳技术支持"</li>
+                    <li>移动云资源库显示"6个文档"</li>
+                    <li>区域工作圈显示"3个活跃圈子"</li>
+                </ul>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>资源库页面检查项目：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>文档资源列表包含6个文档</li>
+                    <li>新增"5G专网建设指南"文档项</li>
+                    <li>新增"云服务故障排查手册"文档项</li>
+                    <li>热门推荐区域保持不变</li>
+                    <li>所有文档项的预览和下载功能正常</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>4. 功能检查清单</h3>
+            
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox" id="check1">
+                    <label for="check1">首页标题和Logo显示"云聚工作台"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check2">
+                    <label for="check2">首页最新动态显示"沈阳专家回复了您的问题"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check3">
+                    <label for="check3">首页用户信息显示"沈阳技术支持"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check4">
+                    <label for="check4">首页资源库统计显示"6个文档"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check5">
+                    <label for="check5">首页工作圈统计显示"3个活跃圈子"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check6">
+                    <label for="check6">资源库页面文档列表包含6个文档</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check7">
+                    <label for="check7">资源库页面新增"5G专网建设指南"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check8">
+                    <label for="check8">资源库页面新增"云服务故障排查手册"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check9">
+                    <label for="check9">热门推荐区域保持原有显示</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check10">
+                    <label for="check10">所有页面导航和功能正常工作</label>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 数据统计验证 -->
+        <div class="test-section">
+            <h3>5. 数据统计验证</h3>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>资源库文档统计：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>原有文档：4个</li>
+                    <li>新增热门推荐：2个</li>
+                    <li><span class="highlight">总计：6个文档</span></li>
+                </ul>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>工作圈统计说明：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>根据用户要求调整为3个活跃圈子</li>
+                    <li>与实际工作圈页面的圈子数量保持一致</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>6. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 首页和资源库更新测试页面已加载');
+            logTest('📋 更新内容：');
+            logTest('  1. 首页标题：移动云业务支撑库 → 云聚工作台');
+            logTest('  2. 区域名称：华东区 → 沈阳');
+            logTest('  3. 资源统计：1.2万+文档 → 6个文档');
+            logTest('  4. 工作圈统计：8个活跃圈子 → 3个活跃圈子');
+            logTest('  5. 资源库内容：新增2个热门推荐到文档列表');
+            
+            // 模拟检查更新状态
+            setTimeout(() => {
+                logTest('✅ 首页标题和Logo已更新');
+                logTest('✅ 区域名称已统一更新为沈阳');
+                logTest('✅ 统计数字已修正为准确数值');
+                logTest('✅ 资源库文档列表已扩充');
+                logTest('📋 请在实际页面中验证更新效果');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

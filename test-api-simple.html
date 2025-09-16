@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单API测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-area {
+            margin: 20px 0;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px 10px 0;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .config-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .config-info h3 {
+            margin: 0 0 10px 0;
+            color: #0c5460;
+        }
+        
+        .config-info p {
+            margin: 5px 0;
+            color: #0c5460;
+            font-size: 14px;
+        }
+        
+        .quick-tests {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .quick-test {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-test:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .quick-test h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .quick-test p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 DeepSeek API 简单测试</h1>
+        
+        <div class="config-info">
+            <h3>📋 配置信息</h3>
+            <p><strong>API密钥:</strong> sk-efa9847cabe74bad83d8e7ee2a4a5786</p>
+            <p><strong>模型:</strong> deepseek-chat</p>
+            <p><strong>API地址:</strong> https://api.deepseek.com/v1/chat/completions</p>
+        </div>
+        
+        <div class="test-area">
+            <h3>💬 测试问题</h3>
+            <textarea id="questionInput" placeholder="输入您的问题，例如：请介绍一下5G专网的部署要点">请介绍一下5G专网的部署要点</textarea>
+            
+            <div class="quick-tests">
+                <div class="quick-test" onclick="setQuestion('5G')">
+                    <h4>📡 5G技术</h4>
+                    <p>5G专网部署要点</p>
+                </div>
+                <div class="quick-test" onclick="setQuestion('cloud')">
+                    <h4>☁️ 云计算</h4>
+                    <p>云服务技术问题</p>
+                </div>
+                <div class="quick-test" onclick="setQuestion('edge')">
+                    <h4>⚡ 边缘计算</h4>
+                    <p>边缘计算架构</p>
+                </div>
+                <div class="quick-test" onclick="setQuestion('network')">
+                    <h4>🌐 网络配置</h4>
+                    <p>网络优化建议</p>
+                </div>
+            </div>
+            
+            <button id="testBtn" onclick="testAPI()">🚀 测试API调用</button>
+            <button onclick="clearResult()">🧹 清空结果</button>
+            
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 设置快速测试问题
+        function setQuestion(type) {
+            const questions = {
+                '5G': '请详细介绍5G专网的部署要点和注意事项',
+                'cloud': '移动云平台的API调用超时问题如何解决？',
+                'edge': '边缘计算节点的部署架构有哪些最佳实践？',
+                'network': '网络切片配置需要注意哪些关键参数？'
+            };
+            
+            document.getElementById('questionInput').value = questions[type];
+        }
+        
+        // 清空结果
+        function clearResult() {
+            const result = document.getElementById('result');
+            result.style.display = 'none';
+            result.className = 'result';
+            result.textContent = '';
+        }
+        
+        // 测试API
+        async function testAPI() {
+            const questionInput = document.getElementById('questionInput');
+            const testBtn = document.getElementById('testBtn');
+            const result = document.getElementById('result');
+            
+            const question = questionInput.value.trim();
+            if (!question) {
+                alert('请输入测试问题');
+                return;
+            }
+            
+            // 显示加载状态
+            testBtn.innerHTML = '<div class="loading"></div>正在调用API...';
+            testBtn.disabled = true;
+            
+            result.style.display = 'block';
+            result.className = 'result';
+            result.textContent = '正在调用DeepSeek API，请稍候...';
+            
+            console.log('开始测试API调用，问题:', question);
+            
+            try {
+                // 检查全局配置是否存在
+                if (typeof GlobalConfig === 'undefined') {
+                    throw new Error('GlobalConfig未定义，请确保common.js正确加载');
+                }
+                
+                if (typeof commonUtils === 'undefined') {
+                    throw new Error('commonUtils未定义，请确保common.js正确加载');
+                }
+                
+                if (typeof commonUtils.callDeepSeekAPI !== 'function') {
+                    throw new Error('callDeepSeekAPI函数未定义');
+                }
+                
+                console.log('配置检查通过，开始调用API');
+                
+                // 调用API
+                const response = await commonUtils.callDeepSeekAPI(question);
+                
+                console.log('API响应:', response);
+                
+                if (response.success) {
+                    result.className = 'result success';
+                    result.textContent = `✅ API调用成功！\n\nAI回复：\n${response.message}\n\n`;
+                    
+                    if (response.usage) {
+                        result.textContent += `Token使用情况：\n输入Token: ${response.usage.prompt_tokens}\n输出Token: ${response.usage.completion_tokens}\n总计Token: ${response.usage.total_tokens}`;
+                    }
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ API调用失败\n\n错误信息：${response.error}\n\n降级回复：${response.fallbackMessage}`;
+                }
+                
+            } catch (error) {
+                console.error('测试异常:', error);
+                result.className = 'result error';
+                result.textContent = `💥 测试异常\n\n错误信息：${error.message}\n\n请检查：\n1. 网络连接是否正常\n2. API密钥是否有效\n3. 浏览器控制台是否有其他错误`;
+            }
+            
+            // 恢复按钮状态
+            testBtn.innerHTML = '🚀 测试API调用';
+            testBtn.disabled = false;
+        }
+        
+        // 页面加载完成后检查配置
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，检查配置...');
+            
+            if (typeof GlobalConfig !== 'undefined') {
+                console.log('✅ GlobalConfig已加载');
+                console.log('API密钥:', GlobalConfig.DEEPSEEK_API_KEY.substring(0, 20) + '...');
+                console.log('模型:', GlobalConfig.AI_MODEL);
+            } else {
+                console.error('❌ GlobalConfig未加载');
+            }
+            
+            if (typeof commonUtils !== 'undefined') {
+                console.log('✅ commonUtils已加载');
+                if (typeof commonUtils.callDeepSeekAPI === 'function') {
+                    console.log('✅ callDeepSeekAPI函数可用');
+                } else {
+                    console.error('❌ callDeepSeekAPI函数不可用');
+                }
+            } else {
+                console.error('❌ commonUtils未加载');
+            }
+        });
+    </script>
+</body>
+</html>

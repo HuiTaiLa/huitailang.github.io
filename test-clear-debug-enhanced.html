@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清空聊天记录调试增强版</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .debug-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .debug-section h3 {
+            color: #495057;
+            margin: 0 0 16px 0;
+        }
+        
+        .problem-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .problem-section h3 {
+            color: #721c24;
+            margin: 0 0 16px 0;
+        }
+        
+        .solution-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .solution-section h3 {
+            color: #155724;
+            margin: 0 0 16px 0;
+        }
+        
+        .test-steps {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .test-steps li {
+            margin: 12px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .test-steps li::before {
+            content: attr(data-step);
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .debug-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .clear-button {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .clear-button:hover {
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .code-block .comment {
+            color: #68d391;
+        }
+        
+        .code-block .keyword {
+            color: #63b3ed;
+        }
+        
+        .code-block .string {
+            color: #f6e05e;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            color: #856404;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 清空聊天记录调试增强版</h1>
+        
+        <div class="problem-section">
+            <h3>❌ 发现的问题</h3>
+            <p>用户反馈：点击"清空聊天记录"后，返回即时通讯页面再重新进入AI聊天界面，发现历史聊天记录仍然存在。</p>
+            <p><strong>可能的原因：</strong></p>
+            <ul>
+                <li>localStorage的键名不匹配</li>
+                <li>currentChatId的值不正确</li>
+                <li>清空函数没有被正确执行</li>
+                <li>存在多个聊天历史键，只清空了部分</li>
+            </ul>
+        </div>
+        
+        <div class="solution-section">
+            <h3>✅ 调试增强</h3>
+            <p>已在清空聊天记录功能中添加详细的调试日志，包括：</p>
+            <ul>
+                <li><strong>聊天ID检查</strong>：显示currentChatId和currentChatInfo</li>
+                <li><strong>存储键检查</strong>：列出所有localStorage中的聊天历史键</li>
+                <li><strong>删除验证</strong>：确认数据是否真正被删除</li>
+                <li><strong>兜底处理</strong>：如果预期键不存在，清空所有聊天历史键</li>
+            </ul>
+        </div>
+        
+        <div class="debug-section">
+            <h3>🔧 调试步骤</h3>
+            <ol class="test-steps">
+                <li data-step="1">打开AI聊天页面，查看控制台的初始化日志</li>
+                <li data-step="2">与AI进行几轮对话，确保有聊天历史</li>
+                <li data-step="3">打开浏览器开发者工具，切换到Console标签</li>
+                <li data-step="4">点击"清空聊天记录"，观察控制台输出</li>
+                <li data-step="5">检查localStorage是否真正被清空</li>
+                <li data-step="6">刷新页面，验证聊天记录是否恢复</li>
+            </ol>
+        </div>
+        
+        <div class="info-box">
+            <h4>💡 关键调试信息</h4>
+            <p>在控制台中查找以下关键日志：</p>
+            <div class="code-block">
+<span class="comment">// AI聊天初始化</span>
+🤖 <span class="keyword">AI聊天初始化:</span>
+  aiBotId: <span class="string">"ai_001"</span>
+  currentChatId: <span class="string">"ai_001"</span>
+  chatName: <span class="string">"移动云智能助手"</span>
+
+<span class="comment">// 加载聊天历史</span>
+📚 <span class="keyword">加载聊天历史:</span>
+  currentChatId: <span class="string">"ai_001"</span>
+  storageKey: <span class="string">"chatHistory_ai_001"</span>
+  savedHistory存在: <span class="keyword">true</span>
+
+<span class="comment">// 清空聊天记录</span>
+🔍 <span class="keyword">清空聊天记录 - 调试信息:</span>
+  currentChatId: <span class="string">"ai_001"</span>
+  localStorage中的聊天历史键: [<span class="string">"chatHistory_ai_001"</span>]
+  准备删除的存储键: <span class="string">"chatHistory_ai_001"</span>
+✅ <span class="keyword">已成功清空localStorage中的聊天历史:</span> chatHistory_ai_001
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <h4>⚠️ 可能的问题场景</h4>
+            <ul>
+                <li><strong>键名不匹配</strong>：如果看到"未找到对应的存储数据"，说明键名不匹配</li>
+                <li><strong>删除失败</strong>：如果看到"删除失败，数据仍然存在"，说明localStorage删除操作失败</li>
+                <li><strong>多个键存在</strong>：如果localStorage中有多个聊天历史键，可能只删除了部分</li>
+                <li><strong>函数未执行</strong>：如果没有看到调试日志，说明clearChatHistory函数没有被调用</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <h3>🧪 测试工具</h3>
+            <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button" target="_blank">打开AI聊天页面</a>
+            <button onclick="openDebugConsole()" class="test-button debug-button">打开调试控制台</button>
+            <button onclick="checkLocalStorage()" class="test-button debug-button">检查存储状态</button>
+            <button onclick="clearAllChatData()" class="test-button clear-button">强制清空所有数据</button>
+        </div>
+        
+        <div class="debug-section">
+            <h3>🔍 手动调试命令</h3>
+            <p>在AI聊天页面的浏览器控制台中运行以下命令：</p>
+            <div class="code-block">
+<span class="comment">// 检查当前聊天ID</span>
+<span class="keyword">console.log</span>(<span class="string">'currentChatId:'</span>, currentChatId);
+<span class="keyword">console.log</span>(<span class="string">'currentChatInfo:'</span>, currentChatInfo);
+
+<span class="comment">// 检查localStorage中的所有聊天键</span>
+<span class="keyword">const</span> chatKeys = [];
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i < localStorage.length; i++) {
+    <span class="keyword">const</span> key = localStorage.key(i);
+    <span class="keyword">if</span> (key && key.startsWith(<span class="string">'chatHistory_'</span>)) {
+        chatKeys.push(key);
+    }
+}
+<span class="keyword">console.log</span>(<span class="string">'聊天历史键:'</span>, chatKeys);
+
+<span class="comment">// 手动清空所有聊天数据</span>
+chatKeys.forEach(key => {
+    localStorage.removeItem(key);
+    <span class="keyword">console.log</span>(<span class="string">'已删除:'</span>, key);
+});
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>📋 测试检查清单</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin: 8px 0;">
+                    <input type="checkbox" id="check1" style="margin-right: 8px;">
+                    <label for="check1">控制台显示AI聊天初始化日志</label>
+                </li>
+                <li style="margin: 8px 0;">
+                    <input type="checkbox" id="check2" style="margin-right: 8px;">
+                    <label for="check2">控制台显示加载聊天历史日志</label>
+                </li>
+                <li style="margin: 8px 0;">
+                    <input type="checkbox" id="check3" style="margin-right: 8px;">
+                    <label for="check3">点击清空后显示详细调试信息</label>
+                </li>
+                <li style="margin: 8px 0;">
+                    <input type="checkbox" id="check4" style="margin-right: 8px;">
+                    <label for="check4">localStorage中的数据被真正删除</label>
+                </li>
+                <li style="margin: 8px 0;">
+                    <input type="checkbox" id="check5" style="margin-right: 8px;">
+                    <label for="check5">刷新页面后聊天记录不恢复</label>
+                </li>
+                <li style="margin: 8px 0;">
+                    <input type="checkbox" id="check6" style="margin-right: 8px;">
+                    <label for="check6">AI重新显示欢迎消息</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function openDebugConsole() {
+            alert('请按F12打开开发者工具，然后切换到Console标签查看调试信息');
+        }
+        
+        function checkLocalStorage() {
+            console.log('🔍 检查localStorage中的聊天数据...');
+            
+            const allKeys = [];
+            const chatKeys = [];
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                allKeys.push(key);
+                if (key && key.startsWith('chatHistory_')) {
+                    chatKeys.push(key);
+                }
+            }
+            
+            console.log('所有localStorage键:', allKeys);
+            console.log('聊天历史键:', chatKeys);
+            
+            chatKeys.forEach(key => {
+                try {
+                    const data = localStorage.getItem(key);
+                    const messages = JSON.parse(data || '[]');
+                    console.log(`${key}: ${messages.length} 条消息`);
+                } catch (error) {
+                    console.log(`${key}: 数据格式错误`);
+                }
+            });
+            
+            const message = chatKeys.length > 0 
+                ? `发现 ${chatKeys.length} 个聊天历史键，详情请查看控制台`
+                : '没有发现聊天历史数据';
+                
+            alert(message);
+        }
+        
+        function clearAllChatData() {
+            if (confirm('确定要强制清空所有聊天数据吗？这将删除所有localStorage中的聊天记录。')) {
+                const keysToRemove = [];
+                
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.startsWith('chatHistory_') || key.startsWith('chatList'))) {
+                        keysToRemove.push(key);
+                    }
+                }
+                
+                keysToRemove.forEach(key => {
+                    localStorage.removeItem(key);
+                    console.log('已删除:', key);
+                });
+                
+                alert(`已强制清空 ${keysToRemove.length} 项聊天数据`);
+                console.log('已强制清空所有聊天数据');
+            }
+        }
+    </script>
+</body>
+</html>

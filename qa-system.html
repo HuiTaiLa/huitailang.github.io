@@ -99,11 +99,11 @@
 
         <!-- 问题列表 -->
         <div class="question-list-section">
-            <h3>问题列表 <span class="question-count">共 127 个问题</span></h3>
+            <h3>问题列表 <span class="question-count">共 6 个问题</span></h3>
 
             <div class="question-list">
                 <!-- 待解答问题 -->
-                <div class="question-item" data-status="pending" data-category="iot" onclick="viewQuestion('q004')">
+                <div class="question-item" data-status="pending" data-category="iot" data-question-id="q004">
                     <div class="question-header">
                         <div class="question-avatar">
                             <img src="images/user5.png" alt="提问者">
@@ -111,7 +111,6 @@
                         <div class="question-info">
                             <div class="question-user">
                                 <span class="question-username">刘工程师</span>
-                                <span class="question-role">华南区技术专家</span>
                             </div>
                             <div class="question-time">2小时前</div>
                         </div>
@@ -142,7 +141,7 @@
                 </div>
 
                 <!-- 已解答问题 -->
-                <div class="question-item" data-status="answered" data-category="5g" onclick="viewQuestion('q005')">
+                <div class="question-item" data-status="answered" data-category="5g" data-question-id="q005">
                     <div class="question-header">
                         <div class="question-avatar">
                             <img src="images/user6.png" alt="提问者">
@@ -150,7 +149,6 @@
                         <div class="question-info">
                             <div class="question-user">
                                 <span class="question-username">陈经理</span>
-                                <span class="question-role">华东区产品经理</span>
                             </div>
                             <div class="question-time">5小时前</div>
                         </div>
@@ -181,7 +179,7 @@
                 </div>
 
                 <!-- 已解决问题 -->
-                <div class="question-item" data-status="solved" data-category="cloud" onclick="viewQuestion('q006')">
+                <div class="question-item" data-status="solved" data-category="cloud" data-question-id="q006">
                     <div class="question-header">
                         <div class="question-avatar">
                             <img src="images/user7.png" alt="提问者">
@@ -189,7 +187,6 @@
                         <div class="question-info">
                             <div class="question-user">
                                 <span class="question-username">赵主管</span>
-                                <span class="question-role">华北区运维主管</span>
                             </div>
                             <div class="question-time">1天前</div>
                         </div>
@@ -218,12 +215,123 @@
                         <button class="action-btn bookmark-btn" onclick="toggleBookmark('q006', this)">🔖 收藏</button>
                     </div>
                 </div>
+
+                <!-- 热门问题1：5G专网安全隔离 -->
+                <div class="question-item" data-status="answered" data-category="5g" data-question-id="q001">
+                    <div class="question-header">
+                        <div class="question-avatar">
+                            <img src="images/user1.png" alt="提问者">
+                        </div>
+                        <div class="question-info">
+                            <div class="question-user">
+                                <span class="question-username">张工程师</span>
+                            </div>
+                            <div class="question-time">3天前</div>
+                        </div>
+                        <div class="question-status answered">已解答</div>
+                    </div>
+                    <div class="question-title">5G专网如何实现与公网的安全隔离？</div>
+                    <div class="question-content">我们公司正在部署5G专网，需要确保与公网的完全隔离。目前考虑的方案包括物理隔离和逻辑隔离，但不确定哪种方案更适合我们的业务场景。</div>
+                    <div class="question-tags">
+                        <span class="question-tag category">5G网络</span>
+                        <span class="question-tag">网络安全</span>
+                        <span class="question-tag">专网部署</span>
+                    </div>
+                    <div class="question-stats">
+                        <div class="question-stats-left">
+                            <span>👁 234次浏览</span>
+                            <span>👥 12人关注</span>
+                            <span>💬 3个回答</span>
+                        </div>
+                        <div class="question-stats-right">
+                            <span class="question-priority high">高优先级</span>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button class="action-btn view-btn" onclick="viewSolution('q001')">👁 查看方案</button>
+                        <button class="action-btn bookmark-btn" onclick="toggleBookmark('q001', this)">🔖 收藏</button>
+                    </div>
+                </div>
+
+                <!-- 热门问题2：边缘计算节点部署 -->
+                <div class="question-item" data-status="answered" data-category="edge" data-question-id="q002">
+                    <div class="question-header">
+                        <div class="question-avatar">
+                            <img src="images/user2.png" alt="提问者">
+                        </div>
+                        <div class="question-info">
+                            <div class="question-user">
+                                <span class="question-username">李工</span>
+                            </div>
+                            <div class="question-time">4天前</div>
+                        </div>
+                        <div class="question-status answered">已解答</div>
+                    </div>
+                    <div class="question-title">边缘计算节点的部署位置如何选择？</div>
+                    <div class="question-content">在边缘计算架构设计中，如何确定边缘节点的最佳部署位置？需要考虑哪些因素，如网络延迟、用户分布、成本等？</div>
+                    <div class="question-tags">
+                        <span class="question-tag category">边缘计算</span>
+                        <span class="question-tag">架构设计</span>
+                        <span class="question-tag">部署策略</span>
+                    </div>
+                    <div class="question-stats">
+                        <div class="question-stats-left">
+                            <span>👁 189次浏览</span>
+                            <span>👥 8人关注</span>
+                            <span>💬 8个回答</span>
+                        </div>
+                        <div class="question-stats-right">
+                            <span class="question-priority medium">中优先级</span>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button class="action-btn view-btn" onclick="viewSolution('q002')">👁 查看方案</button>
+                        <button class="action-btn bookmark-btn" onclick="toggleBookmark('q002', this)">🔖 收藏</button>
+                    </div>
+                </div>
+
+                <!-- 热门问题3：云平台数据安全 -->
+                <div class="question-item" data-status="answered" data-category="cloud" data-question-id="q003">
+                    <div class="question-header">
+                        <div class="question-avatar">
+                            <img src="images/user3.png" alt="提问者">
+                        </div>
+                        <div class="question-info">
+                            <div class="question-user">
+                                <span class="question-username">王总</span>
+                            </div>
+                            <div class="question-time">5天前</div>
+                        </div>
+                        <div class="question-status answered">已解答</div>
+                    </div>
+                    <div class="question-title">云平台迁移过程中的数据安全如何保障？</div>
+                    <div class="question-content">企业在进行云平台迁移时，如何确保数据在传输和存储过程中的安全性？有哪些最佳实践和安全措施？</div>
+                    <div class="question-tags">
+                        <span class="question-tag category">云计算</span>
+                        <span class="question-tag">数据安全</span>
+                        <span class="question-tag">云迁移</span>
+                    </div>
+                    <div class="question-stats">
+                        <div class="question-stats-left">
+                            <span>👁 156次浏览</span>
+                            <span>👥 15人关注</span>
+                            <span>💬 15个回答</span>
+                        </div>
+                        <div class="question-stats-right">
+                            <span class="question-priority high">高优先级</span>
+                        </div>
+                    </div>
+
+                    <div class="question-actions">
+                        <button class="action-btn view-btn" onclick="viewSolution('q003')">👁 查看方案</button>
+                        <button class="action-btn bookmark-btn" onclick="toggleBookmark('q003', this)">🔖 收藏</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- 加载更多 -->
-            <div class="load-more">
-                <button class="load-more-btn">加载更多问题</button>
-            </div>
+
         </div>
     </div>
 
@@ -294,13 +402,7 @@
                         <div class="action-desc">发布新的技术问题，寻求专家解答</div>
                     </div>
                 </div>
-                <div class="action-item" onclick="loadMoreQuestions(); hideQuestionActions();">
-                    <div class="action-icon">🔄</div>
-                    <div class="action-info">
-                        <div class="action-title">加载更多问题</div>
-                        <div class="action-desc">获取更多相关技术问题</div>
-                    </div>
-                </div>
+
                 <div class="action-item" onclick="showQuestionSearch(); hideQuestionActions();">
                     <div class="action-icon">🔍</div>
                     <div class="action-info">

@@ -1,3 +1,15 @@
+// 安全的commonUtils包装函数
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== "undefined") {
+        return window.commonUtils;
+    }
+    return {
+        showToast: function(m,t) { console.log(`[${t}] ${m}`); if(t==="error") alert(m); },
+        navigateTo: function(u) { window.location.href = u; },
+        mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); },
+        formatTime: function(ts,fmt) { return new Date(ts).toLocaleString("zh-CN"); }
+    };
+}
 // 分享文档页面脚本
 (function() {
     'use strict';
@@ -93,13 +105,13 @@
         ];
 
         if (!allowedTypes.includes(file.type)) {
-            commonUtils.showToast('不支持的文件格式', 'error');
+            safeCommonUtils().showToast('不支持的文件格式', 'error');
             return;
         }
 
         // 验证文件大小（50MB）
         if (file.size > 50 * 1024 * 1024) {
-            commonUtils.showToast('文件大小不能超过50MB', 'error');
+            safeCommonUtils().showToast('文件大小不能超过50MB', 'error');
             return;
         }
 
@@ -215,7 +227,7 @@
     // 处理发布
     function handlePublish() {
         if (!selectedFile) {
-            commonUtils.showToast('请选择要分享的文档', 'error');
+            safeCommonUtils().showToast('请选择要分享的文档', 'error');
             return;
         }
 
@@ -275,13 +287,13 @@
 
     // 上传成功处理
     function handleUploadSuccess(formData) {
-        commonUtils.showToast('文档分享成功！', 'success');
+        safeCommonUtils().showToast('文档分享成功！', 'success');
         
         // 重置表单
         setTimeout(() => {
             resetForm();
             // 返回工作圈页面
-            commonUtils.navigateTo('work-circle.html');
+            safeCommonUtils().navigateTo('work-circle.html');
         }, 1500);
     }
 

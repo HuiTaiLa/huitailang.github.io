@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天菜单功能测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-button.contact {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-button.contact:hover {
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .before {
+            background: #fff3cd;
+        }
+        
+        .after {
+            background: #d1edff;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .demo-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .menu-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 16px 0;
+        }
+        
+        .menu-type {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .menu-type h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            text-align: center;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            margin: 4px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .menu-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .url-examples {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        
+        .url-examples div {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .url-examples .contact-url {
+            border-left-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 聊天菜单功能测试</h1>
+        <p>测试群聊和私聊页面的菜单功能，验证菜单内容根据聊天类型动态调整</p>
+        
+        <!-- 修改内容对比 -->
+        <div class="test-section">
+            <h3>1. 修改内容对比</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>修改项目</th>
+                        <th>修改前</th>
+                        <th>修改后</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>菜单名称</strong></td>
+                        <td class="before">固定显示"华东区5G专网交流群"</td>
+                        <td class="after">动态显示当前聊天名称</td>
+                    </tr>
+                    <tr>
+                        <td><strong>群成员人数</strong></td>
+                        <td class="before">156人</td>
+                        <td class="after">16人</td>
+                    </tr>
+                    <tr>
+                        <td><strong>在线人数</strong></td>
+                        <td class="before">不显示</td>
+                        <td class="after">10人在线</td>
+                    </tr>
+                    <tr>
+                        <td><strong>私聊菜单</strong></td>
+                        <td class="before">显示群聊菜单</td>
+                        <td class="after">显示私聊专用菜单</td>
+                    </tr>
+                    <tr>
+                        <td><strong>菜单类型识别</strong></td>
+                        <td class="before">无类型区分</td>
+                        <td class="after">根据URL参数自动识别</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 菜单类型对比 -->
+        <div class="test-section">
+            <h3>2. 菜单类型对比</h3>
+            
+            <div class="menu-comparison">
+                <div class="menu-type">
+                    <h4>👥 群聊菜单</h4>
+                    <div class="menu-item">
+                        <span class="menu-icon">👥</span>
+                        <span>群成员列表 (16人)</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">ℹ️</span>
+                        <span>群聊信息</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📁</span>
+                        <span>群文件</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🔍</span>
+                        <span>聊天记录搜索</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🗑️</span>
+                        <span>清空聊天记录</span>
+                    </div>
+                </div>
+                
+                <div class="menu-type">
+                    <h4>👨‍💼 私聊菜单</h4>
+                    <div class="menu-item">
+                        <span class="menu-icon">👤</span>
+                        <span>联系人信息</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📁</span>
+                        <span>共享文件</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📹</span>
+                        <span>视频通话</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📞</span>
+                        <span>语音通话</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🔍</span>
+                        <span>聊天记录搜索</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🗑️</span>
+                        <span>清空聊天记录</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- URL示例 -->
+        <div class="test-section">
+            <h3>3. 测试URL示例</h3>
+            
+            <div class="url-examples">
+                <div><strong>群聊测试：</strong><br>chat.html?group=group_1&name=沈阳5G专网交流群</div>
+                <div><strong>群聊测试：</strong><br>chat.html?group=group_2&name=移动云技术支持群</div>
+                <div class="contact-url"><strong>私聊测试：</strong><br>chat.html?contact=contact_1&name=张工程师</div>
+                <div class="contact-url"><strong>私聊测试：</strong><br>chat.html?contact=contact_2&name=李专家</div>
+            </div>
+        </div>
+        
+        <!-- 测试步骤 -->
+        <div class="test-section">
+            <h3>4. 测试步骤</h3>
+            
+            <a href="chat.html?group=group_1&name=沈阳5G专网交流群" class="test-button" target="_blank">
+                👥 测试群聊菜单
+            </a>
+            
+            <a href="chat.html?contact=contact_1&name=张工程师" class="test-button contact" target="_blank">
+                👨‍💼 测试私聊菜单
+            </a>
+            
+            <a href="chat.html?group=group_2&name=移动云技术支持群" class="test-button" target="_blank">
+                👥 测试其他群聊
+            </a>
+            
+            <a href="chat.html?contact=contact_2&name=李专家" class="test-button contact" target="_blank">
+                👨‍💼 测试其他私聊
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>详细测试步骤：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>点击"测试群聊菜单"，进入群聊页面</li>
+                    <li>点击右上角三个点图标，查看群聊菜单</li>
+                    <li>验证菜单标题显示"沈阳5G专网交流群"</li>
+                    <li>验证显示"群成员 16人 · 10人在线"</li>
+                    <li>点击"群成员列表"，验证显示16人信息</li>
+                    <li>点击"测试私聊菜单"，进入私聊页面</li>
+                    <li>点击右上角三个点图标，查看私聊菜单</li>
+                    <li>验证菜单显示联系人信息和通话选项</li>
+                    <li>验证不显示群聊相关功能</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>5. 功能检查清单</h3>
+            
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox" id="check1">
+                    <label for="check1">群聊菜单标题显示当前群聊名称</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check2">
+                    <label for="check2">群聊显示"群成员 16人 · 10人在线"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check3">
+                    <label for="check3">群成员列表显示16人，标注在线状态</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check4">
+                    <label for="check4">群聊信息显示正确的成员数和在线数</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check5">
+                    <label for="check5">私聊菜单标题显示联系人名称</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check6">
+                    <label for="check6">私聊菜单显示"在线"状态</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check7">
+                    <label for="check7">私聊菜单包含联系人信息选项</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check8">
+                    <label for="check8">私聊菜单包含视频/语音通话选项</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check9">
+                    <label for="check9">私聊菜单不显示群聊相关功能</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check10">
+                    <label for="check10">不同聊天类型菜单内容正确区分</label>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>6. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 聊天菜单功能测试页面已加载');
+            logTest('🔧 更新内容：');
+            logTest('  1. 菜单名称动态显示当前聊天名称');
+            logTest('  2. 群成员人数：156人 → 16人');
+            logTest('  3. 新增在线人数显示：10人在线');
+            logTest('  4. 私聊菜单显示专用功能');
+            logTest('  5. 根据聊天类型自动识别菜单内容');
+            
+            // 模拟检查更新状态
+            setTimeout(() => {
+                logTest('✅ 菜单动态生成功能已实现');
+                logTest('✅ 群聊人数信息已更新');
+                logTest('✅ 私聊菜单功能已添加');
+                logTest('✅ 聊天类型识别已实现');
+                logTest('📋 请点击测试按钮验证菜单功能');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

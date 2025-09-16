@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天内容修复测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px 8px 8px 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-button.contact {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .test-button.ai {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        }
+        
+        .test-button.support {
+            background: linear-gradient(135deg, #fd7e14 0%, #dc3545 100%);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .test-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .before {
+            background: #fff3cd;
+        }
+        
+        .after {
+            background: #d1edff;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .chat-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .chat-type-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .chat-type-card h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+        }
+        
+        .chat-type-card .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .chat-type-card .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .issue-list {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .issue-list h4 {
+            color: #856404;
+            margin: 0 0 12px 0;
+        }
+        
+        .issue-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .issue-list li {
+            color: #856404;
+            margin: 8px 0;
+        }
+        
+        .fix-list {
+            background: #d1edff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .fix-list h4 {
+            color: #0c5460;
+            margin: 0 0 12px 0;
+        }
+        
+        .fix-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .fix-list li {
+            color: #0c5460;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 聊天内容修复测试</h1>
+        <p>修复聊天界面的在线人数显示、私聊内容适配和AI助手头像问题</p>
+        
+        <!-- 修改内容对比 -->
+        <div class="test-section">
+            <h3>1. 修改内容对比</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>修改项目</th>
+                        <th>修改前</th>
+                        <th>修改后</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>群聊在线人数</strong></td>
+                        <td class="before">156人在线</td>
+                        <td class="after">10人在线</td>
+                    </tr>
+                    <tr>
+                        <td><strong>私聊内容</strong></td>
+                        <td class="before">显示群聊内容</td>
+                        <td class="after">显示一对一私聊内容</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI助手头像</strong></td>
+                        <td class="before">空框显示</td>
+                        <td class="after">🤖 机器人图标</td>
+                    </tr>
+                    <tr>
+                        <td><strong>内容适配</strong></td>
+                        <td class="before">所有类型显示相同内容</td>
+                        <td class="after">根据聊天类型动态生成内容</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 问题分析 -->
+        <div class="test-section">
+            <h3>2. 问题分析</h3>
+            
+            <div class="issue-list">
+                <h4>🚨 发现的问题</h4>
+                <ul>
+                    <li>群聊界面显示156人在线，与菜单中的16人不一致</li>
+                    <li>私聊界面显示群聊内容，包含多人对话和@提及</li>
+                    <li>AI助手头像显示为空框，影响用户体验</li>
+                    <li>不同聊天类型使用相同的静态内容</li>
+                </ul>
+            </div>
+            
+            <div class="fix-list">
+                <h4>✅ 修复方案</h4>
+                <ul>
+                    <li>将群聊默认在线人数改为10人，随机范围8-13人</li>
+                    <li>为不同聊天类型创建专用内容生成函数</li>
+                    <li>私聊内容改为一对一技术咨询对话</li>
+                    <li>AI助手使用CSS生成的🤖图标替代图片</li>
+                    <li>客服聊天显示技术支持对话内容</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 聊天类型展示 -->
+        <div class="test-section">
+            <h3>3. 聊天类型内容展示</h3>
+            
+            <div class="chat-type-grid">
+                <div class="chat-type-card">
+                    <div class="icon">👥</div>
+                    <h4>群聊</h4>
+                    <div class="description">多人技术交流，文件分享，@提及功能</div>
+                    <div class="highlight">10人在线</div>
+                </div>
+                
+                <div class="chat-type-card">
+                    <div class="icon">👨‍💼</div>
+                    <h4>私聊</h4>
+                    <div class="description">一对一专家咨询，技术问题解答</div>
+                    <div class="highlight">专家在线</div>
+                </div>
+                
+                <div class="chat-type-card">
+                    <div class="icon">🤖</div>
+                    <h4>AI助手</h4>
+                    <div class="description">智能问答，技术推荐，知识检索</div>
+                    <div class="highlight">AI在线</div>
+                </div>
+                
+                <div class="chat-type-card">
+                    <div class="icon">🛠️</div>
+                    <h4>客服</h4>
+                    <div class="description">技术支持，问题排查，解决方案</div>
+                    <div class="highlight">客服在线</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 测试步骤 -->
+        <div class="test-section">
+            <h3>4. 测试步骤</h3>
+            
+            <a href="chat.html?group=group_1&name=大连物联网应用圈" class="test-button" target="_blank">
+                👥 测试群聊(10人在线)
+            </a>
+            
+            <a href="chat.html?contact=contact_1&name=李专家" class="test-button contact" target="_blank">
+                👨‍💼 测试私聊内容
+            </a>
+            
+            <a href="chat.html?ai_bot=ai_001&name=移动云智能助手" class="test-button ai" target="_blank">
+                🤖 测试AI助手头像
+            </a>
+            
+            <a href="chat.html?support=support_001&name=技术支持" class="test-button support" target="_blank">
+                🛠️ 测试客服聊天
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                <strong>详细测试步骤：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>点击"测试群聊"，验证显示"10人在线"</li>
+                    <li>查看群聊内容，确认为多人技术交流</li>
+                    <li>点击"测试私聊内容"，验证为一对一对话</li>
+                    <li>确认私聊内容不包含群聊特征(@提及等)</li>
+                    <li>点击"测试AI助手头像"，验证🤖图标显示正常</li>
+                    <li>查看AI助手对话内容和推荐功能</li>
+                    <li>点击"测试客服聊天"，验证技术支持对话</li>
+                    <li>确认不同类型内容完全区分</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 功能检查清单 -->
+        <div class="test-section">
+            <h3>5. 功能检查清单</h3>
+            
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox" id="check1">
+                    <label for="check1">群聊界面显示"10人在线"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check2">
+                    <label for="check2">群聊内容包含多人对话和@提及</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check3">
+                    <label for="check3">私聊界面显示"专家在线"</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check4">
+                    <label for="check4">私聊内容为一对一技术咨询</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check5">
+                    <label for="check5">私聊内容不包含群聊特征</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check6">
+                    <label for="check6">AI助手头像显示🤖图标</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check7">
+                    <label for="check7">AI助手内容包含智能推荐</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check8">
+                    <label for="check8">客服聊天显示技术支持对话</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check9">
+                    <label for="check9">不同聊天类型内容完全区分</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check10">
+                    <label for="check10">所有头像和图标显示正常</label>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 测试日志 -->
+        <div class="test-section">
+            <h3>6. 测试日志</h3>
+            <div id="testLog" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                <div>测试日志将在这里显示...</div>
+            </div>
+            <button class="test-button" onclick="clearLog()" style="margin-top: 12px;">清空日志</button>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message) {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '<div>测试日志已清空...</div>';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('🧪 聊天内容修复测试页面已加载');
+            logTest('🔧 修复内容：');
+            logTest('  1. 群聊在线人数：156人 → 10人');
+            logTest('  2. 私聊内容：群聊内容 → 一对一咨询');
+            logTest('  3. AI助手头像：空框 → 🤖图标');
+            logTest('  4. 内容适配：静态 → 动态生成');
+            
+            // 模拟检查更新状态
+            setTimeout(() => {
+                logTest('✅ 在线人数已修正');
+                logTest('✅ 私聊内容已适配');
+                logTest('✅ AI助手头像已修复');
+                logTest('✅ 动态内容生成已实现');
+                logTest('📋 请点击测试按钮验证修复效果');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

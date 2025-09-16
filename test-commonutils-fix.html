@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommonUtils修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .test-link {
+            display: block;
+            padding: 16px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-link:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .test-link h4 {
+            margin: 0 0 8px 0;
+            color: #667eea;
+        }
+        
+        .test-link p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 CommonUtils修复测试</h1>
+        
+        <div class="test-section">
+            <h3>📋 问题描述</h3>
+            <p>work-circle.js中出现了以下错误：</p>
+            <div class="status error">
+                <strong>错误1:</strong> work-circle.js:626 Uncaught ReferenceError: commonUtils is not defined<br>
+                <strong>错误2:</strong> work-circle.js:312 Uncaught ReferenceError: commonUtils is not defined
+            </div>
+            
+            <p><strong>原因分析：</strong></p>
+            <ul>
+                <li>work-circle.js在页面加载时立即执行，但commonUtils可能还未完全初始化</li>
+                <li>脚本加载顺序正确，但存在时序问题</li>
+                <li>需要添加安全检查机制</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>🛠️ 修复方案</h3>
+            <p><strong>1. 添加安全包装函数：</strong></p>
+            <div class="log">
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== 'undefined') {
+        return window.commonUtils;
+    }
+    
+    // 返回备用函数
+    return {
+        showToast: function(message, type) { ... },
+        navigateTo: function(url) { ... },
+        // 其他备用函数...
+    };
+}
+            </div>
+            
+            <p><strong>2. 替换所有commonUtils调用：</strong></p>
+            <div class="log">
+// 修改前
+commonUtils.showToast('消息', 'info');
+
+// 修改后
+safeCommonUtils().showToast('消息', 'info');
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 功能测试</h3>
+            
+            <button onclick="testCommonUtils()">测试CommonUtils可用性</button>
+            <button onclick="testSafeWrapper()">测试安全包装函数</button>
+            <button onclick="clearLog()">清空日志</button>
+            
+            <div id="testLog" class="log">
+                测试日志将在这里显示...
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 页面测试链接</h3>
+            
+            <div class="test-links">
+                <a href="work-circle.html" class="test-link" target="_blank">
+                    <h4>🏢 工作圈页面</h4>
+                    <p>测试修复后的工作圈功能</p>
+                </a>
+                
+                <a href="chat-list.html" class="test-link" target="_blank">
+                    <h4>💬 聊天列表</h4>
+                    <p>测试即时通讯跳转</p>
+                </a>
+                
+                <a href="qa-system.html" class="test-link" target="_blank">
+                    <h4>❓ 专家问答</h4>
+                    <p>测试专家问答跳转</p>
+                </a>
+                
+                <a href="test-deepseek-integration.html" class="test-link" target="_blank">
+                    <h4>🤖 AI助手测试</h4>
+                    <p>测试DeepSeek API集成</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>✅ 验证清单</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                <div>
+                    <h4>基础功能验证：</h4>
+                    <label><input type="checkbox"> 工作圈页面正常加载</label><br>
+                    <label><input type="checkbox"> 区域标签切换正常</label><br>
+                    <label><input type="checkbox"> 即时通讯跳转正常</label><br>
+                    <label><input type="checkbox"> 专家问答跳转正常</label><br>
+                    <label><input type="checkbox"> 浏览器控制台无错误</label><br>
+                </div>
+                
+                <div>
+                    <h4>高级功能验证：</h4>
+                    <label><input type="checkbox"> Toast提示正常显示</label><br>
+                    <label><input type="checkbox"> 加载状态正常</label><br>
+                    <label><input type="checkbox"> 确认对话框正常</label><br>
+                    <label><input type="checkbox"> API请求正常</label><br>
+                    <label><input type="checkbox"> 页面导航正常</label><br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script>
+        // 记录测试日志
+        function logTest(message, type = 'info') {
+            const logContainer = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#333';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[测试] ${message}`);
+        }
+        
+        // 清空日志
+        function clearLog() {
+            const logContainer = document.getElementById('testLog');
+            logContainer.innerHTML = '测试日志已清空...';
+        }
+        
+        // 测试CommonUtils可用性
+        function testCommonUtils() {
+            logTest('🧪 开始测试CommonUtils可用性');
+            
+            if (typeof window.commonUtils !== 'undefined') {
+                logTest('✅ window.commonUtils 已定义', 'success');
+                
+                // 测试各个函数
+                const functions = ['showToast', 'navigateTo', 'showConfirm', 'showLoading', 'hideLoading', 'mockApiRequest'];
+                functions.forEach(func => {
+                    if (typeof window.commonUtils[func] === 'function') {
+                        logTest(`✅ commonUtils.${func} 函数可用`, 'success');
+                    } else {
+                        logTest(`❌ commonUtils.${func} 函数不可用`, 'error');
+                    }
+                });
+                
+                // 测试DeepSeek API相关
+                if (typeof window.commonUtils.callDeepSeekAPI === 'function') {
+                    logTest('✅ DeepSeek API函数可用', 'success');
+                } else {
+                    logTest('❌ DeepSeek API函数不可用', 'error');
+                }
+                
+                if (typeof window.commonUtils.AIConversationManager === 'object') {
+                    logTest('✅ AI对话管理器可用', 'success');
+                } else {
+                    logTest('❌ AI对话管理器不可用', 'error');
+                }
+                
+            } else {
+                logTest('❌ window.commonUtils 未定义', 'error');
+            }
+        }
+        
+        // 测试安全包装函数
+        function testSafeWrapper() {
+            logTest('🛡️ 开始测试安全包装函数');
+            
+            // 模拟commonUtils未定义的情况
+            const originalCommonUtils = window.commonUtils;
+            delete window.commonUtils;
+            
+            // 定义安全包装函数（模拟work-circle.js中的函数）
+            function safeCommonUtils() {
+                if (typeof window.commonUtils !== 'undefined') {
+                    return window.commonUtils;
+                }
+                
+                return {
+                    showToast: function(message, type) {
+                        logTest(`[备用Toast] ${message}`, type);
+                    },
+                    navigateTo: function(url) {
+                        logTest(`[备用导航] 跳转到: ${url}`);
+                    },
+                    showConfirm: function(message, onConfirm) {
+                        logTest(`[备用确认] ${message}`);
+                        if (confirm(message)) {
+                            onConfirm && onConfirm();
+                        }
+                    }
+                };
+            }
+            
+            // 测试备用函数
+            try {
+                safeCommonUtils().showToast('测试备用Toast', 'info');
+                safeCommonUtils().navigateTo('test-page.html');
+                safeCommonUtils().showConfirm('测试备用确认', () => {
+                    logTest('✅ 备用确认回调执行成功', 'success');
+                });
+                
+                logTest('✅ 安全包装函数工作正常', 'success');
+            } catch (error) {
+                logTest(`❌ 安全包装函数测试失败: ${error.message}`, 'error');
+            }
+            
+            // 恢复原始commonUtils
+            window.commonUtils = originalCommonUtils;
+            logTest('🔄 已恢复原始commonUtils');
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('📄 CommonUtils修复测试页面已加载');
+            logTest('🔍 开始检查修复状态...');
+            
+            setTimeout(() => {
+                testCommonUtils();
+                logTest('📋 请点击上方按钮进行详细测试');
+                logTest('🔗 或访问下方链接测试实际页面功能');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

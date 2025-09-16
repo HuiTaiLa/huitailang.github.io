@@ -1,3 +1,13 @@
+// 引入安全工具函数
+if (typeof safeCommonUtils === "undefined") {
+    function safeCommonUtils() {
+        return typeof window.commonUtils !== "undefined" ? window.commonUtils : {
+            showToast: function(m,t) { console.log(`[${t}] ${m}`); },
+            navigateTo: function(u) { window.location.href = u; },
+            mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); }
+        };
+    }
+}
 // 首页JavaScript功能
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -32,7 +42,7 @@ function initSearchFunctionality() {
     });
     
     // 搜索输入实时提示
-    const debouncedSearch = commonUtils.debounce(function(query) {
+    const debouncedSearch = safeCommonUtils().debounce(function(query) {
         if (query.length > 2) {
             showSearchSuggestions(query);
         }
@@ -49,7 +59,7 @@ function performSearch() {
     const query = searchInput.value.trim();
     
     if (!query) {
-        commonUtils.showToast('请输入搜索关键词', 'error');
+        safeCommonUtils().showToast('请输入搜索关键词', 'error');
         return;
     }
     
@@ -57,13 +67,13 @@ function performSearch() {
     saveSearchHistory(query);
     
     // 跳转到搜索结果页面
-    commonUtils.navigateTo(`search-results.html?q=${encodeURIComponent(query)}`);
+    safeCommonUtils().navigateTo(`search-results.html?q=${encodeURIComponent(query)}`);
 }
 
 // 显示搜索建议
 function showSearchSuggestions(query) {
     // 模拟搜索建议API调用
-    commonUtils.mockApiRequest(`/api/search/suggestions?q=${query}`)
+    safeCommonUtils().mockApiRequest(`/api/search/suggestions?q=${query}`)
         .then(response => {
             if (response.success) {
                 // 这里可以动态更新搜索建议
@@ -74,7 +84,7 @@ function showSearchSuggestions(query) {
 
 // 保存搜索历史
 function saveSearchHistory(query) {
-    let history = commonUtils.storage.get('searchHistory', []);
+    let history = safeCommonUtils().storage.get('searchHistory', []);
     
     // 移除重复项
     history = history.filter(item => item !== query);
@@ -87,7 +97,7 @@ function saveSearchHistory(query) {
         history = history.slice(0, 10);
     }
     
-    commonUtils.storage.set('searchHistory', history);
+    safeCommonUtils().storage.set('searchHistory', history);
 }
 
 // 初始化模块卡片
@@ -133,26 +143,26 @@ function initQuickAccess() {
 function handleQuickAccess(itemName) {
     switch(itemName) {
         case '专家问答':
-            commonUtils.navigateTo('qa-system.html');
+            safeCommonUtils().navigateTo('qa-system.html');
             break;
         case '即时通讯':
-            commonUtils.navigateTo('chat-list.html');
+            safeCommonUtils().navigateTo('chat-list.html');
             break;
         case '培训资料':
-            commonUtils.navigateTo('resource-library.html?category=training');
+            safeCommonUtils().navigateTo('resource-library.html?category=training');
             break;
         case '客户案例':
-            commonUtils.navigateTo('resource-library.html?category=case');
+            safeCommonUtils().navigateTo('resource-library.html?category=case');
             break;
         default:
-            commonUtils.showToast('功能开发中...', 'info');
+            safeCommonUtils().showToast('功能开发中...', 'info');
     }
 }
 
 // 直接跳转到资源库指定分类
 function navigateToResourceLibrary(category) {
-    commonUtils.showToast(`正在跳转到${category === 'training' ? '培训资料' : '客户案例'}...`, 'info');
-    commonUtils.navigateTo(`resource-library.html?category=${category}`);
+    safeCommonUtils().showToast(`正在跳转到${category === 'training' ? '培训资料' : '客户案例'}...`, 'info');
+    safeCommonUtils().navigateTo(`resource-library.html?category=${category}`);
 }
 
 // 加载最新动态
@@ -160,7 +170,7 @@ function loadRecentUpdates() {
     const updateList = document.querySelector('.update-list');
     
     // 模拟加载最新动态
-    commonUtils.mockApiRequest('/api/updates/recent')
+    safeCommonUtils().mockApiRequest('/api/updates/recent')
         .then(response => {
             if (response.success) {
                 // 这里可以动态更新最新动态列表
@@ -181,20 +191,20 @@ function loadRecentUpdates() {
 // 处理动态项点击
 function handleUpdateClick(updateText) {
     if (updateText.includes('文档')) {
-        commonUtils.navigateTo('resource-library.html');
+        safeCommonUtils().navigateTo('resource-library.html');
     } else if (updateText.includes('问题') || updateText.includes('回复')) {
-        commonUtils.navigateTo('qa-system.html');
+        safeCommonUtils().navigateTo('qa-system.html');
     } else if (updateText.includes('培训') || updateText.includes('课程')) {
-        commonUtils.navigateTo('resource-library.html?category=training');
+        safeCommonUtils().navigateTo('resource-library.html?category=training');
     } else {
-        commonUtils.showToast('查看详情...', 'info');
+        safeCommonUtils().showToast('查看详情...', 'info');
     }
 }
 
 // 统计模块点击
 function trackModuleClick(moduleName) {
     // 模拟统计API调用
-    commonUtils.mockApiRequest('/api/analytics/module-click', {
+    safeCommonUtils().mockApiRequest('/api/analytics/module-click', {
         method: 'POST',
         body: JSON.stringify({
             module: moduleName,
@@ -255,12 +265,12 @@ document.addEventListener('touchend', function(e) {
 
 // 刷新页面数据
 function refreshPage() {
-    commonUtils.showToast('正在刷新...', 'info');
+    safeCommonUtils().showToast('正在刷新...', 'info');
     
     // 模拟刷新延迟
     setTimeout(() => {
         loadRecentUpdates();
-        commonUtils.showToast('刷新完成', 'success');
+        safeCommonUtils().showToast('刷新完成', 'success');
     }, 1000);
 }
 
@@ -288,34 +298,34 @@ function closeUserMenu() {
 // 显示系统设置
 function showSettings() {
     closeUserMenu();
-    commonUtils.showToast('系统设置功能开发中...', 'info');
+    safeCommonUtils().showToast('系统设置功能开发中...', 'info');
 }
 
 // 显示消息通知
 function showNotifications() {
     closeUserMenu();
-    commonUtils.showToast('您有3条未读消息', 'info');
+    safeCommonUtils().showToast('您有3条未读消息', 'info');
 
     setTimeout(() => {
-        commonUtils.showToast('• 华东区5G专网交流群有新消息', 'info');
+        safeCommonUtils().showToast('• 华东区5G专网交流群有新消息', 'info');
     }, 1000);
 
     setTimeout(() => {
-        commonUtils.showToast('• 移动云智能助手回复了您的问题', 'info');
+        safeCommonUtils().showToast('• 移动云智能助手回复了您的问题', 'info');
     }, 2000);
 
     setTimeout(() => {
-        commonUtils.showToast('• 系统维护通知：今晚22:00-24:00', 'warning');
+        safeCommonUtils().showToast('• 系统维护通知：今晚22:00-24:00', 'warning');
     }, 3000);
 }
 
 // 显示关于信息
 function showAbout() {
     closeUserMenu();
-    commonUtils.showToast('移动云业务支撑平台 v2.1.0', 'info');
+    safeCommonUtils().showToast('移动云业务支撑平台 v2.1.0', 'info');
 
     setTimeout(() => {
-        commonUtils.showToast('技术支持：中国移动云能力中心', 'info');
+        safeCommonUtils().showToast('技术支持：中国移动云能力中心', 'info');
     }, 1000);
 }
 
@@ -324,7 +334,7 @@ function logout() {
     closeUserMenu();
 
     if (confirm('确定要退出登录吗？')) {
-        commonUtils.showToast('正在退出登录...', 'info');
+        safeCommonUtils().showToast('正在退出登录...', 'info');
 
         setTimeout(() => {
             // 清除登录状态

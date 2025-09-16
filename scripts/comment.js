@@ -1,3 +1,15 @@
+// 安全的commonUtils包装函数
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== "undefined") {
+        return window.commonUtils;
+    }
+    return {
+        showToast: function(m,t) { console.log(`[${t}] ${m}`); if(t==="error") alert(m); },
+        navigateTo: function(u) { window.location.href = u; },
+        mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); },
+        formatTime: function(ts,fmt) { return new Date(ts).toLocaleString("zh-CN"); }
+    };
+}
 // comment.js - 评论页面脚本
 (function(){
   const qs = new URLSearchParams(location.search);
@@ -8,7 +20,7 @@
     if (document.referrer) {
       history.back();
     } else {
-      commonUtils.navigateTo('work-circle.html');
+      safeCommonUtils().navigateTo('work-circle.html');
     }
   });
 
@@ -107,7 +119,7 @@
     const input = document.getElementById('commentInput');
     const text = (input.value || '').trim();
     if (!text) {
-      commonUtils.showToast('请输入评论内容', 'error');
+      safeCommonUtils().showToast('请输入评论内容', 'error');
       return;
     }
     const list = loadComments();
@@ -119,7 +131,7 @@
     saveComments(list);
     input.value = '';
     renderComments();
-    commonUtils.showToast('评论已发布', 'success');
+    safeCommonUtils().showToast('评论已发布', 'success');
   });
 
   // 初始化

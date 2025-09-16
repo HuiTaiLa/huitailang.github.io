@@ -56,7 +56,7 @@ images/
 - **ai-icon.svg/png** - AI助手图标
 
 ### 圈子头像 (64x64px)
-- **circle-east.svg/png** - 华东区圈子头像
+- **circle-east.svg/png** - 沈阳圈子头像
 - **circle-cloud.svg/png** - 云计算专家圈头像
 - **circle-iot.svg/png** - 物联网圈头像
 

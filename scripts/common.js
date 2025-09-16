@@ -1,5 +1,20 @@
 // 通用JavaScript功能
 
+// 全局配置
+const GlobalConfig = {
+    // DeepSeek API配置
+    DEEPSEEK_API_KEY: "sk-efa9847cabe74bad83d8e7ee2a4a5786",
+    DEEPSEEK_API_URL: "https://api.deepseek.com/v1/chat/completions",
+
+    // AI助手配置
+    AI_MODEL: "deepseek-chat",
+    AI_MAX_TOKENS: 1000,
+    AI_TEMPERATURE: 0.7,
+
+    // 系统提示词
+    AI_SYSTEM_PROMPT: "你是移动云业务支撑平台的AI智能助手，专门为用户提供5G网络、云计算、边缘计算等技术领域的专业咨询和支持。请用专业、友好的语气回答用户问题，并在适当时推荐相关的技术资源。"
+};
+
 // 页面导航函数
 function navigateTo(page) {
     // 在实际小程序中，这里会使用wx.navigateTo
@@ -331,6 +346,38 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(style);
 });
 
+// AI助手对话历史管理
+const AIConversationManager = {
+    conversations: new Map(),
+
+    // 获取对话历史
+    getHistory(chatId) {
+        return this.conversations.get(chatId) || [];
+    },
+
+    // 添加消息到历史
+    addMessage(chatId, role, content) {
+        if (!this.conversations.has(chatId)) {
+            this.conversations.set(chatId, []);
+        }
+
+        const history = this.conversations.get(chatId);
+        history.push({ role, content });
+
+        // 限制历史长度，保留最近20条消息
+        if (history.length > 20) {
+            history.splice(0, history.length - 20);
+        }
+
+        this.conversations.set(chatId, history);
+    },
+
+    // 清空对话历史
+    clearHistory(chatId) {
+        this.conversations.delete(chatId);
+    }
+};
+
 // 导出给其他脚本使用
 window.commonUtils = {
     navigateTo,
@@ -343,5 +390,194 @@ window.commonUtils = {
     formatFileSize,
     debounce,
     throttle,
-    storage
+    storage,
+    callDeepSeekAPI,
+    callDeepSeekAPIStream,
+    AIConversationManager
 };
+
+// DeepSeek API调用函数
+async function callDeepSeekAPI(userMessage, conversationHistory = []) {
+    try {
+        // 构建消息历史
+        const messages = [
+            {
+                role: "system",
+                content: GlobalConfig.AI_SYSTEM_PROMPT
+            }
+        ];
+
+        // 添加对话历史（最近5轮对话）
+        const recentHistory = conversationHistory.slice(-10); // 取最近10条消息（5轮对话）
+        messages.push(...recentHistory);
+
+        // 添加当前用户消息
+        messages.push({
+            role: "user",
+            content: userMessage
+        });
+
+        console.log('发送到DeepSeek API的消息:', messages);
+
+        const response = await fetch(GlobalConfig.DEEPSEEK_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GlobalConfig.DEEPSEEK_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: GlobalConfig.AI_MODEL,
+                messages: messages,
+                max_tokens: GlobalConfig.AI_MAX_TOKENS,
+                temperature: GlobalConfig.AI_TEMPERATURE,
+                stream: false
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('DeepSeek API错误响应:', response.status, errorData);
+            throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('DeepSeek API响应:', data);
+
+        if (data.choices && data.choices.length > 0) {
+            return {
+                success: true,
+                message: data.choices[0].message.content,
+                usage: data.usage
+            };
+        } else {
+            throw new Error('API响应格式异常');
+        }
+
+    } catch (error) {
+        console.error('DeepSeek API调用失败:', error);
+        return {
+            success: false,
+            error: error.message,
+            fallbackMessage: "抱歉，AI助手暂时无法响应，请稍后再试。如需技术支持，请联系人工客服。"
+        };
+    }
+}
+
+// DeepSeek API流式调用函数
+async function callDeepSeekAPIStream(userMessage, conversationHistory = [], onChunk = null, onComplete = null, onError = null, abortController = null) {
+    try {
+        // 构建消息历史
+        const messages = [
+            {
+                role: "system",
+                content: GlobalConfig.AI_SYSTEM_PROMPT
+            }
+        ];
+
+        // 添加对话历史（最近5轮对话）
+        const recentHistory = conversationHistory.slice(-10); // 取最近10条消息（5轮对话）
+        messages.push(...recentHistory);
+
+        // 添加当前用户消息
+        messages.push({
+            role: "user",
+            content: userMessage
+        });
+
+        console.log('发送到DeepSeek API的流式消息:', messages);
+
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GlobalConfig.DEEPSEEK_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: GlobalConfig.AI_MODEL,
+                messages: messages,
+                max_tokens: GlobalConfig.AI_MAX_TOKENS,
+                temperature: GlobalConfig.AI_TEMPERATURE,
+                stream: true
+            })
+        };
+
+        // 如果提供了AbortController，添加signal
+        if (abortController) {
+            fetchOptions.signal = abortController.signal;
+        }
+
+        const response = await fetch(GlobalConfig.DEEPSEEK_API_URL, fetchOptions);
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('DeepSeek API错误响应:', response.status, errorData);
+            const error = new Error(`API请求失败: ${response.status} ${response.statusText}`);
+            if (onError) onError(error);
+            return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let fullContent = '';
+        let buffer = '';
+
+        try {
+            while (true) {
+                const { done, value } = await reader.read();
+
+                if (done) {
+                    break;
+                }
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || ''; // 保留最后一个不完整的行
+
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine === '' || trimmedLine === 'data: [DONE]') {
+                        continue;
+                    }
+
+                    if (trimmedLine.startsWith('data: ')) {
+                        try {
+                            const jsonStr = trimmedLine.slice(6); // 移除 'data: ' 前缀
+                            const data = JSON.parse(jsonStr);
+
+                            if (data.choices && data.choices[0] && data.choices[0].delta) {
+                                const delta = data.choices[0].delta;
+                                if (delta.content) {
+                                    fullContent += delta.content;
+                                    if (onChunk) {
+                                        onChunk(delta.content, fullContent);
+                                    }
+                                }
+                            }
+                        } catch (parseError) {
+                            console.warn('解析流式数据失败:', parseError, trimmedLine);
+                        }
+                    }
+                }
+            }
+
+            // 流式传输完成
+            if (onComplete) {
+                onComplete(fullContent);
+            }
+
+            console.log('DeepSeek API流式调用完成，完整内容:', fullContent);
+
+        } catch (streamError) {
+            console.error('流式读取失败:', streamError);
+            if (onError) onError(streamError);
+        } finally {
+            reader.releaseLock();
+        }
+
+    } catch (error) {
+        console.error('DeepSeek API流式调用失败:', error);
+        if (onError) {
+            onError(error);
+        }
+    }
+}

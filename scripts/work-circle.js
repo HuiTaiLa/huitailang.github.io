@@ -1,5 +1,46 @@
 // 工作圈页面JavaScript功能
 
+// 安全的commonUtils包装函数
+function safeCommonUtils() {
+    if (typeof window.commonUtils !== 'undefined') {
+        return window.commonUtils;
+    }
+
+    // 如果commonUtils未加载，返回备用函数
+    return {
+        showToast: function(message, type) {
+            console.log(`[Toast ${type}] ${message}`);
+            // 简单的备用提示
+            if (type === 'error') {
+                alert(message);
+            }
+        },
+        navigateTo: function(url) {
+            window.location.href = url;
+        },
+        showConfirm: function(message, onConfirm, onCancel) {
+            if (confirm(message)) {
+                onConfirm && onConfirm();
+            } else {
+                onCancel && onCancel();
+            }
+        },
+        showLoading: function(message) {
+            console.log(`[Loading] ${message}`);
+        },
+        hideLoading: function() {
+            console.log('[Loading] Hidden');
+        },
+        mockApiRequest: function(url, options) {
+            console.log(`[API] ${url}`, options);
+            return Promise.resolve({
+                success: true,
+                data: []
+            });
+        }
+    };
+}
+
 // 当前工作圈信息
 let currentCircleData = null;
 
@@ -42,7 +83,7 @@ function initCircleTabs() {
             // 模拟加载延迟
             setTimeout(() => {
                 hideTabLoading();
-                commonUtils.showToast(`已切换到${this.textContent}`, 'success');
+                safeCommonUtils().showToast(`已切换到${this.textContent}`, 'success');
             }, 800);
         });
     });
@@ -171,7 +212,7 @@ function initCircleList() {
     const viewAllBtn = document.querySelector('.view-all');
     if (viewAllBtn) {
         viewAllBtn.addEventListener('click', function() {
-            commonUtils.navigateTo('circle-list.html');
+            safeCommonUtils().navigateTo('circle-list.html');
         });
     }
 }
@@ -302,23 +343,21 @@ function initQuickActions() {
 function handleQuickFunction(functionName, element) {
     switch(functionName) {
         case '专家问答':
-            commonUtils.showToast('正在进入专家问答...', 'info');
+            safeCommonUtils().showToast('正在进入专家问答...', 'info');
             setTimeout(() => {
-                commonUtils.navigateTo('qa-system.html');
+                safeCommonUtils().navigateTo('qa-system.html');
             }, 500);
             break;
 
         case '即时通讯':
-            commonUtils.showToast('正在进入工作圈群聊...', 'info');
+            safeCommonUtils().showToast('正在进入即时通讯...', 'info');
             setTimeout(() => {
-                // 根据当前工作圈跳转到对应的群聊
-                const currentCircle = getCurrentCircle();
-                if (currentCircle) {
-                    commonUtils.navigateTo(`chat.html?group=${currentCircle.id}&name=${encodeURIComponent(currentCircle.name)}`);
-                } else {
-                    // 如果没有当前工作圈，跳转到默认群聊
-                    commonUtils.navigateTo('chat.html?group=group_1&name=华东区5G专网交流群');
-                }
+                // 获取当前选中的区域标签
+                const activeTab = document.querySelector('.tab-item.active');
+                const currentRegion = activeTab ? activeTab.dataset.circle : 'all';
+
+                // 跳转到聊天列表页面，传递区域参数
+                safeCommonUtils().navigateTo(`chat-list.html?region=${currentRegion}`);
             }, 500);
             break;
 
@@ -331,7 +370,7 @@ function handleQuickFunction(functionName, element) {
             break;
 
         default:
-            commonUtils.showToast('功能开发中...', 'info');
+            safeCommonUtils().showToast('功能开发中...', 'info');
     }
 
     // 统计功能使用
@@ -376,13 +415,13 @@ function showKnowledgeShareDialog() {
     showActionSheet('知识分享', options, function(action) {
         switch(action) {
             case 'share-document':
-                commonUtils.showToast('正在打开文档分享...', 'info');
+                safeCommonUtils().showToast('正在打开文档分享...', 'info');
                 setTimeout(() => {
-                    commonUtils.navigateTo('share-document.html');
+                    safeCommonUtils().navigateTo('share-document.html');
                 }, 500);
                 break;
             case 'share-video':
-                commonUtils.showToast('正在打开视频分享...', 'info');
+                safeCommonUtils().showToast('正在打开视频分享...', 'info');
                 break;
             case 'share-experience':
                 showCreatePostDialog('experience');
@@ -423,7 +462,7 @@ function showExperienceSummaryDialog() {
 
 // 统计功能使用
 function trackFunctionUsage(functionName) {
-    commonUtils.mockApiRequest('/api/analytics/function-usage', {
+    safeCommonUtils().mockApiRequest('/api/analytics/function-usage', {
         method: 'POST',
         body: JSON.stringify({
             page: 'work-circle',
@@ -603,11 +642,11 @@ function shareLinkSubmit(button) {
         return;
     }
 
-    commonUtils.showToast('正在分享链接...', 'info');
+    safeCommonUtils().showToast('正在分享链接...', 'info');
 
     // 模拟分享
     setTimeout(() => {
-        commonUtils.showToast('链接分享成功！', 'success');
+        safeCommonUtils().showToast('链接分享成功！', 'success');
         document.body.removeChild(modal);
     }, 1000);
 }
@@ -625,15 +664,18 @@ function initFloatingActionButton() {
 // 加载圈子数据
 function loadCircleData() {
     // 模拟加载圈子列表数据
-    commonUtils.mockApiRequest('/api/circles/list')
+    safeCommonUtils().mockApiRequest('/api/circles/list')
         .then(response => {
             if (response.success) {
                 updateCircleList(response.data);
             }
+        })
+        .catch(error => {
+            console.error('加载圈子数据失败:', error);
         });
 
     // 模拟加载活动数据
-    commonUtils.mockApiRequest('/api/activities/recent')
+    safeCommonUtils().mockApiRequest('/api/activities/recent')
         .then(response => {
             if (response.success) {
                 updateActivityList(response.data);
@@ -643,17 +685,17 @@ function loadCircleData() {
 
 // 加载圈子详情
 function loadCircleDetails(circleId) {
-    commonUtils.showLoading('加载圈子详情...');
+    safeCommonUtils().showLoading('加载圈子详情...');
 
-    commonUtils.mockApiRequest(`/api/circles/${circleId}/details`)
+    safeCommonUtils().mockApiRequest(`/api/circles/${circleId}/details`)
         .then(response => {
-            commonUtils.hideLoading();
+            safeCommonUtils().hideLoading();
             if (response.success) {
                 // 这里可以更新圈子详情显示
                 console.log('圈子详情:', response.data);
 
                 // 可以跳转到圈子详情页面
-                // commonUtils.navigateTo(`circle-detail.html?id=${circleId}`);
+                // safeCommonUtils().navigateTo(`circle-detail.html?id=${circleId}`);
             }
         });
 }
@@ -743,11 +785,11 @@ function showCommentDialog(activityItem) {
     const activityId = activityItem.dataset.activityId;
     const activityTitle = activityItem.querySelector('.activity-text').textContent.substring(0, 50) + '...';
 
-    commonUtils.showConfirm(
+    safeCommonUtils().showConfirm(
         `要对"${activityTitle}"发表评论吗？`,
         () => {
             // 这里可以打开评论页面或显示评论输入框
-            commonUtils.navigateTo(`comment.html?activityId=${activityId}`);
+            safeCommonUtils().navigateTo(`comment.html?activityId=${activityId}`);
         }
     );
 }
@@ -768,15 +810,34 @@ function shareActivity(activityItem) {
         // 复制链接到剪贴板
         const shareUrl = window.location.href + `?activityId=${activityId}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            commonUtils.showToast('链接已复制到剪贴板', 'success');
+            safeCommonUtils().showToast('链接已复制到剪贴板', 'success');
         });
     }
 }
 
 // 打开附件
 function openAttachment(attachmentElement) {
+    // 尝试多种方式获取文件名
     const nameEl = attachmentElement.querySelector('.attachment-name');
-    let fileName = nameEl ? nameEl.textContent : (attachmentElement.textContent || '').trim() || '附件';
+    const spanEl = attachmentElement.querySelector('span');
+    let fileName = '';
+
+    if (nameEl) {
+        fileName = nameEl.textContent.trim();
+    } else if (spanEl) {
+        fileName = spanEl.textContent.trim();
+    } else {
+        // 从整个元素的文本内容中提取，排除图片alt文本
+        const fullText = attachmentElement.textContent.trim();
+        // 如果包含.pdf等扩展名，则使用该文本
+        if (fullText.includes('.')) {
+            fileName = fullText;
+        } else {
+            fileName = '附件';
+        }
+    }
+
+    console.log('提取的文件名:', fileName);
     const fileType = (fileName.split('.').pop() || '').toLowerCase();
 
     if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
@@ -784,14 +845,14 @@ function openAttachment(attachmentElement) {
         showImagePreview(attachmentElement.dataset.fileUrl || 'images/doc-thumb.png');
     } else if (['pdf', 'doc', 'docx', 'ppt', 'pptx'].includes(fileType)) {
         // 文档预览
-        commonUtils.showToast('正在打开文档...', 'info');
-        // 这里可以跳转到文档预览页面
+        safeCommonUtils().showToast('正在打开文档...', 'info');
+        // 跳转到文档预览页面
         setTimeout(() => {
-            commonUtils.navigateTo(`document-viewer.html?file=${encodeURIComponent(fileName)}`);
+            safeCommonUtils().navigateTo(`document-viewer.html?file=${encodeURIComponent(fileName)}`);
         }, 1000);
     } else {
         // 其他文件类型
-        commonUtils.showToast('正在下载文件...', 'info');
+        safeCommonUtils().showToast('正在下载文件...', 'info');
     }
 }
 
@@ -830,10 +891,10 @@ function showImagePreview(imageUrl) {
 
 // 显示用户资料
 function showUserProfile(userId) {
-    commonUtils.showToast('查看用户资料...', 'info');
+    safeCommonUtils().showToast('查看用户资料...', 'info');
     // 这里可以跳转到用户资料页面
     setTimeout(() => {
-        commonUtils.navigateTo(`user-profile.html?userId=${userId}`);
+        safeCommonUtils().navigateTo(`user-profile.html?userId=${userId}`);
     }, 500);
 }
 
@@ -841,19 +902,19 @@ function showUserProfile(userId) {
 function handleQuickAction(action) {
     switch(action) {
         case 'ask-expert':
-            commonUtils.navigateTo('qa-system.html');
+            safeCommonUtils().navigateTo('qa-system.html');
             break;
         case 'share-experience':
             showCreatePostDialog();
             break;
         case 'find-solution':
-            commonUtils.navigateTo('resource-library.html');
+            safeCommonUtils().navigateTo('resource-library.html');
             break;
         case 'join-discussion':
             showJoinDiscussionDialog();
             break;
         default:
-            commonUtils.showToast('功能开发中...', 'info');
+            safeCommonUtils().showToast('功能开发中...', 'info');
     }
 }
 
@@ -915,24 +976,24 @@ function publishPost() {
     const content = document.getElementById('postContent').value.trim();
 
     if (!content) {
-        commonUtils.showToast('请输入内容', 'error');
+        safeCommonUtils().showToast('请输入内容', 'error');
         return;
     }
 
-    commonUtils.showLoading('发布中...');
+    safeCommonUtils().showLoading('发布中...');
 
     // 模拟发布请求
-    commonUtils.mockApiRequest('/api/posts/create', {
+    safeCommonUtils().mockApiRequest('/api/posts/create', {
         method: 'POST',
         body: JSON.stringify({
             content: content,
             timestamp: Date.now()
         })
     }).then(response => {
-        commonUtils.hideLoading();
+        safeCommonUtils().hideLoading();
 
         if (response.success) {
-            commonUtils.showToast('发布成功！', 'success');
+            safeCommonUtils().showToast('发布成功！', 'success');
             document.querySelector('.overlay').remove();
 
             // 刷新活动列表
@@ -940,17 +1001,17 @@ function publishPost() {
                 loadCircleData();
             }, 1000);
         } else {
-            commonUtils.showToast('发布失败，请重试', 'error');
+            safeCommonUtils().showToast('发布失败，请重试', 'error');
         }
     });
 }
 
 // 显示加入讨论对话框
 function showJoinDiscussionDialog() {
-    commonUtils.showConfirm(
+    safeCommonUtils().showConfirm(
         '要加入当前热门讨论吗？',
         () => {
-            commonUtils.navigateTo('discussion.html');
+            safeCommonUtils().navigateTo('discussion.html');
         }
     );
 }
@@ -969,7 +1030,7 @@ function updateActivityList(data) {
 
 // 更新点赞状态
 function updateLikeStatus(activityId, isLiked) {
-    commonUtils.mockApiRequest(`/api/activities/${activityId}/like`, {
+    safeCommonUtils().mockApiRequest(`/api/activities/${activityId}/like`, {
         method: 'POST',
         body: JSON.stringify({
             liked: isLiked
@@ -983,7 +1044,7 @@ function updateLikeStatus(activityId, isLiked) {
 
 // 统计圈子点击
 function trackCircleClick(circleId) {
-    commonUtils.mockApiRequest('/api/analytics/circle-click', {
+    safeCommonUtils().mockApiRequest('/api/analytics/circle-click', {
         method: 'POST',
         body: JSON.stringify({
             circleId: circleId,
@@ -1031,7 +1092,7 @@ document.addEventListener('touchend', function(e) {
     container.style.transition = 'transform 0.3s ease';
 
     if (pullDistance > pullThreshold) {
-        commonUtils.showToast('正在刷新...', 'info');
+        safeCommonUtils().showToast('正在刷新...', 'info');
         loadCircleData();
     }
 
@@ -1161,10 +1222,10 @@ function showCreateCircleForm() {
                         <label>所属区域</label>
                         <select class="form-select">
                             <option value="unlimited">不限区域</option>
-                            <option value="east">华东区</option>
-                            <option value="south">华南区</option>
-                            <option value="north">华北区</option>
-                            <option value="west">华西区</option>
+                            <option value="east">沈阳</option>
+                            <option value="south">大连</option>
+                            <option value="north">盘锦</option>
+                            <option value="west">葫芦岛</option>
                         </select>
                     </div>
 
@@ -1367,19 +1428,19 @@ function showCreateAnnouncementForm() {
                         <div class="checkbox-group">
                             <label class="checkbox-option">
                                 <input type="checkbox" value="east" checked>
-                                <span class="checkbox-text">华东区</span>
+                                <span class="checkbox-text">沈阳</span>
                             </label>
                             <label class="checkbox-option">
                                 <input type="checkbox" value="south">
-                                <span class="checkbox-text">华南区</span>
+                                <span class="checkbox-text">大连</span>
                             </label>
                             <label class="checkbox-option">
                                 <input type="checkbox" value="north">
-                                <span class="checkbox-text">华北区</span>
+                                <span class="checkbox-text">盘锦</span>
                             </label>
                             <label class="checkbox-option">
                                 <input type="checkbox" value="west">
-                                <span class="checkbox-text">华西区</span>
+                                <span class="checkbox-text">葫芦岛</span>
                             </label>
                         </div>
                     </div>
@@ -1410,22 +1471,22 @@ function submitCreateCircle() {
     const type = form.querySelector('.form-select:nth-of-type(2)').value; // 工作圈类型
 
     if (!name) {
-        commonUtils.showToast('请输入工作圈名称', 'error');
+        safeCommonUtils().showToast('请输入工作圈名称', 'error');
         return;
     }
 
     if (!type) {
-        commonUtils.showToast('请选择工作圈类型', 'error');
+        safeCommonUtils().showToast('请选择工作圈类型', 'error');
         return;
     }
 
     // 显示加载状态
-    commonUtils.showLoading('正在创建工作圈...');
+    safeCommonUtils().showLoading('正在创建工作圈...');
 
     // 模拟API调用
     setTimeout(() => {
-        commonUtils.hideLoading();
-        commonUtils.showToast('工作圈创建成功！', 'success');
+        safeCommonUtils().hideLoading();
+        safeCommonUtils().showToast('工作圈创建成功！', 'success');
 
         // 关闭模态框
         document.querySelector('.create-form-modal').remove();
@@ -1442,15 +1503,15 @@ function submitCreateProject() {
     const description = form.querySelector('textarea').value.trim();
 
     if (!name || !description) {
-        commonUtils.showToast('请填写项目名称和描述', 'error');
+        safeCommonUtils().showToast('请填写项目名称和描述', 'error');
         return;
     }
 
-    commonUtils.showLoading('正在创建项目...');
+    safeCommonUtils().showLoading('正在创建项目...');
 
     setTimeout(() => {
-        commonUtils.hideLoading();
-        commonUtils.showToast('项目创建成功！', 'success');
+        safeCommonUtils().hideLoading();
+        safeCommonUtils().showToast('项目创建成功！', 'success');
         document.querySelector('.create-form-modal').remove();
         loadCircleData();
     }, 1500);
@@ -1464,15 +1525,15 @@ function submitCreateActivity() {
     const datetime = form.querySelector('input[type="datetime-local"]').value;
 
     if (!title || !description || !datetime) {
-        commonUtils.showToast('请填写活动标题、描述和时间', 'error');
+        safeCommonUtils().showToast('请填写活动标题、描述和时间', 'error');
         return;
     }
 
-    commonUtils.showLoading('正在发布活动...');
+    safeCommonUtils().showLoading('正在发布活动...');
 
     setTimeout(() => {
-        commonUtils.hideLoading();
-        commonUtils.showToast('活动发布成功！', 'success');
+        safeCommonUtils().hideLoading();
+        safeCommonUtils().showToast('活动发布成功！', 'success');
         document.querySelector('.create-form-modal').remove();
         loadCircleData();
     }, 1500);
@@ -1485,15 +1546,15 @@ function submitCreateAnnouncement() {
     const content = form.querySelector('textarea').value.trim();
 
     if (!title || !content) {
-        commonUtils.showToast('请填写公告标题和内容', 'error');
+        safeCommonUtils().showToast('请填写公告标题和内容', 'error');
         return;
     }
 
-    commonUtils.showLoading('正在发布公告...');
+    safeCommonUtils().showLoading('正在发布公告...');
 
     setTimeout(() => {
-        commonUtils.hideLoading();
-        commonUtils.showToast('公告发布成功！', 'success');
+        safeCommonUtils().hideLoading();
+        safeCommonUtils().showToast('公告发布成功！', 'success');
         document.querySelector('.create-form-modal').remove();
         loadCircleData();
     }, 1500);
@@ -1509,7 +1570,7 @@ function getCurrentCircle() {
     // 否则返回默认的工作圈信息
     return {
         id: 'group_1',
-        name: '华东区5G专网交流群',
+        name: '沈阳5G专网交流群',
         type: 'technical'
     };
 }
@@ -1523,37 +1584,27 @@ function setCurrentCircle(circleData) {
 // 进入圈子（跳转到对应群聊）
 function enterCircle(key) {
     const mapping = {
-        'east-5g': { id: 'group_1', name: '华东区5G专网交流群', type: 'technical' },
+        'east-5g': { id: 'group_1', name: '沈阳5G专网交流群', type: 'technical' },
         'cloud-expert': { id: 'group_expert', name: '云计算专家咨询组', type: 'expert' },
-        'south-iot': { id: 'group_south_iot', name: '华南区物联网应用圈', type: 'iot' }
+        'south-iot': { id: 'group_south_iot', name: '大连物联网应用圈', type: 'iot' }
     };
     const target = mapping[key] || mapping['east-5g'];
     try { setCurrentCircle(target); } catch (e) {}
     const url = `chat.html?group=${encodeURIComponent(target.id)}&name=${encodeURIComponent(target.name)}`;
-    if (window.commonUtils && commonUtils.navigateTo) {
-        commonUtils.navigateTo(url);
-    } else {
-        window.location.href = url;
-    }
+    safeCommonUtils().navigateTo(url);
 }
 
 // 回答问题（跳转到专家问答）
 function answerQuestion(activityItem) {
-    if (window.commonUtils && commonUtils.showToast) {
-        commonUtils.showToast('跳转到专家问答...', 'info');
-        setTimeout(() => commonUtils.navigateTo('qa-system.html'), 400);
-    } else {
-        window.location.href = 'qa-system.html';
-    }
+    safeCommonUtils().showToast('跳转到专家问答...', 'info');
+    setTimeout(() => safeCommonUtils().navigateTo('qa-system.html'), 400);
 }
 
 // 关注/取消关注 问题
 function toggleFollowQuestion(btn) {
     const followed = btn.classList.toggle('followed');
     btn.textContent = followed ? '✔ 已关注' : '👁 关注';
-    if (window.commonUtils && commonUtils.showToast) {
-        commonUtils.showToast(followed ? '已关注该问题' : '已取消关注', 'success');
-    }
+    safeCommonUtils().showToast(followed ? '已关注该问题' : '已取消关注', 'success');
 }
 
 // 活动报名
@@ -1562,15 +1613,13 @@ function joinEvent(activityItem, btn) {
     btn.classList.add('joined');
     btn.textContent = '已报名';
     btn.disabled = true;
-    if (window.commonUtils && commonUtils.showToast) {
-        commonUtils.showToast('报名成功，已加入活动', 'success');
-    }
+    safeCommonUtils().showToast('报名成功，已加入活动', 'success');
 }
 
-// 打开动态详情（示例：可跳转详情页或弹出详情）
+// 打开动态详情（已禁用，不再显示详情）
 function openActivityDetail(item) {
+    // 不再显示"打开动态详情"提示
+    // 可以在这里添加其他逻辑，比如统计点击等
     const id = item && item.dataset ? (item.dataset.activityId || '') : '';
-    if (window.commonUtils && commonUtils.showToast) {
-        commonUtils.showToast('打开动态详情...', 'info');
-    }
+    console.log('动态点击:', id);
 }
