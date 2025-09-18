@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终测试 - 移动云资源库</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .test-banner h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .test-banner p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .feature-check {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 10px 15px;
+            margin: 10px 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .feature-check h4 {
+            margin: 0 0 5px 0;
+            color: #28a745;
+            font-size: 14px;
+        }
+        .feature-check p {
+            margin: 0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- 测试横幅 -->
+    <div class="test-banner">
+        <h2>🎯 移动云资源库 - 真实文件版本</h2>
+        <p>所有资源均来自uploads文件夹中的真实文件</p>
+    </div>
+
+    <!-- 功能说明 -->
+    <div class="feature-check">
+        <h4>✅ 已实现功能</h4>
+        <p>• 热门推荐：随机展示2个真实文件 • 文档列表：显示所有真实文件 • 正确的文件类型图标 • 真实的文件大小显示</p>
+    </div>
+
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>移动云资源库</h1>
+                <button class="search-btn">
+                    <span class="search-symbol">🔍</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 搜索栏 (可展开) -->
+        <div class="search-section" id="searchSection">
+            <div class="search-box">
+                <input type="text" placeholder="输入关键词进行语义搜索..." class="search-input" id="searchInput">
+                <button class="search-submit-btn" onclick="performSearch()">搜索</button>
+            </div>
+            <div class="search-filters">
+                <select class="filter-select">
+                    <option value="">文档类型</option>
+                    <option value="manual">产品手册</option>
+                    <option value="solution">解决方案</option>
+                    <option value="training">培训资料</option>
+                    <option value="case">客户案例</option>
+                </select>
+                <select class="filter-select">
+                    <option value="">业务领域</option>
+                    <option value="5g">5G网络</option>
+                    <option value="cloud">云计算</option>
+                    <option value="edge">边缘计算</option>
+                    <option value="iot">物联网</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 文档列表 -->
+        <div class="document-list">
+            <div class="list-header">
+                <h3>文档资源</h3>
+                <div class="sort-options">
+                    <select class="sort-select">
+                        <option value="latest">最新更新</option>
+                        <option value="popular">热门下载</option>
+                        <option value="rating">评分最高</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="document-items">
+                <!-- 文档列表内容将通过JavaScript动态加载 -->
+            </div>
+
+            <!-- 滚动加载提示 -->
+            <div class="scroll-loading" id="scrollLoading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">正在加载更多...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item active">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    <script>
+        // 页面加载完成后显示统计信息
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const hotItems = document.querySelectorAll('.hot-item');
+                const docItems = document.querySelectorAll('.doc-item');
+                
+                if (hotItems.length > 0 || docItems.length > 0) {
+                    // 创建成功提示
+                    const successBanner = document.createElement('div');
+                    successBanner.style.cssText = `
+                        position: fixed;
+                        top: 10px;
+                        right: 10px;
+                        background: #28a745;
+                        color: white;
+                        padding: 10px 15px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        z-index: 9999;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    `;
+                    successBanner.innerHTML = `
+                        ✅ 加载成功<br>
+                        热门推荐: ${hotItems.length} 项<br>
+                        文档列表: ${docItems.length} 项
+                    `;
+                    document.body.appendChild(successBanner);
+                    
+                    // 5秒后自动隐藏
+                    setTimeout(() => {
+                        successBanner.remove();
+                    }, 5000);
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

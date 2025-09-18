@@ -4,7 +4,35 @@ if (typeof safeCommonUtils === "undefined") {
         return typeof window.commonUtils !== "undefined" ? window.commonUtils : {
             showToast: function(m,t) { console.log(`[${t}] ${m}`); },
             navigateTo: function(u) { window.location.href = u; },
-            mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); }
+            mockApiRequest: function() { return Promise.resolve({success:true,data:[]}); },
+            showLoading: function(m) { console.log(`Loading: ${m}`); },
+            hideLoading: function() { console.log('Loading hidden'); },
+            storage: {
+                get: function(key, defaultValue) {
+                    try {
+                        const value = localStorage.getItem(key);
+                        return value ? JSON.parse(value) : defaultValue;
+                    } catch {
+                        return defaultValue;
+                    }
+                },
+                set: function(key, value) {
+                    try {
+                        localStorage.setItem(key, JSON.stringify(value));
+                    } catch {}
+                }
+            },
+            debounce: function(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
         };
     }
 }
@@ -64,6 +92,7 @@ function initSearchFunctionality() {
 function toggleSearch() {
     const searchSection = document.querySelector('.search-section');
     const searchInput = document.querySelector('.search-input');
+    const searchFilters = document.querySelector('.search-filters');
 
     if (searchSection) {
         const isVisible = searchSection.classList.contains('active');
@@ -71,16 +100,20 @@ function toggleSearch() {
         if (isVisible) {
             // 当前可见，需要隐藏
             searchSection.classList.remove('active');
-            safeCommonUtils().showToast('搜索框已隐藏', 'info');
         } else {
             // 当前隐藏，需要显示
             searchSection.classList.add('active');
+
+            // 隐藏筛选器，只显示搜索输入框
+            if (searchFilters) {
+                searchFilters.style.display = 'none';
+            }
+
             setTimeout(() => {
                 if (searchInput) {
                     searchInput.focus();
                 }
             }, 100);
-            safeCommonUtils().showToast('搜索框已展开', 'info');
         }
     }
 }
@@ -127,15 +160,26 @@ function saveSearchHistory(query) {
 // 搜索文档
 function searchDocuments(query) {
     safeCommonUtils().showLoading('搜索中...');
-    
-    safeCommonUtils().mockApiRequest(`/api/documents/search?q=${query}`)
-        .then(response => {
-            safeCommonUtils().hideLoading();
-            if (response.success) {
-                updateDocumentList(response.data.results);
-                safeCommonUtils().showToast(`找到 ${response.data.total} 个相关结果`, 'success');
-            }
+
+    // 模拟搜索延迟
+    setTimeout(() => {
+        safeCommonUtils().hideLoading();
+
+        // 在真实文件中搜索
+        const searchResults = window.REAL_FILES_DATA.filter(file => {
+            const searchText = `${file.title} ${file.description} ${file.tags.join(' ')}`.toLowerCase();
+            return searchText.includes(query.toLowerCase());
         });
+
+        // 更新文档列表
+        updateDocumentListWithFilteredFiles(searchResults);
+
+        // 显示搜索结果
+        safeCommonUtils().showToast(`找到 ${searchResults.length} 个相关结果`, 'success');
+
+        // 重置显示的文件列表
+        displayedFiles = [...searchResults];
+    }, 800);
 }
 
 // 检查URL参数并自动选中分类
@@ -157,18 +201,6 @@ function checkUrlCategoryParameter() {
 
             // 加载对应分类的文档
             loadDocumentsByCategory(category);
-
-            // 显示提示信息
-            const categoryNames = {
-                'training': '培训资料',
-                'case': '客户案例',
-                'manual': '产品手册',
-                'solution': '解决方案',
-                'all': '全部'
-            };
-
-            const categoryName = categoryNames[category] || category;
-            safeCommonUtils().showToast(`已切换到：${categoryName}`, 'success');
 
             // 滚动到分类导航区域
             const categoryNav = document.querySelector('.category-nav');
@@ -197,18 +229,6 @@ function initCategoryTabs() {
             // 加载对应分类的文档
             loadDocumentsByCategory(category);
 
-            // 显示筛选反馈
-            const categoryNames = {
-                'training': '培训资料',
-                'case': '客户案例',
-                'manual': '产品手册',
-                'solution': '解决方案',
-                'all': '全部'
-            };
-
-            const categoryName = categoryNames[category] || category;
-            safeCommonUtils().showToast(`已切换到：${categoryName}`, 'info');
-
             // 统计分类点击
             trackCategoryClick(category);
         });
@@ -218,14 +238,49 @@ function initCategoryTabs() {
 // 按分类加载文档
 function loadDocumentsByCategory(category) {
     safeCommonUtils().showLoading('加载中...');
-    
-    safeCommonUtils().mockApiRequest(`/api/documents/category/${category}`)
-        .then(response => {
-            safeCommonUtils().hideLoading();
-            if (response.success) {
-                updateDocumentList(response.data.documents);
-            }
-        });
+
+    // 模拟加载延迟
+    setTimeout(() => {
+        safeCommonUtils().hideLoading();
+
+        // 根据分类筛选真实文件
+        let filteredFiles = window.REAL_FILES_DATA;
+        if (category !== 'all') {
+            filteredFiles = window.REAL_FILES_DATA.filter(file => file.category === category);
+        }
+
+        // 更新文档列表
+        updateDocumentListWithFilteredFiles(filteredFiles);
+
+        // 重置显示的文件列表
+        displayedFiles = [...filteredFiles];
+    }, 500);
+}
+
+// 更新文档列表（筛选后的文件）
+function updateDocumentListWithFilteredFiles(files) {
+    const documentItems = document.querySelector('.document-items');
+    if (!documentItems) return;
+
+    // 清空现有内容
+    documentItems.innerHTML = '';
+
+    // 重置显示的文件列表
+    displayedFiles = [];
+
+    // 添加筛选后的文件
+    files.forEach((file, index) => {
+        const docElement = createRealDocumentElement(file, index);
+        documentItems.appendChild(docElement);
+    });
+
+    // 标记筛选后的文件为已显示
+    displayedFiles = [...files];
+
+    // 重新初始化文档列表事件
+    setTimeout(() => {
+        initDocumentList();
+    }, 100);
 }
 
 // 初始化文档列表
@@ -543,33 +598,218 @@ function applyFilter(filterType) {
         });
 }
 
+// 真实文件数据 - 全局变量
+window.REAL_FILES_DATA = [
+    {
+        filename: '云电脑教育场景解决方案.pptx',
+        size: 25422197,
+        type: 'pptx',
+        title: '云电脑教育场景解决方案',
+        description: '详细介绍云电脑在教育行业的应用场景、技术架构和实施方案',
+        category: 'solution',
+        tags: ['云电脑', '教育', '解决方案'],
+        docType: '解决方案'
+    },
+    {
+        filename: '智算一体机内部培训材料.pptx',
+        size: 58290496,
+        type: 'pptx',
+        title: '智算一体机内部培训材料',
+        description: '智算一体机产品的内部培训资料，包含产品特性、技术规格和应用指导',
+        category: 'training',
+        tags: ['智算一体机', '培训', '产品介绍'],
+        docType: '培训资料'
+    },
+    {
+        filename: '党政行业重点解决方案及案例.pptx',
+        size: 1404128,
+        type: 'pptx',
+        title: '党政行业重点解决方案及案例',
+        description: '党政行业数字化转型的重点解决方案和成功案例分析',
+        category: 'case',
+        tags: ['党政行业', '解决方案', '案例分析'],
+        docType: '案例文档'
+    },
+    {
+        filename: '辽宁省中小企业数字化转型政策.docx',
+        size: 19423,
+        type: 'docx',
+        title: '辽宁省中小企业数字化转型政策',
+        description: '辽宁省支持中小企业数字化转型的相关政策文件和实施细则',
+        category: 'manual',
+        tags: ['数字化转型', '政策文件', '中小企业'],
+        docType: '政策文档'
+    },
+    {
+        filename: '法库县公安局融智算项目标杆案例.docx',
+        size: 16479,
+        type: 'docx',
+        title: '法库县公安局融智算项目标杆案例',
+        description: '法库县公安局融智算项目的实施过程、技术方案和应用效果分析',
+        category: 'case',
+        tags: ['公安', '融智算', '标杆案例'],
+        docType: '案例文档'
+    },
+    {
+        filename: '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+        size: 490617,
+        type: 'pptx',
+        title: '移动云分地市分行业分客群待拓清单及产品拓展方案',
+        description: '移动云业务在不同地市、行业和客群的拓展策略和产品方案',
+        category: 'solution',
+        tags: ['移动云', '业务拓展', '产品方案'],
+        docType: '业务方案'
+    }
+];
+
+// 格式化文件大小
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+// 获取文件类型图标
+function getFileTypeIcon(type) {
+    const iconMap = {
+        'pptx': { class: 'ppt-icon', text: 'PPT' },
+        'docx': { class: 'doc-icon-type', text: 'DOC' },
+        'pdf': { class: 'pdf-icon', text: 'PDF' },
+        'xlsx': { class: 'excel-icon', text: 'XLS' },
+        'mp4': { class: 'video-icon', text: 'MP4' }
+    };
+    return iconMap[type] || { class: 'doc-icon-type', text: 'DOC' };
+}
+
 // 加载资源数据
 function loadResourceData() {
-    // 加载热门文档
-    safeCommonUtils().mockApiRequest('/api/documents/popular')
-        .then(response => {
-            if (response.success) {
-                updateDocumentList(response.data.documents);
-            }
-        });
-    
-    // 加载分类统计
-    safeCommonUtils().mockApiRequest('/api/documents/categories/stats')
-        .then(response => {
-            if (response.success) {
-                updateCategoryStats(response.data);
-            }
-        });
+    // 加载真实文件数据
+    loadRealFilesData();
+}
+
+// 加载真实文件数据
+function loadRealFilesData() {
+    // 更新热门推荐
+    updateHotRecommendations();
+
+    // 更新文档列表
+    updateDocumentListWithRealFiles();
+}
+
+// 更新热门推荐
+function updateHotRecommendations() {
+    const hotList = document.querySelector('.hot-list');
+    if (!hotList) return;
+
+    // 随机选择2个文件作为热门推荐
+    const shuffled = [...window.REAL_FILES_DATA].sort(() => 0.5 - Math.random());
+    const hotFiles = shuffled.slice(0, 2);
+
+    hotList.innerHTML = '';
+
+    hotFiles.forEach((file, index) => {
+        const hotItem = document.createElement('div');
+        hotItem.className = 'hot-item';
+        hotItem.dataset.docId = `hot_real_${index}`;
+        hotItem.dataset.filename = file.filename;
+
+        const icon = getFileTypeIcon(file.type);
+        const iconEmoji = file.type === 'pptx' ? '📊' : '📋';
+
+        hotItem.innerHTML = `
+            <div class="hot-icon">${iconEmoji}</div>
+            <div class="hot-content">
+                <h4>${file.title}</h4>
+                <p>${file.description}</p>
+                <span class="hot-stats">📄 ${formatFileSize(file.size)} | 🗓 2025-09-18</span>
+            </div>
+        `;
+
+        hotList.appendChild(hotItem);
+    });
+
+    // 重新初始化事件
+    initDocumentList();
+}
+
+// 更新文档列表
+function updateDocumentListWithRealFiles() {
+    const documentItems = document.querySelector('.document-items');
+    if (!documentItems) return;
+
+    // 清空现有内容
+    documentItems.innerHTML = '';
+
+    // 重置显示的文件列表
+    displayedFiles = [];
+
+    // 添加真实文件
+    window.REAL_FILES_DATA.forEach((file, index) => {
+        const docElement = createRealDocumentElement(file, index);
+        documentItems.appendChild(docElement);
+    });
+
+    // 标记所有文件为已显示
+    displayedFiles = [...window.REAL_FILES_DATA];
+
+    // 重新初始化文档列表事件
+    setTimeout(() => {
+        initDocumentList();
+    }, 100);
+}
+
+// 创建真实文档元素
+function createRealDocumentElement(file, index) {
+    const docElement = document.createElement('div');
+    docElement.className = 'doc-item';
+    docElement.dataset.docId = `real_doc_${index}`;
+    docElement.dataset.filename = file.filename;
+
+    const icon = getFileTypeIcon(file.type);
+    const formattedSize = formatFileSize(file.size);
+    const fixedDate = '2025-09-18'; // 统一使用固定日期
+
+    docElement.innerHTML = `
+        <div class="doc-icon ${icon.class}">
+            <span class="icon-text">${icon.text}</span>
+        </div>
+        <div class="doc-content">
+            <h4>${file.title}</h4>
+            <p class="doc-desc">${file.description}</p>
+            <div class="doc-meta">
+                <span class="doc-type">${file.docType}</span>
+                <span class="doc-size">${formattedSize}</span>
+                <span class="doc-date">${fixedDate}</span>
+            </div>
+            <div class="doc-tags">
+                ${file.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+        </div>
+        <div class="doc-actions">
+            <button class="action-btn preview-btn">预览</button>
+            <button class="action-btn download-btn">下载</button>
+        </div>
+    `;
+
+    return docElement;
 }
 
 // 更新文档列表
 function updateDocumentList(documents) {
+    // 如果没有传入文档，使用真实文件数据
+    if (!documents) {
+        updateDocumentListWithRealFiles();
+        return;
+    }
+
     const documentList = document.querySelector('.document-list');
-    if (!documentList || !documents) return;
-    
+    if (!documentList) return;
+
     // 这里可以动态更新文档列表
     console.log('更新文档列表:', documents);
-    
+
     // 重新初始化文档列表事件
     setTimeout(() => {
         initDocumentList();
@@ -633,21 +873,25 @@ document.addEventListener('visibilitychange', function() {
 
 // 全局变量
 let currentPage = 1;
+let displayedFiles = [];
 
 // 加载更多文档
 function loadMoreDocuments() {
     return new Promise((resolve, reject) => {
         // 模拟API请求延迟
         setTimeout(() => {
-            // 模拟数据
-            const mockDocuments = generateMockDocuments(currentPage);
+            // 检查是否还有未显示的真实文件
+            const startIndex = displayedFiles.length;
+            const remainingFiles = window.REAL_FILES_DATA.slice(startIndex);
 
-            if (mockDocuments.length > 0) {
-                appendDocuments(mockDocuments);
-                currentPage++;
+            if (remainingFiles.length > 0) {
+                // 每次最多加载2个文件
+                const filesToLoad = remainingFiles.slice(0, 2);
+                appendRealDocuments(filesToLoad);
+                displayedFiles.push(...filesToLoad);
 
-                // 模拟最多加载5页数据
-                const hasMore = currentPage < 5;
+                // 检查是否还有更多文件
+                const hasMore = displayedFiles.length < window.REAL_FILES_DATA.length;
                 resolve(hasMore);
             } else {
                 // 没有更多数据
@@ -658,66 +902,24 @@ function loadMoreDocuments() {
     });
 }
 
-// 生成模拟文档数据
+// 追加真实文档到列表
+function appendRealDocuments(files) {
+    const documentItems = document.querySelector('.document-items');
+    if (!documentItems) return;
+
+    files.forEach((file, index) => {
+        const docElement = createRealDocumentElement(file, displayedFiles.length + index);
+        documentItems.appendChild(docElement);
+    });
+
+    // 重新初始化新添加的文档事件
+    initDocumentList();
+}
+
+// 生成模拟文档数据 (已废弃，保留以防兼容性问题)
 function generateMockDocuments(page) {
-    if (page >= 5) return []; // 最多5页数据
-
-    const documentTypes = [
-        { type: 'pdf', icon: 'pdf-icon', text: 'PDF' },
-        { type: 'video', icon: 'video-icon', text: 'MP4' },
-        { type: 'doc', icon: 'doc-icon-type', text: 'DOC' },
-        { type: 'ppt', icon: 'ppt-icon', text: 'PPT' },
-        { type: 'excel', icon: 'excel-icon', text: 'XLS' }
-    ];
-
-    const titles = [
-        '云原生架构设计指南',
-        '微服务治理最佳实践',
-        '容器化部署实战手册',
-        'DevOps流程优化方案',
-        '数据库性能调优指南',
-        '网络安全防护策略',
-        '移动应用开发规范',
-        '大数据分析平台搭建'
-    ];
-
-    const descriptions = [
-        '详细介绍云原生架构的设计原则和实施方法',
-        '涵盖微服务治理的各个方面，包括服务发现、配置管理等',
-        '从基础概念到实际部署的完整容器化指南',
-        '优化开发运维流程，提升团队协作效率',
-        '数据库性能优化的实用技巧和工具推荐',
-        '全面的网络安全防护体系建设方案',
-        '移动应用开发的标准化流程和规范要求',
-        '构建企业级大数据分析平台的技术方案'
-    ];
-
-    const mockDocs = [];
-    for (let i = 0; i < 3; i++) { // 每页3个文档
-        const typeInfo = documentTypes[Math.floor(Math.random() * documentTypes.length)];
-        const titleIndex = (page * 3 + i) % titles.length;
-
-        mockDocs.push({
-            id: `doc_${page}_${i}`,
-            title: titles[titleIndex],
-            description: descriptions[titleIndex],
-            type: typeInfo.type,
-            iconClass: typeInfo.icon,
-            iconText: typeInfo.text,
-            size: `${(Math.random() * 5 + 0.5).toFixed(1)}MB`,
-            date: `2024-01-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`,
-            docType: ['技术文档', '培训资料', '案例分析', '产品手册'][Math.floor(Math.random() * 4)],
-            tags: [
-                ['云计算', '架构设计'],
-                ['微服务', '治理'],
-                ['容器', '部署'],
-                ['DevOps', '流程优化'],
-                ['数据库', '性能调优']
-            ][Math.floor(Math.random() * 5)]
-        });
-    }
-
-    return mockDocs;
+    // 不再生成模拟数据，返回空数组
+    return [];
 }
 
 // 追加文档到列表

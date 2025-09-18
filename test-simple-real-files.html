@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单测试 - 真实文件数据</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .file-item { margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 4px; }
+        .debug { background: #fff3cd; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <h1>简单测试 - 真实文件数据</h1>
+    
+    <div class="test-section">
+        <h3>测试结果</h3>
+        <div id="testResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>文件数据</h3>
+        <div id="fileData"></div>
+    </div>
+
+    <script>
+        // 真实文件数据
+        const REAL_FILES_DATA = [
+            {
+                filename: '云电脑教育场景解决方案.pptx',
+                size: 25422197,
+                type: 'pptx',
+                title: '云电脑教育场景解决方案',
+                description: '详细介绍云电脑在教育行业的应用场景、技术架构和实施方案',
+                category: 'solution',
+                tags: ['云电脑', '教育', '解决方案'],
+                docType: '解决方案'
+            },
+            {
+                filename: '智算一体机内部培训材料.pptx',
+                size: 58290496,
+                type: 'pptx',
+                title: '智算一体机内部培训材料',
+                description: '智算一体机产品的内部培训资料，包含产品特性、技术规格和应用指导',
+                category: 'training',
+                tags: ['智算一体机', '培训', '产品介绍'],
+                docType: '培训资料'
+            },
+            {
+                filename: '党政行业重点解决方案及案例.pptx',
+                size: 1404128,
+                type: 'pptx',
+                title: '党政行业重点解决方案及案例',
+                description: '党政行业数字化转型的重点解决方案和成功案例分析',
+                category: 'case',
+                tags: ['党政行业', '解决方案', '案例分析'],
+                docType: '案例文档'
+            },
+            {
+                filename: '辽宁省中小企业数字化转型政策.docx',
+                size: 19423,
+                type: 'docx',
+                title: '辽宁省中小企业数字化转型政策',
+                description: '辽宁省支持中小企业数字化转型的相关政策文件和实施细则',
+                category: 'manual',
+                tags: ['数字化转型', '政策文件', '中小企业'],
+                docType: '政策文档'
+            },
+            {
+                filename: '法库县公安局融智算项目标杆案例.docx',
+                size: 16479,
+                type: 'docx',
+                title: '法库县公安局融智算项目标杆案例',
+                description: '法库县公安局融智算项目的实施过程、技术方案和应用效果分析',
+                category: 'case',
+                tags: ['公安', '融智算', '标杆案例'],
+                docType: '案例文档'
+            },
+            {
+                filename: '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+                size: 490617,
+                type: 'pptx',
+                title: '移动云分地市分行业分客群待拓清单及产品拓展方案',
+                description: '移动云业务在不同地市、行业和客群的拓展策略和产品方案',
+                category: 'solution',
+                tags: ['移动云', '业务拓展', '产品方案'],
+                docType: '业务方案'
+            }
+        ];
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // 获取文件类型图标
+        function getFileTypeIcon(type) {
+            const iconMap = {
+                'pptx': { class: 'ppt-icon', text: 'PPT' },
+                'docx': { class: 'doc-icon-type', text: 'DOC' },
+                'pdf': { class: 'pdf-icon', text: 'PDF' },
+                'xlsx': { class: 'excel-icon', text: 'XLS' },
+                'mp4': { class: 'video-icon', text: 'MP4' }
+            };
+            return iconMap[type] || { class: 'doc-icon-type', text: 'DOC' };
+        }
+
+        // 测试函数
+        function runTests() {
+            const resultsDiv = document.getElementById('testResults');
+            const fileDataDiv = document.getElementById('fileData');
+            
+            let results = [];
+            
+            // 测试1: 检查文件数据是否正确加载
+            try {
+                if (REAL_FILES_DATA && REAL_FILES_DATA.length > 0) {
+                    results.push(`✅ 文件数据加载成功: ${REAL_FILES_DATA.length} 个文件`);
+                } else {
+                    results.push('❌ 文件数据加载失败');
+                }
+            } catch (e) {
+                results.push(`❌ 文件数据测试出错: ${e.message}`);
+            }
+
+            // 测试2: 检查文件大小格式化
+            try {
+                const testSize = formatFileSize(25422197);
+                if (testSize === '24.2 MB') {
+                    results.push('✅ 文件大小格式化正确');
+                } else {
+                    results.push(`❌ 文件大小格式化错误: 期望 "24.2 MB", 实际 "${testSize}"`);
+                }
+            } catch (e) {
+                results.push(`❌ 文件大小格式化测试出错: ${e.message}`);
+            }
+
+            // 测试3: 检查文件类型图标
+            try {
+                const pptIcon = getFileTypeIcon('pptx');
+                const docIcon = getFileTypeIcon('docx');
+                if (pptIcon.text === 'PPT' && docIcon.text === 'DOC') {
+                    results.push('✅ 文件类型图标映射正确');
+                } else {
+                    results.push('❌ 文件类型图标映射错误');
+                }
+            } catch (e) {
+                results.push(`❌ 文件类型图标测试出错: ${e.message}`);
+            }
+
+            // 显示测试结果
+            resultsDiv.innerHTML = results.map(result => 
+                `<div class="debug ${result.includes('✅') ? 'success' : 'error'}">${result}</div>`
+            ).join('');
+
+            // 显示文件数据
+            fileDataDiv.innerHTML = REAL_FILES_DATA.map(file => `
+                <div class="file-item">
+                    <strong>${file.title}</strong><br>
+                    文件名: ${file.filename}<br>
+                    大小: ${formatFileSize(file.size)}<br>
+                    类型: ${getFileTypeIcon(file.type).text}<br>
+                    分类: ${file.category}<br>
+                    标签: ${file.tags.join(', ')}<br>
+                    描述: ${file.description}
+                </div>
+            `).join('');
+        }
+
+        // 页面加载完成后运行测试
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>

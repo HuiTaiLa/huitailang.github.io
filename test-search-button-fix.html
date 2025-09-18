@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试搜索按钮修复 - 移动云资源库</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .fix-banner {
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .fix-banner h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .fix-banner p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .test-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+        }
+        .test-info h4 {
+            margin: 0 0 10px 0;
+            color: #1976d2;
+        }
+        .test-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .test-info li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 修复横幅 -->
+    <div class="fix-banner">
+        <h2>🔍 搜索按钮修复测试</h2>
+        <p>已移除搜索框展开/隐藏时的提示信息</p>
+    </div>
+
+    <!-- 测试说明 -->
+    <div class="test-info">
+        <h4>🧪 测试内容</h4>
+        <ul>
+            <li>✅ 点击右上角搜索按钮不再显示"搜索框已展开"提示</li>
+            <li>✅ 再次点击搜索按钮不再显示"搜索框已隐藏"提示</li>
+            <li>✅ 搜索框展开时只显示语义搜索输入框</li>
+            <li>✅ 筛选器（文档类型、业务领域）保持隐藏状态</li>
+        </ul>
+    </div>
+
+    <!-- 重点提示 -->
+    <div class="highlight">
+        👆 请点击右上角的搜索按钮（🔍）进行测试
+    </div>
+
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>移动云资源库</h1>
+                <button class="search-btn">
+                    <span class="search-symbol">🔍</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 搜索栏 (可展开) -->
+        <div class="search-section" id="searchSection">
+            <div class="search-box">
+                <input type="text" placeholder="输入关键词进行语义搜索..." class="search-input" id="searchInput">
+                <button class="search-submit-btn" onclick="performSearch()">搜索</button>
+            </div>
+            <div class="search-filters">
+                <select class="filter-select">
+                    <option value="">文档类型</option>
+                    <option value="manual">产品手册</option>
+                    <option value="solution">解决方案</option>
+                    <option value="training">培训资料</option>
+                    <option value="case">客户案例</option>
+                </select>
+                <select class="filter-select">
+                    <option value="">业务领域</option>
+                    <option value="5g">5G网络</option>
+                    <option value="cloud">云计算</option>
+                    <option value="edge">边缘计算</option>
+                    <option value="iot">物联网</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 文档列表 -->
+        <div class="document-list">
+            <div class="list-header">
+                <h3>文档资源</h3>
+                <div class="sort-options">
+                    <select class="sort-select">
+                        <option value="latest">最新更新</option>
+                        <option value="popular">热门下载</option>
+                        <option value="rating">评分最高</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="document-items">
+                <!-- 文档列表内容将通过JavaScript动态加载 -->
+            </div>
+
+            <!-- 滚动加载提示 -->
+            <div class="scroll-loading" id="scrollLoading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">正在加载更多...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="navigateTo('index.html')">
+            <img src="images/home-icon.png" alt="首页">
+            <span>首页</span>
+        </div>
+        <div class="nav-item active">
+            <img src="images/resource-nav-icon.png" alt="资源库">
+            <span>资源库</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('work-circle.html')">
+            <img src="images/circle-nav-icon.png" alt="工作圈">
+            <span>工作圈</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile.html')">
+            <img src="images/profile-icon.png" alt="我的">
+            <span>我的</span>
+        </div>
+    </nav>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    <script>
+        // 监听搜索按钮点击，验证是否还有提示
+        document.addEventListener('DOMContentLoaded', function() {
+            let clickCount = 0;
+            const searchBtn = document.querySelector('.search-btn');
+            
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function() {
+                    clickCount++;
+                    
+                    // 延迟检查是否有toast提示出现
+                    setTimeout(() => {
+                        const toasts = document.querySelectorAll('.toast');
+                        const hasToast = toasts.length > 0;
+                        
+                        // 创建测试结果提示
+                        const resultDiv = document.createElement('div');
+                        resultDiv.style.cssText = `
+                            position: fixed;
+                            bottom: 20px;
+                            right: 20px;
+                            background: ${hasToast ? '#dc3545' : '#28a745'};
+                            color: white;
+                            padding: 10px 15px;
+                            border-radius: 8px;
+                            font-size: 14px;
+                            z-index: 9999;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        `;
+                        resultDiv.innerHTML = `
+                            <strong>测试结果 #${clickCount}</strong><br>
+                            ${hasToast ? '❌ 仍有提示信息' : '✅ 无提示信息'}<br>
+                            搜索框状态: ${document.querySelector('.search-section').classList.contains('active') ? '展开' : '隐藏'}
+                        `;
+                        
+                        // 移除之前的结果提示
+                        const oldResults = document.querySelectorAll('[data-test-result]');
+                        oldResults.forEach(el => el.remove());
+                        
+                        resultDiv.setAttribute('data-test-result', 'true');
+                        document.body.appendChild(resultDiv);
+                        
+                        // 3秒后自动隐藏
+                        setTimeout(() => {
+                            resultDiv.remove();
+                        }, 3000);
+                        
+                    }, 500); // 等待500ms检查toast
+                });
+            }
+            
+            // 显示初始说明
+            setTimeout(() => {
+                const instructionDiv = document.createElement('div');
+                instructionDiv.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 12px;
+                    font-size: 16px;
+                    z-index: 10000;
+                    text-align: center;
+                    max-width: 300px;
+                `;
+                instructionDiv.innerHTML = `
+                    <h3 style="margin: 0 0 10px 0;">🔍 测试说明</h3>
+                    <p style="margin: 0 0 15px 0;">请点击右上角的搜索按钮进行测试</p>
+                    <p style="margin: 0; font-size: 14px; opacity: 0.8;">如果修复成功，不会显示任何提示信息</p>
+                `;
+                document.body.appendChild(instructionDiv);
+                
+                // 5秒后自动隐藏
+                setTimeout(() => {
+                    instructionDiv.remove();
+                }, 5000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
