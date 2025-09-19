@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源库搜索测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        /* 让搜索区域默认可见 */
+        .search-section {
+            display: block !important;
+        }
+        .test-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        .test-btn {
+            display: block;
+            margin: 5px 0;
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <button class="back-btn" onclick="history.back()">
+                    <span class="back-arrow">‹</span>
+                </button>
+                <h1>移动云资源库 - 搜索测试</h1>
+                <button class="search-btn">
+                    <span class="search-symbol">🔍</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 搜索栏 (默认可见) -->
+        <div class="search-section active" id="searchSection">
+            <div class="search-box">
+                <input type="text" placeholder="输入关键词进行语义搜索..." class="search-input" id="searchInput">
+                <button class="search-submit-btn" onclick="performSearch()">搜索</button>
+            </div>
+            <div class="search-filters">
+                <select class="filter-select">
+                    <option value="">文档类型</option>
+                    <option value="manual">产品手册</option>
+                    <option value="solution">解决方案</option>
+                    <option value="training">培训资料</option>
+                    <option value="case">客户案例</option>
+                </select>
+                <select class="filter-select">
+                    <option value="">业务领域</option>
+                    <option value="5g">5G网络</option>
+                    <option value="cloud">云计算</option>
+                    <option value="edge">边缘计算</option>
+                    <option value="iot">物联网</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-list">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 文档列表 -->
+        <div class="document-list">
+            <div class="list-header">
+                <div class="list-controls">
+                    <select class="sort-select">
+                        <option value="latest">最新发布</option>
+                        <option value="popular">最受欢迎</option>
+                        <option value="name">按名称</option>
+                        <option value="size">按大小</option>
+                    </select>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid">网格</button>
+                        <button class="view-btn" data-view="list">列表</button>
+                    </div>
+                </div>
+            </div>
+            <div class="document-items">
+                <!-- 文档项目将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 测试控制面板 -->
+    <div class="test-controls">
+        <h4>测试控制</h4>
+        <button class="test-btn" onclick="testSearchIndustry()">搜索"行业"</button>
+        <button class="test-btn" onclick="testSearchCloud()">搜索"云计算"</button>
+        <button class="test-btn" onclick="testSearchEducation()">搜索"教育"</button>
+        <button class="test-btn" onclick="clearSearch()">清空搜索</button>
+        <button class="test-btn" onclick="showHotRecommendations()">显示热门推荐</button>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    <script>
+        // 测试函数
+        function testSearchIndustry() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '行业';
+            performSearch();
+            console.log('执行搜索"行业"');
+        }
+
+        function testSearchCloud() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '云计算';
+            performSearch();
+            console.log('执行搜索"云计算"');
+        }
+
+        function testSearchEducation() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '教育';
+            performSearch();
+            console.log('执行搜索"教育"');
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '';
+            // 重新加载初始状态
+            if (typeof loadRealFilesData === 'function') {
+                loadRealFilesData();
+            }
+            console.log('清空搜索');
+        }
+
+        function showHotRecommendations() {
+            const hotItems = document.querySelectorAll('.hot-item');
+            console.log('当前热门推荐数量:', hotItems.length);
+            hotItems.forEach((item, index) => {
+                const title = item.querySelector('h4')?.textContent;
+                console.log(`热门推荐 ${index + 1}:`, title);
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，开始初始化...');
+            
+            // 检查数据是否加载
+            if (typeof window.REAL_FILES_DATA !== 'undefined') {
+                console.log('REAL_FILES_DATA 已加载，文件数量:', window.REAL_FILES_DATA.length);
+            } else {
+                console.log('警告：REAL_FILES_DATA 未定义');
+            }
+            
+            // 初始化页面
+            if (typeof initResourceLibrary === 'function') {
+                initResourceLibrary();
+            } else {
+                console.log('警告：initResourceLibrary 函数未定义');
+            }
+        });
+    </script>
+</body>
+</html>

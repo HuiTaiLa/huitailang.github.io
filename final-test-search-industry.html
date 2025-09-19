@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终测试：搜索"行业"热门推荐</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .search-section {
+            display: block !important;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>最终测试：搜索"行业"热门推荐功能</h1>
+        
+        <div class="test-section">
+            <h2>需求说明</h2>
+            <p>当用户在资源库页面搜索关键词"行业"时，热门推荐应该只显示"党政行业重点解决方案及案例"这个文档。</p>
+        </div>
+
+        <div class="test-section">
+            <h2>搜索功能</h2>
+            <div class="search-section active">
+                <div class="search-box">
+                    <input type="text" placeholder="输入关键词进行搜索..." class="search-input" id="searchInput" value="行业">
+                    <button class="search-submit-btn" onclick="performSearch()">搜索</button>
+                </div>
+            </div>
+            
+            <div class="test-buttons">
+                <button class="test-button" onclick="testSearchIndustry()">测试搜索"行业"</button>
+                <button class="test-button" onclick="testSearchEducation()">测试搜索"教育"</button>
+                <button class="test-button" onclick="testSearchCloud()">测试搜索"移动云"</button>
+                <button class="test-button" onclick="clearSearch()">清空搜索</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>热门推荐区域</h2>
+            <div class="hot-section">
+                <h3>🔥 热门推荐</h3>
+                <div class="hot-list" id="hotList">
+                    <!-- 热门推荐内容将在这里显示 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>文档列表区域</h2>
+            <div class="document-list">
+                <div class="document-items" id="documentItems">
+                    <!-- 搜索结果将在这里显示 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>测试结果</h2>
+            <div class="test-results" id="testResults">
+                等待测试...
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    <script>
+        let testResults = [];
+
+        function logResult(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            const result = `[${timestamp}] ${prefix} ${message}`;
+            testResults.push(result);
+            updateTestResults();
+            console.log(result);
+        }
+
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = testResults.join('\n');
+        }
+
+        function checkHotRecommendations(expectedTitle = null) {
+            setTimeout(() => {
+                const hotItems = document.querySelectorAll('.hot-item');
+                const hotTitles = Array.from(hotItems).map(item => 
+                    item.querySelector('h4')?.textContent || '未知标题'
+                );
+                
+                logResult(`当前热门推荐数量: ${hotItems.length}`);
+                if (hotTitles.length > 0) {
+                    hotTitles.forEach((title, index) => {
+                        logResult(`  ${index + 1}. ${title}`);
+                    });
+                    
+                    if (expectedTitle) {
+                        if (hotTitles.length === 1 && hotTitles[0] === expectedTitle) {
+                            logResult(`需求验证通过：热门推荐只显示"${expectedTitle}"`, 'success');
+                        } else {
+                            logResult(`需求验证失败：期望只显示"${expectedTitle}"，实际显示${hotTitles.length}个项目`, 'error');
+                        }
+                    }
+                } else {
+                    logResult('热门推荐区域为空');
+                }
+            }, 1000);
+        }
+
+        function checkSearchResults() {
+            setTimeout(() => {
+                const docItems = document.querySelectorAll('.doc-item');
+                const docTitles = Array.from(docItems).map(item => 
+                    item.querySelector('h4')?.textContent || '未知标题'
+                );
+                
+                logResult(`搜索结果数量: ${docItems.length}`);
+                if (docTitles.length > 0) {
+                    docTitles.forEach((title, index) => {
+                        logResult(`  ${index + 1}. ${title}`);
+                    });
+                }
+            }, 1000);
+        }
+
+        function testSearchIndustry() {
+            logResult('开始测试搜索"行业"关键词');
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '行业';
+            performSearch();
+            checkSearchResults();
+            checkHotRecommendations('党政行业重点解决方案及案例');
+        }
+
+        function testSearchEducation() {
+            logResult('开始测试搜索"教育"关键词');
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '教育';
+            performSearch();
+            checkSearchResults();
+            checkHotRecommendations();
+        }
+
+        function testSearchCloud() {
+            logResult('开始测试搜索"移动云"关键词');
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '移动云';
+            performSearch();
+            checkSearchResults();
+            checkHotRecommendations();
+        }
+
+        function clearSearch() {
+            logResult('清空搜索，恢复初始状态');
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '';
+            if (typeof loadRealFilesData === 'function') {
+                loadRealFilesData();
+            }
+            checkHotRecommendations();
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logResult('页面初始化开始');
+            
+            // 检查数据是否加载
+            if (typeof window.REAL_FILES_DATA !== 'undefined') {
+                logResult(`REAL_FILES_DATA 已加载，包含 ${window.REAL_FILES_DATA.length} 个文件`);
+            } else {
+                logResult('错误：REAL_FILES_DATA 未定义', 'error');
+            }
+            
+            // 检查关键函数是否存在
+            const requiredFunctions = ['performSearch', 'updateHotRecommendationsWithFilter', 'loadRealFilesData'];
+            requiredFunctions.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    logResult(`函数 ${funcName} 已定义`, 'success');
+                } else {
+                    logResult(`警告：函数 ${funcName} 未定义`, 'error');
+                }
+            });
+            
+            logResult('页面初始化完成，可以开始测试');
+            
+            // 自动执行搜索"行业"的测试
+            setTimeout(() => {
+                testSearchIndustry();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

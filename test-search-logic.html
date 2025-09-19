@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试搜索逻辑</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .file-item {
+            margin: 10px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .match {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .no-match {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .search-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .highlight {
+            background: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>搜索逻辑测试</h1>
+    
+    <div class="test-section">
+        <h2>搜索关键词："行业"</h2>
+        <div id="searchResults"></div>
+    </div>
+
+    <script src="scripts/resource-library.js"></script>
+    <script>
+        function testSearchLogic() {
+            const query = '行业';
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!window.REAL_FILES_DATA) {
+                resultsDiv.innerHTML = '<p>错误：REAL_FILES_DATA 未定义</p>';
+                return;
+            }
+            
+            console.log('所有文件数据:', window.REAL_FILES_DATA);
+            
+            const searchResults = window.REAL_FILES_DATA.filter(file => {
+                const searchText = `${file.title} ${file.description} ${file.tags.join(' ')}`.toLowerCase();
+                const matches = searchText.includes(query.toLowerCase());
+                
+                console.log(`文件: ${file.title}`);
+                console.log(`搜索文本: ${searchText}`);
+                console.log(`匹配结果: ${matches}`);
+                console.log('---');
+                
+                return matches;
+            });
+            
+            console.log('搜索结果:', searchResults);
+            
+            let html = `<p>搜索关键词："${query}"，找到 ${searchResults.length} 个匹配结果：</p>`;
+            
+            window.REAL_FILES_DATA.forEach(file => {
+                const searchText = `${file.title} ${file.description} ${file.tags.join(' ')}`.toLowerCase();
+                const matches = searchText.includes(query.toLowerCase());
+                
+                const highlightedText = searchText.replace(
+                    new RegExp(query.toLowerCase(), 'gi'), 
+                    `<span class="highlight">${query}</span>`
+                );
+                
+                html += `
+                    <div class="file-item ${matches ? 'match' : 'no-match'}">
+                        <strong>${file.title}</strong> ${matches ? '✅' : '❌'}
+                        <br>
+                        <small>文件名: ${file.filename}</small>
+                        <br>
+                        <small>分类: ${file.category}</small>
+                        <br>
+                        <small>标签: ${file.tags.join(', ')}</small>
+                        <div class="search-text">
+                            搜索文本: ${highlightedText}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+            
+            // 测试热门推荐逻辑
+            console.log('测试热门推荐逻辑...');
+            if (searchResults.length > 0) {
+                // 模拟搜索状态
+                const searchInput = document.createElement('input');
+                searchInput.className = 'search-input';
+                searchInput.value = query;
+                document.body.appendChild(searchInput);
+                
+                // 创建热门推荐容器
+                const hotList = document.createElement('div');
+                hotList.className = 'hot-list';
+                document.body.appendChild(hotList);
+                
+                // 调用热门推荐更新函数
+                if (typeof updateHotRecommendationsWithFilter === 'function') {
+                    updateHotRecommendationsWithFilter(searchResults);
+                    
+                    setTimeout(() => {
+                        const hotItems = document.querySelectorAll('.hot-item');
+                        console.log('热门推荐项目数量:', hotItems.length);
+                        hotItems.forEach(item => {
+                            const title = item.querySelector('h4')?.textContent;
+                            console.log('热门推荐项目:', title);
+                        });
+                    }, 100);
+                }
+            }
+        }
+        
+        // 页面加载完成后运行测试
+        document.addEventListener('DOMContentLoaded', testSearchLogic);
+    </script>
+</body>
+</html>

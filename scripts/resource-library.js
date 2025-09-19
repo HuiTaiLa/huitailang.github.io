@@ -38,22 +38,7 @@ if (typeof safeCommonUtils === "undefined") {
 }
 // 资源库页面JavaScript功能
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('资源库页面加载完成');
 
-    initSearchFunctionality();
-    initCategoryTabs();
-    initDocumentList();
-    initFilterOptions();
-    initScrollLoading();
-    loadResourceData();
-
-    // 检查URL参数并自动选中对应分类或执行搜索
-    checkUrlCategoryParameter();
-    checkUrlSearchParameter();
-
-    console.log('资源库初始化完成');
-});
 
 // 创建文件选择提示内容
 function createFileSelectionPrompt(filename, docTitle) {
@@ -1170,34 +1155,67 @@ function updateHotRecommendationsWithFilter(files) {
     // 获取当前分类
     const currentCategory = getCurrentCategory();
 
-    // 根据分类定义热门推荐规则
-    const categoryHotRules = {
-        'all': [
-            '党政行业重点解决方案及案例.pptx',
-            '辽宁省中小企业数字化转型政策.docx'
-        ],
-        'manual': [
-            '辽宁省中小企业数字化转型政策.docx'
-        ],
-        'case': [
-            '党政行业重点解决方案及案例.pptx'
-        ],
-        'solution': [], // 显示空
-        'training': []  // 显示空
-    };
-
-    // 获取当前分类应该显示的热门推荐文件名列表
-    const hotFileNames = categoryHotRules[currentCategory] || [];
+    // 检查是否是搜索状态
+    const searchInput = document.querySelector('.search-input');
+    const isSearching = searchInput && searchInput.value.trim().length > 0;
+    const searchQuery = isSearching ? searchInput.value.trim().toLowerCase() : '';
 
     let hotFiles = [];
 
-    // 从全量数据中查找指定的热门推荐文件
-    hotFileNames.forEach(filename => {
-        const file = window.REAL_FILES_DATA.find(f => f.filename === filename);
-        if (file) {
-            hotFiles.push(file);
+    if (isSearching) {
+        // 搜索状态下的热门推荐逻辑
+        if (searchQuery === '行业') {
+            // 特殊处理：搜索"行业"时只显示党政行业文档
+            const targetFile = window.REAL_FILES_DATA.find(f => f.filename === '党政行业重点解决方案及案例.pptx');
+            if (targetFile && files.includes(targetFile)) {
+                hotFiles = [targetFile];
+            }
+        } else {
+            // 其他搜索关键词：从搜索结果中选择热门推荐
+            // 优先级规则：案例文档 > 解决方案 > 其他
+            const priorityOrder = ['case', 'solution', 'manual', 'training'];
+
+            for (const category of priorityOrder) {
+                const categoryFiles = files.filter(f => f.category === category);
+                if (categoryFiles.length > 0) {
+                    hotFiles = categoryFiles.slice(0, 2); // 最多显示2个
+                    break;
+                }
+            }
+
+            // 如果没有找到分类文件，则取前2个搜索结果
+            if (hotFiles.length === 0 && files.length > 0) {
+                hotFiles = files.slice(0, 2);
+            }
         }
-    });
+    } else {
+        // 非搜索状态下的分类热门推荐规则
+        const categoryHotRules = {
+            'all': [
+                '党政行业重点解决方案及案例.pptx',
+                '辽宁省中小企业数字化转型政策.docx'
+            ],
+            'manual': [
+                '辽宁省中小企业数字化转型政策.docx'
+            ],
+            'case': [
+                '党政行业重点解决方案及案例.pptx'
+            ],
+            'solution': [], // 显示空
+            'training': []  // 显示空
+        };
+
+        // 获取当前分类应该显示的热门推荐文件名列表
+        const hotFileNames = categoryHotRules[currentCategory] || [];
+
+        // 从全量数据中查找指定的热门推荐文件
+        hotFileNames.forEach(filename => {
+            const file = window.REAL_FILES_DATA.find(f => f.filename === filename);
+            if (file) {
+                hotFiles.push(file);
+            }
+        });
+    }
 
     hotList.innerHTML = '';
 
@@ -1524,8 +1542,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollLoading();
     loadResourceData();
 
-    // 检查URL参数并自动选中对应分类
+    // 检查URL参数并自动选中对应分类或执行搜索
     checkUrlCategoryParameter();
+    checkUrlSearchParameter();
 
     console.log('资源库初始化完成');
 });
