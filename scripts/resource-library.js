@@ -1401,5 +1401,16 @@ function trackCategoryClick(category) {
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     console.log('资源库页面加载完成');
-    initResourceLibrary();
+
+    initSearchFunctionality();
+    initCategoryTabs();
+    initDocumentList();
+    initFilterOptions();
+    initScrollLoading();
+    loadResourceData();
+
+    // 检查URL参数并自动选中对应分类
+    checkUrlCategoryParameter();
+
+    console.log('资源库初始化完成');
 });

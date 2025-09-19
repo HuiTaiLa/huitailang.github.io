@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源库修复验证测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #34495e;
+            margin-top: 0;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 8px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.success {
+            background: #28a745;
+        }
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .test-info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 资源库修复验证测试</h1>
+        <p>测试修复后的移动云资源库页面和文档查看器功能</p>
+        
+        <!-- 修复验证 -->
+        <div class="test-section">
+            <h3>1. JavaScript错误修复验证</h3>
+            <p>验证resource-library.js中initResourceLibrary函数未定义错误是否已修复</p>
+            
+            <a href="resource-library.html" class="test-button" target="_blank">
+                📚 打开资源库页面
+            </a>
+            
+            <div class="test-info">
+                <strong>检查要点：</strong>
+                <ul>
+                    <li>打开浏览器开发者工具（F12）</li>
+                    <li>查看Console标签页</li>
+                    <li>确认没有"initResourceLibrary is not defined"错误</li>
+                    <li>页面应该正常加载和显示</li>
+                </ul>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                如果控制台没有JavaScript错误，说明修复成功
+            </div>
+        </div>
+
+        <!-- 云电脑文档测试 -->
+        <div class="test-section">
+            <h3>2. 云电脑教育场景解决方案文档测试</h3>
+            <p>测试云电脑教育场景解决方案文档的详情页面显示</p>
+            
+            <a href="document-viewer.html?id=real_doc_0&title=云电脑教育场景解决方案&from=resource-library&file=云电脑教育场景解决方案.pptx" class="test-button" target="_blank">
+                📊 云电脑教育场景解决方案
+            </a>
+            
+            <div class="test-info">
+                <strong>预期显示信息：</strong>
+                <ul>
+                    <li><strong>文件大小：</strong>24.2MB</li>
+                    <li><strong>文档标签：</strong>云电脑、教育、解决方案、虚拟桌面</li>
+                    <li><strong>更新日期：</strong>2024-01-20</li>
+                    <li><strong>作者：</strong>解决方案专家组</li>
+                </ul>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                文档信息应该与上述预期信息一致
+            </div>
+        </div>
+
+        <!-- 其他真实文档测试 -->
+        <div class="test-section">
+            <h3>3. 其他真实文档测试</h3>
+            <p>测试其他真实文档的详情页面显示</p>
+            
+            <a href="document-viewer.html?id=real_doc_1&title=智算一体机内部培训材料&from=resource-library&file=智算一体机内部培训材料.pptx" class="test-button" target="_blank">
+                📊 智算一体机培训材料
+            </a>
+            
+            <a href="document-viewer.html?id=real_doc_2&title=党政行业重点解决方案及案例&from=resource-library&file=党政行业重点解决方案及案例.pptx" class="test-button" target="_blank">
+                📊 党政行业解决方案
+            </a>
+            
+            <a href="document-viewer.html?id=real_doc_3&title=法库县公安局融智算项目标杆案例&from=resource-library&file=法库县公安局融智算项目标杆案例.docx" class="test-button" target="_blank">
+                📋 法库县公安局案例
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                每个文档都应该显示正确的文件大小、标签和元信息
+            </div>
+        </div>
+
+        <!-- 完整流程测试 -->
+        <div class="test-section">
+            <h3>4. 完整流程测试</h3>
+            <p>测试从资源库页面到文档查看器的完整跳转流程</p>
+            
+            <div class="code-block">
+1. 打开资源库页面
+2. 查看热门推荐或文档列表中的云电脑教育场景解决方案
+3. 点击文档项目或预览按钮
+4. 验证跳转到document-viewer页面
+5. 检查URL参数是否正确传递
+6. 验证文档信息显示是否正确
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                完整流程应该无错误且信息显示正确
+            </div>
+        </div>
+
+        <!-- 浏览器控制台检查 -->
+        <div class="test-section">
+            <h3>5. 浏览器控制台检查指南</h3>
+            <p>如何检查JavaScript错误和功能状态</p>
+            
+            <div class="test-info">
+                <strong>检查步骤：</strong>
+                <ol>
+                    <li>按F12打开开发者工具</li>
+                    <li>切换到Console标签页</li>
+                    <li>刷新页面或执行操作</li>
+                    <li>查看是否有红色错误信息</li>
+                    <li>特别关注"initResourceLibrary is not defined"错误</li>
+                </ol>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator warning"></span>
+                如果仍有错误，请记录错误信息并反馈
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后的检查
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ 测试页面加载完成');
+            console.log('📋 请按照上述步骤进行测试验证');
+            
+            // 检查是否有必要的脚本文件
+            const requiredScripts = [
+                'scripts/common.js',
+                'scripts/resource-library.js',
+                'scripts/document-viewer.js'
+            ];
+            
+            console.log('🔍 检查必要脚本文件的存在性...');
+            // 这里只是提示，实际检查需要在对应页面进行
+        });
+    </script>
+</body>
+</html>

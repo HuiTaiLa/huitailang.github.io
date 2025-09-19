@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试文档详情页面 - 云电脑教育场景解决方案</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .test-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .test-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f2f2f2;
+            font-weight: 600;
+        }
+        .match {
+            background: #d4edda;
+        }
+        .mismatch {
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>文档详情页面测试 - 云电脑教育场景解决方案</h1>
+        <p>测试文档详情页面是否正确显示云电脑教育场景解决方案的信息，确保与文档预览功能一致。</p>
+
+        <div class="test-section">
+            <div class="test-title">🔗 测试链接</div>
+            <button class="test-button" onclick="openDocumentViewer()">
+                打开文档详情页面
+            </button>
+            <button class="test-button" onclick="openResourceLibrary()">
+                打开资源库（对比预览）
+            </button>
+            <div id="linkResult" class="test-result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📊 预期信息对比</div>
+            <button class="test-button" onclick="checkExpectedInfo()">
+                检查预期信息
+            </button>
+            <div id="expectedResult" class="test-result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">🔍 实际信息验证</div>
+            <button class="test-button" onclick="validateActualInfo()">
+                验证实际显示信息
+            </button>
+            <div id="validationResult" class="test-result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📝 测试说明</div>
+            <div class="info">
+                <h4>测试要点：</h4>
+                <ul>
+                    <li><strong>文件大小：</strong>应显示为 24.2MB（来自真实文件数据：25422197字节）</li>
+                    <li><strong>文档标签：</strong>应显示为 ['云电脑', '教育', '解决方案']</li>
+                    <li><strong>文档内容：</strong>应显示完整的云电脑教育场景解决方案内容</li>
+                    <li><strong>文档标题：</strong>应显示为 "云电脑教育场景解决方案"</li>
+                    <li><strong>文件名：</strong>应显示为 "云电脑教育场景解决方案.pptx"</li>
+                </ul>
+                <h4>URL参数：</h4>
+                <code>?id=real_doc_0&title=云电脑教育场景解决方案&from=resource-library&file=云电脑教育场景解决方案.pptx</code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打开文档详情页面
+        function openDocumentViewer() {
+            const url = 'document-viewer.html?id=real_doc_0&title=云电脑教育场景解决方案&from=resource-library&file=云电脑教育场景解决方案.pptx';
+            window.open(url, '_blank');
+            
+            const resultDiv = document.getElementById('linkResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result info';
+            resultDiv.innerHTML = `
+                <p><strong>✅ 已打开文档详情页面</strong></p>
+                <p>URL: ${url}</p>
+                <p>请检查页面是否正确显示云电脑教育场景解决方案的信息。</p>
+            `;
+        }
+
+        // 打开资源库页面
+        function openResourceLibrary() {
+            window.open('resource-library.html', '_blank');
+            
+            const resultDiv = document.getElementById('linkResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result info';
+            resultDiv.innerHTML = `
+                <p><strong>✅ 已打开资源库页面</strong></p>
+                <p>请在资源库中找到"云电脑教育场景解决方案"文档，点击预览功能进行对比。</p>
+            `;
+        }
+
+        // 检查预期信息
+        function checkExpectedInfo() {
+            const expectedInfo = {
+                filename: '云电脑教育场景解决方案.pptx',
+                title: '云电脑教育场景解决方案',
+                size: 25422197, // 字节
+                sizeFormatted: '24.2MB',
+                tags: ['云电脑', '教育', '解决方案'],
+                docType: '解决方案',
+                date: '2024-01-20'
+            };
+
+            const resultDiv = document.getElementById('expectedResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result success';
+            resultDiv.innerHTML = `
+                <h4>📋 预期信息清单</h4>
+                <table class="comparison-table">
+                    <tr><th>属性</th><th>预期值</th><th>来源</th></tr>
+                    <tr><td>文件名</td><td>${expectedInfo.filename}</td><td>REAL_FILES_DATA</td></tr>
+                    <tr><td>标题</td><td>${expectedInfo.title}</td><td>REAL_FILES_DATA</td></tr>
+                    <tr><td>文件大小</td><td>${expectedInfo.sizeFormatted}</td><td>格式化后的字节数</td></tr>
+                    <tr><td>原始大小</td><td>${expectedInfo.size.toLocaleString()} 字节</td><td>REAL_FILES_DATA</td></tr>
+                    <tr><td>标签</td><td>${expectedInfo.tags.join(', ')}</td><td>REAL_FILES_DATA</td></tr>
+                    <tr><td>文档类型</td><td>${expectedInfo.docType}</td><td>REAL_FILES_DATA</td></tr>
+                    <tr><td>日期</td><td>${expectedInfo.date}</td><td>getDocumentData</td></tr>
+                </table>
+            `;
+        }
+
+        // 验证实际信息
+        function validateActualInfo() {
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result info';
+            resultDiv.innerHTML = `
+                <h4>🔍 验证步骤</h4>
+                <ol>
+                    <li>打开文档详情页面</li>
+                    <li>检查页面标题是否为 "云电脑教育场景解决方案"</li>
+                    <li>检查文件名是否显示为 "云电脑教育场景解决方案.pptx"</li>
+                    <li>检查文件大小是否显示为 "24.2MB"</li>
+                    <li>检查标签是否为 "云电脑"、"教育"、"解决方案"</li>
+                    <li>检查文档内容是否完整显示</li>
+                </ol>
+                <p><strong>注意：</strong>如果发现任何不一致，请检查 document-viewer.js 中的相关函数。</p>
+            `;
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('云电脑教育场景解决方案文档详情测试页面加载完成');
+        });
+    </script>
+</body>
+</html>

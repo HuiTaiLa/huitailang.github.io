@@ -212,7 +212,7 @@ async function loadDocumentContent(fileName) {
 // 更新文档元信息
 function updateDocumentMetaInfo(extractedContent, fileName) {
     // 更新文档大小信息
-    const docSizeElement = document.querySelector('.doc-size');
+    const docSizeElement = document.getElementById('docSize');
     if (docSizeElement && extractedContent.fileSize) {
         docSizeElement.textContent = formatFileSize(extractedContent.fileSize);
     }
@@ -227,10 +227,23 @@ function updateDocumentMetaInfo(extractedContent, fileName) {
     }
 
     // 更新提取时间
-    const docDateElement = document.querySelector('.doc-date');
+    const docDateElement = document.getElementById('docDate');
     if (docDateElement && extractedContent.extractedAt) {
         const extractDate = new Date(extractedContent.extractedAt);
         docDateElement.textContent = extractDate.toLocaleDateString();
+    }
+
+    // 如果有真实文件数据，确保标签信息正确
+    if (window.REAL_FILES_DATA) {
+        const realFileData = window.REAL_FILES_DATA.find(file => file.filename === fileName);
+        if (realFileData) {
+            const docTags = document.getElementById('docTags');
+            if (docTags && realFileData.tags) {
+                docTags.innerHTML = realFileData.tags.map(tag =>
+                    `<span class="tag">${tag}</span>`
+                ).join('');
+            }
+        }
     }
 }
 
@@ -315,24 +328,24 @@ function updateDocumentInfo(fileName, docTitle) {
 // 更新文档元数据
 function updateDocumentMeta(fileName) {
     const documentData = getDocumentData(fileName);
-    
+
     if (documentData) {
         // 更新文档大小
-        const docSize = document.querySelector('.doc-size');
+        const docSize = document.getElementById('docSize');
         if (docSize) {
             docSize.textContent = documentData.size;
         }
-        
+
         // 更新文档日期
-        const docDate = document.querySelector('.doc-date');
+        const docDate = document.getElementById('docDate');
         if (docDate) {
             docDate.textContent = documentData.date;
         }
-        
+
         // 更新标签
-        const docTags = document.querySelector('.doc-tags');
+        const docTags = document.getElementById('docTags');
         if (docTags && documentData.tags) {
-            docTags.innerHTML = documentData.tags.map(tag => 
+            docTags.innerHTML = documentData.tags.map(tag =>
                 `<span class="tag">${tag}</span>`
             ).join('');
         }
@@ -341,7 +354,65 @@ function updateDocumentMeta(fileName) {
 
 // 获取文档数据
 function getDocumentData(fileName) {
+    // 首先尝试从全局真实文件数据中获取
+    if (window.REAL_FILES_DATA) {
+        const realFileData = window.REAL_FILES_DATA.find(file => file.filename === fileName);
+        if (realFileData) {
+            return {
+                size: formatFileSize(realFileData.size),
+                date: '2024-01-20', // 可以从文件元数据中获取
+                tags: realFileData.tags,
+                author: '解决方案专家组',
+                version: 'v1.0',
+                docType: realFileData.docType
+            };
+        }
+    }
+
+    // 后备数据
     const documentsData = {
+        '云电脑教育场景解决方案.pptx': {
+            size: '24.2MB',
+            date: '2024-01-20',
+            tags: ['云电脑', '教育', '解决方案'],
+            author: '解决方案专家组',
+            version: 'v1.0'
+        },
+        '智算一体机内部培训材料.pptx': {
+            size: '55.6MB',
+            date: '2024-01-18',
+            tags: ['智算一体机', '培训', '产品介绍', '技术规格'],
+            author: '产品培训部',
+            version: 'v2.0'
+        },
+        '党政行业重点解决方案及案例.pptx': {
+            size: '1.3MB',
+            date: '2024-01-16',
+            tags: ['党政行业', '解决方案', '案例分析', '数字化转型'],
+            author: '行业解决方案部',
+            version: 'v1.5'
+        },
+        '法库县公安局融智算项目标杆案例.docx': {
+            size: '2.8MB',
+            date: '2024-01-14',
+            tags: ['公安', '融智算', '标杆案例', '项目实施'],
+            author: '案例分析组',
+            version: 'v1.0'
+        },
+        '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx': {
+            size: '8.5MB',
+            date: '2024-01-12',
+            tags: ['移动云', '市场拓展', '产品方案', '客群分析'],
+            author: '市场拓展部',
+            version: 'v1.2'
+        },
+        '辽宁省中小企业数字化转型政策.docx': {
+            size: '1.8MB',
+            date: '2024-01-10',
+            tags: ['数字化转型', '政策解读', '中小企业', '辽宁省'],
+            author: '政策研究组',
+            version: 'v1.0'
+        },
         '5G专网部署最佳实践.pdf': {
             size: '2.3MB',
             date: '2024-01-15',
@@ -371,8 +442,8 @@ function getDocumentData(fileName) {
             version: 'v2.0'
         }
     };
-    
-    return documentsData[fileName] || documentsData['5G专网部署最佳实践.pdf'];
+
+    return documentsData[fileName] || documentsData['云电脑教育场景解决方案.pptx'];
 }
 
 // 初始化事件监听器
