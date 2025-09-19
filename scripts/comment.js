@@ -27,14 +27,14 @@ function safeCommonUtils() {
   // 简单的活动映射（与 work-circle.html 示例对应）
   const activityMap = {
     'act1': {
-      title: '5G 专网部署最佳实践',
-      text: '分享了《5G专网部署最佳实践.pdf》，欢迎大家下载查阅。',
-      author: '王工',
-      time: '2小时前'
+      title: '智算一体机部署最佳实践',
+      text: '分享了《智算一体机内部培训材料.pptx》，欢迎大家下载查阅。',
+      author: '张工',
+      time: '10分钟前'
     },
     'act2': {
-      title: '边缘计算平台选型建议',
-      text: '在物联网应用圈提出了关于边缘计算平台选型的问题。',
+      title: '云桌面部署架构建议',
+      text: '在云电脑咨询圈提出了关于云桌面部署架构的问题。',
       author: '李经理',
       time: '1小时前'
     },

@@ -838,6 +838,13 @@ function openAttachment(attachmentElement) {
     }
 
     console.log('提取的文件名:', fileName);
+
+    // 特殊处理智算一体机培训材料
+    if (fileName.includes('智算一体机内部培训材料')) {
+        openSpecificDocument(fileName);
+        return;
+    }
+
     const fileType = (fileName.split('.').pop() || '').toLowerCase();
 
     if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
@@ -854,6 +861,15 @@ function openAttachment(attachmentElement) {
         // 其他文件类型
         safeCommonUtils().showToast('正在下载文件...', 'info');
     }
+}
+
+// 打开特定文档（智算一体机培训材料）
+function openSpecificDocument(fileName) {
+    safeCommonUtils().showToast('正在打开文档...', 'info');
+    setTimeout(() => {
+        const url = `document-viewer.html?id=real_doc_1&title=智算一体机内部培训材料&from=resource-library&file=${encodeURIComponent(fileName)}`;
+        safeCommonUtils().navigateTo(url);
+    }, 1000);
 }
 
 // 显示图片预览
@@ -1584,11 +1600,13 @@ function setCurrentCircle(circleData) {
 // 进入圈子（跳转到对应群聊）
 function enterCircle(key) {
     const mapping = {
-        'east-5g': { id: 'group_1', name: '沈阳5G专网交流群', type: 'technical' },
+        'east-ai-compute': { id: 'group_1', name: '沈阳智算一体机交流群', type: 'technical' },
+        'east-5g': { id: 'group_1', name: '沈阳智算一体机交流群', type: 'technical' }, // 兼容旧的key
         'cloud-expert': { id: 'group_expert', name: '云计算专家咨询组', type: 'expert' },
-        'south-iot': { id: 'group_south_iot', name: '大连物联网应用圈', type: 'iot' }
+        'south-cloud-pc': { id: 'group_south_cloud_pc', name: '大连云电脑咨询圈', type: 'cloud-pc' },
+        'south-iot': { id: 'group_south_cloud_pc', name: '大连云电脑咨询圈', type: 'cloud-pc' } // 兼容旧的key
     };
-    const target = mapping[key] || mapping['east-5g'];
+    const target = mapping[key] || mapping['east-ai-compute'];
     try { setCurrentCircle(target); } catch (e) {}
     const url = `chat.html?group=${encodeURIComponent(target.id)}&name=${encodeURIComponent(target.name)}`;
     safeCommonUtils().navigateTo(url);

@@ -413,6 +413,13 @@ function getDocumentData(fileName) {
             author: '政策研究组',
             version: 'v1.0'
         },
+        '智算一体机内部培训材料.pptx': {
+            size: '3.2MB',
+            date: '2024-01-18',
+            tags: ['智算一体机', '培训材料', '技术培训', '产品介绍'],
+            author: '技术培训部',
+            version: 'v1.0'
+        },
         '5G专网部署最佳实践.pdf': {
             size: '2.3MB',
             date: '2024-01-15',

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作圈更新测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px;
+            transition: transform 0.2s;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.success { background: #4CAF50; }
+        .status-indicator.warning { background: #FF9800; }
+        .status-indicator.info { background: #2196F3; }
+        .test-result {
+            margin-top: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .changes-list {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .changes-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .changes-list li {
+            margin-bottom: 8px;
+        }
+        .old-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .new-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 工作圈页面更新测试</h1>
+        
+        <!-- 更新内容总结 -->
+        <div class="test-section">
+            <h3>📋 更新内容总结</h3>
+            <div class="changes-list">
+                <h4>活跃圈子更新：</h4>
+                <ul>
+                    <li><span class="old-text">沈阳5G专网交流群</span> → <span class="new-text">沈阳智算一体机交流群</span></li>
+                    <li><span class="old-text">大连物联网应用圈</span> → <span class="new-text">大连云电脑咨询圈</span></li>
+                    <li>圈子图标已更新：<code>circle-ai-compute.png</code> 和 <code>circle-cloud-pc.png</code></li>
+                </ul>
+                
+                <h4>最新动态更新：</h4>
+                <ul>
+                    <li><span class="old-text">5G专网部署的最佳实践案例</span> → <span class="new-text">智算一体机部署的最佳实践案例</span></li>
+                    <li><span class="old-text">5G专网部署最佳实践.pdf</span> → <span class="new-text">智算一体机内部培训材料.pptx</span></li>
+                    <li><span class="old-text">物联网应用圈...边缘计算平台选型</span> → <span class="new-text">云电脑咨询圈...云桌面部署架构</span></li>
+                </ul>
+                
+                <h4>文档跳转更新：</h4>
+                <ul>
+                    <li>点击"智算一体机内部培训材料.pptx"跳转到指定页面</li>
+                    <li>URL: <code>document-viewer.html?id=real_doc_1&title=智算一体机内部培训材料&from=resource-library&file=智算一体机内部培训材料.pptx</code></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 功能测试 -->
+        <div class="test-section">
+            <h3>🧪 功能测试</h3>
+            <p>点击下方按钮测试各项功能是否正常工作：</p>
+            
+            <a href="work-circle.html" class="test-button" target="_blank">
+                🏢 打开工作圈页面
+            </a>
+            
+            <a href="chat.html?group=group_1&name=沈阳智算一体机交流群" class="test-button" target="_blank">
+                🤖 测试智算一体机群聊
+            </a>
+            
+            <a href="chat.html?group=group_south_cloud_pc&name=大连云电脑咨询圈" class="test-button" target="_blank">
+                💻 测试云电脑咨询群聊
+            </a>
+            
+            <a href="document-viewer.html?id=real_doc_1&title=智算一体机内部培训材料&from=resource-library&file=智算一体机内部培训材料.pptx" class="test-button" target="_blank">
+                📄 测试文档跳转
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>测试要点：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>工作圈页面显示新的圈子名称和描述</li>
+                    <li>圈子图标正确显示（智算一体机🤖、云电脑💻）</li>
+                    <li>最新动态内容已更新，不包含5G专网和物联网字样</li>
+                    <li>点击培训材料文档能正确跳转</li>
+                    <li>群聊页面标题显示正确的圈子名称</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 兼容性测试 -->
+        <div class="test-section">
+            <h3>🔄 兼容性测试</h3>
+            <p>测试旧的圈子ID是否仍能正常工作（向后兼容）：</p>
+            
+            <a href="javascript:enterCircle('east-5g')" class="test-button">
+                🔗 测试旧ID: east-5g
+            </a>
+            
+            <a href="javascript:enterCircle('south-iot')" class="test-button">
+                🔗 测试旧ID: south-iot
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator info"></span>
+                <strong>兼容性说明：</strong>保留了旧的圈子ID映射，确保现有链接和书签仍能正常工作
+            </div>
+        </div>
+        
+        <!-- 验证清单 -->
+        <div class="test-section">
+            <h3>✅ 验证清单</h3>
+            <div class="changes-list">
+                <h4>请逐项检查以下内容：</h4>
+                <ul>
+                    <li>□ 工作圈页面不再显示"5G专网"字样</li>
+                    <li>□ 工作圈页面不再显示"物联网应用"字样</li>
+                    <li>□ 显示"沈阳智算一体机交流群"</li>
+                    <li>□ 显示"大连云电脑咨询圈"</li>
+                    <li>□ 圈子描述已更新为相关主题</li>
+                    <li>□ 最新动态中的文档名为"智算一体机内部培训材料.pptx"</li>
+                    <li>□ 点击文档能跳转到正确的document-viewer页面</li>
+                    <li>□ 问题描述改为"云桌面部署架构建议"</li>
+                    <li>□ 群聊页面显示正确的圈子名称</li>
+                    <li>□ 旧的圈子链接仍能正常工作</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/work-circle.js"></script>
+    <script>
+        // 测试圈子进入功能
+        function testEnterCircle(circleId) {
+            console.log('测试进入圈子:', circleId);
+            if (typeof enterCircle === 'function') {
+                enterCircle(circleId);
+            } else {
+                alert('enterCircle函数未找到，请确保work-circle.js已加载');
+            }
+        }
+        
+        // 页面加载完成后的测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('工作圈更新测试页面加载完成');
+            
+            // 检查必要的函数是否存在
+            if (typeof enterCircle === 'function') {
+                console.log('✅ enterCircle函数已加载');
+            } else {
+                console.log('❌ enterCircle函数未找到');
+            }
+            
+            if (typeof openSpecificDocument === 'function') {
+                console.log('✅ openSpecificDocument函数已加载');
+            } else {
+                console.log('❌ openSpecificDocument函数未找到');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -81,25 +81,25 @@ function loadChatData() {
         {
             id: 'group_1',
             type: 'group',
-            name: '沈阳5G专网交流群',
+            name: '沈阳智算一体机交流群',
             region: 'east', // 对应工作圈的east标签
-            avatar: '🌐',
-            lastMessage: '张工程师: 新的网络切片配置方案已上传',
+            avatar: '🤖',
+            lastMessage: '张工程师: 新的智算一体机配置方案已上传',
             lastTime: '14:30',
             unreadCount: 3,
             memberCount: 156,
             isOnline: true
         },
         {
-            id: 'group_2',
+            id: 'group_south_cloud_pc',
             type: 'group',
-            name: '大连物联网应用圈',
+            name: '大连云电脑咨询圈',
             region: 'south', // 对应工作圈的south标签
-            avatar: '🌊',
-            lastMessage: '李经理: 物联网设备接入方案已更新',
+            avatar: '💻',
+            lastMessage: '李经理: 云桌面解决方案已更新',
             lastTime: '13:45',
             unreadCount: 2,
-            memberCount: 89,
+            memberCount: 203,
             isOnline: true
         },
         {
