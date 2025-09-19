@@ -1578,9 +1578,9 @@ const AI_BOTS = {
         personality: 'professional'
     },
     'ai_bot_2': {
-        name: '5G专网助手',
-        avatar: '📡',
-        capabilities: ['5G技术', '网络配置', '故障诊断', '性能优化'],
+        name: '云电脑助手',
+        avatar: '💻',
+        capabilities: ['云桌面技术', '虚拟化配置', '性能调优', '远程办公'],
         personality: 'technical'
     }
 };
@@ -1588,7 +1588,7 @@ const AI_BOTS = {
 // 检测@机器人消息
 function detectBotMention(message) {
     const botNames = Object.values(AI_BOTS).map(bot => bot.name);
-    const mentionPattern = /@(移动云智能助手|5G专网助手|智能助手|AI助手)/g;
+    const mentionPattern = /@(移动云智能助手|云电脑助手|智能助手|AI助手)/g;
 
     return mentionPattern.test(message);
 }
@@ -1794,11 +1794,11 @@ function generateAIReply(userMessage, bot) {
     // 基于关键词生成回复
     if (message.includes('文档') || message.includes('资料') || message.includes('手册')) {
         return {
-            content: `我为您找到了相关文档资料。根据您的问题，我推荐以下文档：\n\n📄 5G专网技术白皮书\n📄 移动云平台操作指南\n📄 网络配置最佳实践\n\n需要我详细解释某个文档的内容吗？`,
+            content: `我为您找到了相关文档资料。根据您的问题，我推荐以下文档：\n\n📄 智算一体机技术白皮书\n📄 移动云平台操作指南\n📄 云电脑部署最佳实践\n\n需要我详细解释某个文档的内容吗？`,
             capabilities: ['文档检索', '内容解析'],
             attachments: [
-                { type: 'document', name: '5G专网技术白皮书.pdf', size: '2.3MB' },
-                { type: 'document', name: '移动云平台操作指南.pdf', size: '1.8MB' }
+                { type: 'document', name: '智算一体机技术白皮书.pdf', size: '2.3MB' },
+                { type: 'document', name: '云电脑部署最佳实践.pdf', size: '1.8MB' }
             ]
         };
     }
@@ -2021,11 +2021,11 @@ function showGroupFiles() {
     closeChatMenu();
 
     const files = [
-        '📄 5G专网技术白皮书.pdf (2.3MB)',
-        '📊 网络性能分析报告.xlsx (1.8MB)',
-        '🎥 配置操作演示视频.mp4 (15.6MB)',
-        '📝 故障排查手册.docx (856KB)',
-        '📋 最佳实践指南.pdf (1.2MB)'
+        '📄 智算一体机技术白皮书.pdf (2.3MB)',
+        '📊 云电脑性能分析报告.xlsx (1.8MB)',
+        '🎥 虚拟化配置演示视频.mp4 (15.6MB)',
+        '📝 云桌面故障排查手册.docx (856KB)',
+        '📋 远程办公最佳实践指南.pdf (1.2MB)'
     ];
 
     let fileList = '群文件列表：\n\n';

@@ -201,7 +201,7 @@
                 <h4 style="margin: 0 0 12px 0; color: #6f42c1;">🎉 AI机器人功能集成完成</h4>
                 <div class="success-item">
                     <span class="success-icon">🤖</span>
-                    <span><strong>智能助手：</strong>移动云智能助手、5G专网助手等多个专业AI机器人</span>
+                    <span><strong>智能助手：</strong>移动云智能助手、云电脑助手等多个专业AI机器人</span>
                 </div>
                 <div class="success-item">
                     <span class="success-icon">👥</span>
@@ -255,10 +255,10 @@
                         </div>
                         
                         <div class="test-card">
-                            <div class="test-icon">📡</div>
-                            <div class="test-card-title">5G专网助手</div>
-                            <div class="test-desc">与5G专网助手专业对话</div>
-                            <button class="test-btn" onclick="test5GAI()">测试5G助手</button>
+                            <div class="test-icon">💻</div>
+                            <div class="test-card-title">云电脑助手</div>
+                            <div class="test-desc">与云电脑助手专业对话</div>
+                            <button class="test-btn" onclick="testCloudPCAI()">测试云电脑助手</button>
                         </div>
                         
                         <div class="test-card">
@@ -339,9 +339,9 @@
             addResult('🤖 已打开移动云智能助手私聊，开始AI对话', 'success');
         }
         
-        function test5GAI() {
-            window.open('chat.html?ai_bot=ai_bot_2&name=5G专网助手', '_blank');
-            addResult('📡 已打开5G专网助手私聊，咨询5G技术问题', 'success');
+        function testCloudPCAI() {
+            window.open('chat.html?ai_bot=ai_bot_2&name=云电脑助手', '_blank');
+            addResult('💻 已打开云电脑助手私聊，咨询云桌面技术问题', 'success');
         }
         
         function testDocumentAI() {
@@ -367,7 +367,7 @@
                 { url: 'chat-list.html', name: '聊天列表（AI助手分类）' },
                 { url: 'chat.html?group=group_1&name=华东区5G专网交流群', name: '群聊@机器人测试' },
                 { url: 'chat.html?ai_bot=ai_bot_1&name=移动云智能助手', name: '移动云智能助手' },
-                { url: 'chat.html?ai_bot=ai_bot_2&name=5G专网助手', name: '5G专网助手' },
+                { url: 'chat.html?ai_bot=ai_bot_2&name=云电脑助手', name: '云电脑助手' },
                 { url: 'ai-chat-demo.html', name: 'AI功能演示页面' }
             ];
             

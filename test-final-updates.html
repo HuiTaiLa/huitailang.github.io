@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终更新测试页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px;
+            transition: transform 0.2s;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .changes-list {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .changes-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .changes-list li {
+            margin-bottom: 8px;
+        }
+        .old-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .new-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.success { background: #4CAF50; }
+        .status-indicator.warning { background: #FF9800; }
+        .status-indicator.info { background: #2196F3; }
+        .test-result {
+            margin-top: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .update-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .update-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .update-card h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .comparison .before {
+            color: #dc3545;
+            text-decoration: line-through;
+        }
+        .comparison .after {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .arrow {
+            color: #6c757d;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 最终更新测试页面</h1>
+        
+        <!-- 更新总结 -->
+        <div class="test-section">
+            <h3>📋 本次更新总结</h3>
+            <div class="update-grid">
+                <div class="update-card">
+                    <h4>🤖 问题详情页面 (q004)</h4>
+                    <div class="comparison">
+                        <span class="before">物联网设备大规模接入时的网络优化策略</span>
+                        <span class="arrow">→</span>
+                        <span class="after">云电脑大规模部署时的性能优化策略</span>
+                    </div>
+                    <p>更新了问题内容、标签、专家回答等所有相关信息</p>
+                </div>
+                
+                <div class="update-card">
+                    <h4>💻 问题详情页面 (q005)</h4>
+                    <div class="comparison">
+                        <span class="before">云电脑虚拟化技术的实际应用场景</span>
+                        <span class="arrow">→</span>
+                        <span class="after">云电脑在远程办公场景下的最佳实践</span>
+                    </div>
+                    <p>优化了问题描述，增加了更多实用的专家回答</p>
+                </div>
+                
+                <div class="update-card">
+                    <h4>🤖 即时通讯AI助手</h4>
+                    <div class="comparison">
+                        <span class="before">5G专网助手 📡</span>
+                        <span class="arrow">→</span>
+                        <span class="after">云电脑助手 💻</span>
+                    </div>
+                    <p>更新了助手名称、图标、能力描述和相关功能</p>
+                </div>
+                
+                <div class="update-card">
+                    <h4>👤 个人中心活动</h4>
+                    <div class="comparison">
+                        <span class="before">5G专网部署的关键技术要点</span>
+                        <span class="arrow">→</span>
+                        <span class="after">智算一体机如何实现高效的资源调度</span>
+                    </div>
+                    <div class="comparison">
+                        <span class="before">边缘计算解决方案白皮书</span>
+                        <span class="arrow">→</span>
+                        <span class="after">云电脑教育场景解决方案</span>
+                    </div>
+                    <div class="comparison">
+                        <span class="before">沈阳云计算技术交流群</span>
+                        <span class="arrow">→</span>
+                        <span class="after">沈阳智算一体机交流群</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 功能测试 -->
+        <div class="test-section">
+            <h3>🧪 功能测试</h3>
+            <p>点击下方按钮测试各项更新功能：</p>
+            
+            <a href="question-detail.html?id=q004" class="test-button" target="_blank">
+                📄 测试q004问题详情
+            </a>
+            
+            <a href="question-detail.html?id=q005" class="test-button" target="_blank">
+                📄 测试q005问题详情
+            </a>
+            
+            <a href="chat.html?ai_bot=ai_bot_2&name=云电脑助手" class="test-button" target="_blank">
+                💻 测试云电脑助手
+            </a>
+            
+            <a href="profile.html" class="test-button" target="_blank">
+                👤 测试个人中心页面
+            </a>
+            
+            <a href="chat-list.html" class="test-button" target="_blank">
+                📋 测试聊天列表
+            </a>
+            
+            <a href="qa-system.html" class="test-button" target="_blank">
+                ❓测试专家问答页面
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>测试要点：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>q004问题显示"云电脑大规模部署时的性能优化策略"</li>
+                    <li>q005问题显示"云电脑在远程办公场景下的最佳实践"</li>
+                    <li>AI助手显示为"云电脑助手"，图标为💻</li>
+                    <li>个人中心最近活动显示智算一体机相关内容</li>
+                    <li>聊天列表中AI助手名称已更新</li>
+                    <li>专家问答页面问题列表内容已更新</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 数据一致性检查 -->
+        <div class="test-section">
+            <h3>🔍 数据一致性检查</h3>
+            <div class="changes-list">
+                <h4>需要验证的一致性：</h4>
+                <ul>
+                    <li>问题详情页面的标题、内容、标签完全一致</li>
+                    <li>专家回答的专业领域描述已更新</li>
+                    <li>AI助手的能力描述与新名称匹配</li>
+                    <li>聊天功能中@机器人功能正常</li>
+                    <li>个人中心活动记录与实际功能对应</li>
+                    <li>所有相关测试页面的引用已更新</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 验证清单 -->
+        <div class="test-section">
+            <h3>✅ 验证清单</h3>
+            <div class="changes-list">
+                <h4>请逐项检查以下内容：</h4>
+                <ul>
+                    <li>□ q004问题标题已改为云电脑相关</li>
+                    <li>□ q004问题内容描述云桌面部署场景</li>
+                    <li>□ q004问题标签不包含"物联网"字样</li>
+                    <li>□ q004问题有专家回答且内容相关</li>
+                    <li>□ q005问题标题强调远程办公场景</li>
+                    <li>□ q005问题有多个专家回答</li>
+                    <li>□ AI助手名称显示"云电脑助手"</li>
+                    <li>□ AI助手图标显示💻</li>
+                    <li>□ AI助手能力描述匹配云电脑领域</li>
+                    <li>□ 个人中心活动1：智算一体机资源调度</li>
+                    <li>□ 个人中心活动2：云电脑教育场景解决方案</li>
+                    <li>□ 个人中心活动3：沈阳智算一体机交流群</li>
+                    <li>□ 聊天列表中AI助手信息已更新</li>
+                    <li>□ @云电脑助手功能正常工作</li>
+                    <li>□ AI文档推荐内容已更新</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 技术细节 -->
+        <div class="test-section">
+            <h3>🔧 技术实现细节</h3>
+            <div class="changes-list">
+                <h4>修改的核心文件：</h4>
+                <ul>
+                    <li><strong>scripts/qa-system.js</strong> - 更新q004和q005问题数据</li>
+                    <li><strong>scripts/chat.js</strong> - 更新AI助手信息和能力</li>
+                    <li><strong>scripts/chat-list.js</strong> - 更新聊天列表中的AI助手</li>
+                    <li><strong>profile.html</strong> - 更新个人中心最近活动</li>
+                    <li><strong>test-ai-chat-complete.html</strong> - 更新测试页面引用</li>
+                    <li><strong>ai-chat-demo.html</strong> - 更新AI聊天演示</li>
+                </ul>
+                
+                <h4>保持的兼容性：</h4>
+                <ul>
+                    <li>问题ID保持不变，确保链接正常工作</li>
+                    <li>AI助手ID保持不变，确保聊天功能正常</li>
+                    <li>页面结构和交互逻辑未改变</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后的测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('最终更新测试页面加载完成');
+            
+            // 检查关键函数是否存在
+            if (typeof getQuestionData === 'function') {
+                console.log('✅ getQuestionData函数已加载');
+                
+                // 测试q004数据
+                const q004Data = getQuestionData('q004');
+                if (q004Data && q004Data.title.includes('云电脑')) {
+                    console.log('✅ q004问题数据已更新');
+                } else {
+                    console.log('❌ q004问题数据未正确更新');
+                }
+                
+                // 测试q005数据
+                const q005Data = getQuestionData('q005');
+                if (q005Data && q005Data.title.includes('远程办公')) {
+                    console.log('✅ q005问题数据已更新');
+                } else {
+                    console.log('❌ q005问题数据未正确更新');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

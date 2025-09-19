@@ -148,7 +148,7 @@ function loadChatData() {
             lastMessage: '好的，我马上查看文档',
             lastTime: '15:20',
             unreadCount: 0,
-            title: '5G网络专家',
+            title: '智算一体机专家',
             isOnline: true
         },
         {
@@ -190,14 +190,14 @@ function loadChatData() {
         {
             id: 'ai_bot_2',
             type: 'ai_bot',
-            name: '5G专网助手',
-            avatar: '📡',
-            lastMessage: '专业解答5G专网相关问题',
+            name: '云电脑助手',
+            avatar: '💻',
+            lastMessage: '专业解答云电脑和虚拟化相关问题',
             lastTime: '刚刚',
             unreadCount: 0,
             status: '24小时在线',
             isOnline: true,
-            capabilities: ['5G技术', '网络配置', '故障诊断', '性能优化']
+            capabilities: ['云桌面技术', '虚拟化配置', '性能调优', '远程办公']
         },
 
         // 客服支持

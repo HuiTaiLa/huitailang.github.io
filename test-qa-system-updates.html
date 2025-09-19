@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专家问答系统更新测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px;
+            transition: transform 0.2s;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .changes-list {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .changes-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .changes-list li {
+            margin-bottom: 8px;
+        }
+        .old-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .new-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.success { background: #4CAF50; }
+        .status-indicator.warning { background: #FF9800; }
+        .status-indicator.info { background: #2196F3; }
+        .test-result {
+            margin-top: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .category-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .category-tag {
+            padding: 6px 12px;
+            background: #e8f2ff;
+            color: #667eea;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .category-tag.old {
+            background: #ffebee;
+            color: #f44336;
+            text-decoration: line-through;
+        }
+        .category-tag.new {
+            background: #e8f5e8;
+            color: #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 专家问答系统更新测试</h1>
+        
+        <!-- 更新内容总结 -->
+        <div class="test-section">
+            <h3>📋 更新内容总结</h3>
+            <div class="changes-list">
+                <h4>分类标签更新：</h4>
+                <div class="category-demo">
+                    <span class="category-tag old">5G网络</span>
+                    <span>→</span>
+                    <span class="category-tag new">智算一体机</span>
+                </div>
+                <div class="category-demo">
+                    <span class="category-tag old">物联网</span>
+                    <span>→</span>
+                    <span class="category-tag new">云电脑</span>
+                </div>
+                
+                <h4>问题内容更新：</h4>
+                <ul>
+                    <li><span class="old-text">5G专网如何实现与公网的安全隔离？</span></li>
+                    <li><span class="new-text">智算一体机如何实现高效的资源调度？</span></li>
+                    <li><span class="old-text">物联网设备大规模接入时的网络优化策略</span></li>
+                    <li><span class="new-text">云电脑大规模部署时的性能优化策略</span></li>
+                    <li><span class="old-text">5G专网切片技术的实际应用场景</span></li>
+                    <li><span class="new-text">云电脑虚拟化技术的实际应用场景</span></li>
+                </ul>
+                
+                <h4>专家标题更新：</h4>
+                <ul>
+                    <li><span class="old-text">5G技术专家</span> → <span class="new-text">智算技术专家</span></li>
+                    <li><span class="old-text">5G网络专家</span> → <span class="new-text">智算一体机专家</span></li>
+                </ul>
+                
+                <h4>标签更新：</h4>
+                <ul>
+                    <li><span class="old-text">5G网络、网络安全、专网部署</span></li>
+                    <li><span class="new-text">智算一体机、资源调度、AI计算</span></li>
+                    <li><span class="old-text">物联网、网络优化、大规模接入</span></li>
+                    <li><span class="new-text">云电脑、性能优化、大规模部署</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 功能测试 -->
+        <div class="test-section">
+            <h3>🧪 功能测试</h3>
+            <p>点击下方按钮测试各项功能是否正常工作：</p>
+            
+            <a href="qa-system.html" class="test-button" target="_blank">
+                ❓ 打开专家问答页面
+            </a>
+            
+            <a href="question-detail.html?id=q001" class="test-button" target="_blank">
+                📄 测试问题详情页面
+            </a>
+            
+            <a href="work-circle.html" class="test-button" target="_blank">
+                🏢 测试创建工作圈功能
+            </a>
+            
+            <a href="my-circles.html" class="test-button" target="_blank">
+                👤 测试我的圈子页面
+            </a>
+            
+            <a href="search-results.html?q=智算一体机" class="test-button" target="_blank">
+                🔍 测试搜索结果页面
+            </a>
+            
+            <div class="test-result">
+                <span class="status-indicator success"></span>
+                <strong>测试要点：</strong>
+                <ol style="margin: 8px 0 0 20px;">
+                    <li>专家问答页面分类标签显示"智算一体机"和"云电脑"</li>
+                    <li>热门问题标题已更新为智算一体机相关内容</li>
+                    <li>问题列表中不再出现5G专网和物联网字样</li>
+                    <li>提问表单的分类选项已更新</li>
+                    <li>问题详情页面显示正确的内容和标签</li>
+                    <li>创建工作圈的类型选项已更新</li>
+                    <li>我的圈子页面显示智算一体机技术圈</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- 分类测试 -->
+        <div class="test-section">
+            <h3>🏷️ 分类功能测试</h3>
+            <p>测试新的分类标签是否正常工作：</p>
+            
+            <div class="category-demo">
+                <span class="category-tag">全部</span>
+                <span class="category-tag new">智算一体机</span>
+                <span class="category-tag">云计算</span>
+                <span class="category-tag">边缘计算</span>
+                <span class="category-tag new">云电脑</span>
+                <span class="category-tag">网络安全</span>
+            </div>
+            
+            <div class="test-result">
+                <span class="status-indicator info"></span>
+                <strong>分类测试说明：</strong>在专家问答页面点击不同分类标签，验证问题筛选功能是否正常
+            </div>
+        </div>
+        
+        <!-- 数据一致性检查 -->
+        <div class="test-section">
+            <h3>🔍 数据一致性检查</h3>
+            <div class="changes-list">
+                <h4>需要验证的数据一致性：</h4>
+                <ul>
+                    <li>问题列表中的分类标签与分类选项一致</li>
+                    <li>热门问题的分类属性正确</li>
+                    <li>问题详情页面的标签显示正确</li>
+                    <li>搜索结果中的问题标题和内容已更新</li>
+                    <li>专家回答中的专业领域描述已更新</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 验证清单 -->
+        <div class="test-section">
+            <h3>✅ 验证清单</h3>
+            <div class="changes-list">
+                <h4>请逐项检查以下内容：</h4>
+                <ul>
+                    <li>□ 专家问答页面不再显示"5G网络"分类标签</li>
+                    <li>□ 专家问答页面不再显示"物联网"分类标签</li>
+                    <li>□ 显示"智算一体机"分类标签</li>
+                    <li>□ 显示"云电脑"分类标签</li>
+                    <li>□ 热门问题标题已更新为智算一体机相关</li>
+                    <li>□ 问题列表中的物联网问题已改为云电脑相关</li>
+                    <li>□ 问题标签不包含5G专网和物联网字样</li>
+                    <li>□ 专家标题已更新（如：智算技术专家）</li>
+                    <li>□ 提问表单的分类选项已更新</li>
+                    <li>□ 创建工作圈的类型选项已更新</li>
+                    <li>□ 我的圈子页面显示智算一体机技术圈</li>
+                    <li>□ 搜索结果页面的问题标题已更新</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后的测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('专家问答系统更新测试页面加载完成');
+            
+            // 检查分类映射函数
+            if (typeof getCategoryText === 'function') {
+                console.log('✅ getCategoryText函数已加载');
+                console.log('智算一体机分类:', getCategoryText('ai-compute'));
+                console.log('云电脑分类:', getCategoryText('cloud-pc'));
+            } else {
+                console.log('❌ getCategoryText函数未找到');
+            }
+        });
+    </script>
+</body>
+</html>

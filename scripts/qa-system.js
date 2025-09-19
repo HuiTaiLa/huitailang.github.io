@@ -1027,8 +1027,8 @@ function getQuestionData(questionId) {
     const questionsData = {
         'q001': {
             id: 'q001',
-            title: '5G专网如何实现与公网的安全隔离？',
-            content: '我们公司正在部署5G专网，需要确保与公网的完全隔离。目前考虑的方案包括物理隔离和逻辑隔离，但不确定哪种方案更适合我们的业务场景。我们的主要需求是：1. 确保数据安全不泄露；2. 保证网络性能不受影响；3. 便于后期维护管理。请问各位专家有什么建议？',
+            title: '智算一体机如何实现高效的资源调度？',
+            content: '我们公司正在部署智算一体机，需要实现CPU、GPU、内存等资源的高效调度。目前考虑的方案包括静态分配和动态调度，但不确定哪种方案更适合我们的AI计算场景。我们的主要需求是：1. 确保计算资源充分利用；2. 保证任务执行性能不受影响；3. 便于后期扩展管理。请问各位专家有什么建议？',
             status: 'answered',
             priority: 'high',
             username: '张工程师',
@@ -1037,22 +1037,22 @@ function getQuestionData(questionId) {
             views: 234,
             followers: 12,
             answers: 3,
-            tags: ['5G网络', '网络安全', '专网部署'],
+            tags: ['智算一体机', '资源调度', 'AI计算'],
             answerList: [
                 {
                     expertName: '王专家',
-                    expertTitle: '5G技术专家',
+                    expertTitle: '智算技术专家',
                     avatar: 'images/expert1.png',
                     time: '1小时前',
-                    content: '建议采用混合方案：核心业务数据采用物理隔离，一般业务采用逻辑隔离。具体实施可以通过网络切片技术实现，既保证安全性又兼顾成本效益。',
+                    content: '建议采用混合调度方案：核心AI训练任务采用静态资源预留，推理任务采用动态调度。具体实施可以通过容器编排技术实现，既保证性能又兼顾资源利用率。',
                     likes: 15
                 },
                 {
                     expertName: '李专家',
-                    expertTitle: '网络安全专家',
+                    expertTitle: 'AI架构专家',
                     avatar: 'images/expert2.png',
                     time: '30分钟前',
-                    content: '从安全角度考虑，推荐物理隔离方案。虽然成本较高，但能够从根本上杜绝数据泄露风险。可以考虑分阶段实施，先对关键业务进行物理隔离。',
+                    content: '从性能角度考虑，推荐基于负载预测的动态调度方案。虽然实现复杂度较高，但能够最大化资源利用效率。可以考虑分阶段实施，先对GPU资源进行智能调度。',
                     likes: 8
                 }
             ]
@@ -1107,39 +1107,64 @@ function getQuestionData(questionId) {
         },
         'q004': {
             id: 'q004',
-            title: '物联网设备大规模接入时的网络优化策略',
-            content: '我们项目中需要接入10万+物联网设备，目前网络延迟较高，请问有什么优化建议？包括网络架构调整和参数配置方面。',
-            status: 'pending',
+            title: '云电脑大规模部署时的性能优化策略',
+            content: '我们项目中需要部署1000+云桌面，目前响应延迟较高，请问有什么优化建议？包括资源配置调整和网络优化方面。具体需求：1. 支持高并发用户访问；2. 保证图形渲染性能；3. 优化网络传输延迟；4. 合理分配计算资源。希望各位专家提供实用的解决方案。',
+            status: 'answered',
             priority: 'high',
             username: '刘工程师',
             avatar: 'images/user5.png',
             time: '2小时前',
-            views: 45,
-            followers: 12,
-            answers: 0,
-            tags: ['物联网', '网络优化', '大规模接入'],
-            answerList: []
+            views: 145,
+            followers: 18,
+            answers: 2,
+            tags: ['云电脑', '性能优化', '大规模部署'],
+            answerList: [
+                {
+                    expertName: '赵专家',
+                    expertTitle: '云桌面架构师',
+                    avatar: 'images/expert3.png',
+                    time: '1小时前',
+                    content: '大规模云电脑部署优化建议：1. 资源池化管理，动态分配CPU/GPU资源；2. 就近部署，减少网络延迟；3. 使用SSD存储提升IO性能；4. 优化桌面协议，如PCoIP或HDX；5. 实施负载均衡和自动扩缩容。',
+                    likes: 22
+                },
+                {
+                    expertName: '孙专家',
+                    expertTitle: '虚拟化专家',
+                    avatar: 'images/expert4.png',
+                    time: '30分钟前',
+                    content: '从虚拟化角度补充：建议采用GPU虚拟化技术支持图形密集型应用，配置专用的存储网络避免IO瓶颈，同时要做好用户会话管理和资源监控告警。可以考虑分时段部署，逐步优化配置参数。',
+                    likes: 15
+                }
+            ]
         },
         'q005': {
             id: 'q005',
-            title: '5G专网切片技术的实际应用场景',
-            content: '想了解5G网络切片在不同行业中的具体应用，特别是在工业互联网和智慧城市方面的实践案例。',
+            title: '云电脑在远程办公场景下的最佳实践',
+            content: '随着远程办公需求增长，我们计划部署云电脑解决方案。想了解在不同办公场景下的最佳实践，包括：1. 移动办公的网络要求；2. 多媒体处理的性能配置；3. 数据安全和访问控制；4. 用户体验优化策略。希望能分享一些成功案例。',
             status: 'answered',
             priority: 'medium',
             username: '陈经理',
             avatar: 'images/user6.png',
             time: '5小时前',
-            views: 89,
-            followers: 8,
+            views: 189,
+            followers: 15,
             answers: 3,
-            tags: ['5G网络', '网络切片', '应用场景'],
+            tags: ['云电脑', '远程办公', '最佳实践'],
             answerList: [
                 {
                     expertName: '王专家',
-                    expertTitle: '5G技术专家',
+                    expertTitle: '云计算专家',
                     avatar: 'images/expert1.png',
                     time: '3小时前',
-                    content: '5G网络切片主要应用在三个场景：1. eMBB增强移动宽带，适用于高清视频、VR/AR；2. uRLLC超可靠低延迟，适用于工业控制、自动驾驶；3. mMTC大规模机器通信，适用于物联网、智慧城市。',
+                    content: '云电脑远程办公最佳实践：1. 网络要求：建议上行带宽≥10Mbps，延迟<50ms；2. 性能配置：办公应用2核4G，设计类应用4核8G+GPU；3. 安全策略：多因子认证+数据不落地；4. 体验优化：就近接入+智能调度。',
+                    likes: 25
+                },
+                {
+                    expertName: '李专家',
+                    expertTitle: '企业架构师',
+                    avatar: 'images/expert2.png',
+                    time: '2小时前',
+                    content: '补充实际案例：某金融企业部署3000个云桌面，通过分级部署（核心业务优先）、统一管控平台、7x24运维支持，实现了95%的用户满意度。关键是要做好用户培训和技术支持。',
                     likes: 18
                 }
             ]
@@ -1599,10 +1624,10 @@ function getUrgencyText(urgency) {
 // 获取分类文本
 function getCategoryText(category) {
     const categoryMap = {
-        '5g': '5G网络',
+        'ai-compute': '智算一体机',
         'cloud': '云计算',
         'edge': '边缘计算',
-        'iot': '物联网',
+        'cloud-pc': '云电脑',
         'security': '网络安全'
     };
     return categoryMap[category] || category;

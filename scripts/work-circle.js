@@ -1249,10 +1249,10 @@ function showCreateCircleForm() {
                         <label>工作圈类型 *</label>
                         <select class="form-select" required>
                             <option value="">请选择类型</option>
-                            <option value="5g">5G网络</option>
+                            <option value="ai-compute">智算一体机</option>
                             <option value="cloud">云计算</option>
                             <option value="edge">边缘计算</option>
-                            <option value="iot">物联网</option>
+                            <option value="cloud-pc">云电脑</option>
                             <option value="security">网络安全</option>
                         </select>
                     </div>
