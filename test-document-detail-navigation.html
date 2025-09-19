@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试文档详情页面跳转</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .doc-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .doc-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .doc-content h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .doc-content p {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .doc-actions {
+            margin-top: 10px;
+        }
+        .action-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 12px;
+        }
+        .action-btn:hover {
+            background: #1e7e34;
+        }
+        .preview-btn {
+            background: #17a2b8;
+        }
+        .preview-btn:hover {
+            background: #138496;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>测试文档详情页面跳转功能</h1>
+        
+        <div class="test-section">
+            <h2>测试说明</h2>
+            <p>这个页面用于测试修改后的文档详情页面跳转功能：</p>
+            <ul>
+                <li>点击文档卡片应该跳转到 document-viewer.html 页面</li>
+                <li>点击预览按钮应该打开预览模态框</li>
+                <li>在预览模态框中点击"查看详情"应该跳转到 document-viewer.html 页面</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>测试文档卡片</h2>
+            <div class="doc-item" data-doc-id="real_doc_0" data-filename="云电脑教育场景解决方案.pptx">
+                <div class="doc-content">
+                    <h4>云电脑教育场景解决方案</h4>
+                    <p>详细介绍云电脑在教育行业的应用场景、技术架构和实施方案</p>
+                    <div class="doc-actions">
+                        <button class="action-btn preview-btn">预览</button>
+                        <button class="action-btn download-btn">下载</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-item" data-doc-id="real_doc_1" data-filename="智算一体机内部培训材料.pptx">
+                <div class="doc-content">
+                    <h4>智算一体机内部培训材料</h4>
+                    <p>智算一体机产品的内部培训资料，包含产品特性、技术规格和应用指导</p>
+                    <div class="doc-actions">
+                        <button class="action-btn preview-btn">预览</button>
+                        <button class="action-btn download-btn">下载</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>直接测试按钮</h2>
+            <button class="test-button" onclick="testOpenDocumentDetail()">测试打开文档详情</button>
+            <button class="test-button" onclick="testPreviewDocument()">测试文档预览</button>
+        </div>
+
+        <div class="test-section">
+            <h2>测试结果</h2>
+            <div id="testResults">
+                <p>点击上面的按钮或文档卡片来测试功能...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="scripts/common.js"></script>
+    <script src="scripts/file-protocol-adapter.js"></script>
+    <script src="scripts/document-parsers.js"></script>
+    <script src="scripts/document-content-extractor.js"></script>
+    <script src="scripts/resource-library.js"></script>
+
+    <script>
+        // 测试函数
+        function testOpenDocumentDetail() {
+            const docId = 'real_doc_0';
+            const docTitle = '云电脑教育场景解决方案';
+            
+            logTestResult(`测试打开文档详情: docId=${docId}, docTitle=${docTitle}`);
+            
+            try {
+                openDocumentDetail(docId, docTitle);
+                logTestResult('✅ openDocumentDetail 函数调用成功');
+            } catch (error) {
+                logTestResult(`❌ openDocumentDetail 函数调用失败: ${error.message}`);
+            }
+        }
+
+        function testPreviewDocument() {
+            const docId = 'real_doc_1';
+            const docTitle = '智算一体机内部培训材料';
+            
+            logTestResult(`测试文档预览: docId=${docId}, docTitle=${docTitle}`);
+            
+            try {
+                previewDocument(docId, docTitle);
+                logTestResult('✅ previewDocument 函数调用成功');
+            } catch (error) {
+                logTestResult(`❌ previewDocument 函数调用失败: ${error.message}`);
+            }
+        }
+
+        function logTestResult(message) {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            resultsDiv.innerHTML += `<p>[${timestamp}] ${message}</p>`;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            logTestResult('页面加载完成，开始初始化...');
+            
+            // 初始化文档列表事件
+            try {
+                initDocumentList();
+                logTestResult('✅ initDocumentList 初始化成功');
+            } catch (error) {
+                logTestResult(`❌ initDocumentList 初始化失败: ${error.message}`);
+            }
+            
+            // 设置全局真实文件数据
+            if (typeof window.REAL_FILES_DATA === 'undefined') {
+                window.REAL_FILES_DATA = [
+                    {
+                        filename: '云电脑教育场景解决方案.pptx',
+                        size: 25422197,
+                        type: 'pptx',
+                        title: '云电脑教育场景解决方案',
+                        description: '详细介绍云电脑在教育行业的应用场景、技术架构和实施方案',
+                        category: 'solution',
+                        tags: ['云电脑', '教育', '解决方案'],
+                        docType: '解决方案'
+                    },
+                    {
+                        filename: '智算一体机内部培训材料.pptx',
+                        size: 58290496,
+                        type: 'pptx',
+                        title: '智算一体机内部培训材料',
+                        description: '智算一体机产品的内部培训资料，包含产品特性、技术规格和应用指导',
+                        category: 'training',
+                        tags: ['智算一体机', '培训', '产品介绍'],
+                        docType: '培训资料'
+                    }
+                ];
+                logTestResult('✅ 设置全局真实文件数据成功');
+            }
+        });
+    </script>
+</body>
+</html>

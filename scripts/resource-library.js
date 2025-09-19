@@ -39,6 +39,8 @@ if (typeof safeCommonUtils === "undefined") {
 // 资源库页面JavaScript功能
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('资源库页面加载完成');
+
     initSearchFunctionality();
     initCategoryTabs();
     initDocumentList();
@@ -48,7 +50,121 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 检查URL参数并自动选中对应分类
     checkUrlCategoryParameter();
+
+    console.log('资源库初始化完成');
 });
+
+// 创建文件选择提示内容
+function createFileSelectionPrompt(filename, docTitle) {
+    return `
+        <div class="file-selection-prompt">
+            <div class="prompt-header">
+                <h4>📁 需要选择文件</h4>
+                <p>要预览此文档，请先选择文件</p>
+            </div>
+            <div class="prompt-content">
+                <div class="file-info">
+                    <p><strong>文档名称：</strong>${docTitle}</p>
+                    <p><strong>文件名：</strong>${filename || '未识别'}</p>
+                    <p><strong>说明：</strong>由于使用文件协议访问，需要手动选择文档文件</p>
+                </div>
+                <div class="prompt-actions">
+                    <button class="select-file-btn" onclick="window.fileProtocolAdapter.promptFileSelection()">
+                        📂 选择文档文件
+                    </button>
+                    <button class="demo-link-btn" onclick="window.open('file-protocol-demo.html', '_blank')">
+                        📖 查看使用说明
+                    </button>
+                </div>
+                <div class="prompt-steps">
+                    <h5>📋 操作步骤：</h5>
+                    <ol>
+                        <li>点击"选择文档文件"按钮</li>
+                        <li>选择 uploads 文件夹中的所有文档文件</li>
+                        <li>等待文件缓存完成</li>
+                        <li>重新点击预览按钮</li>
+                    </ol>
+                </div>
+            </div>
+            <style>
+                .file-selection-prompt {
+                    padding: 20px;
+                    text-align: center;
+                    background: #fff3cd;
+                    border: 1px solid #ffeaa7;
+                    border-radius: 8px;
+                    margin: 10px 0;
+                }
+                .file-selection-prompt .prompt-header h4 {
+                    color: #856404;
+                    margin-bottom: 5px;
+                }
+                .file-selection-prompt .prompt-header p {
+                    color: #856404;
+                    margin-bottom: 15px;
+                    font-size: 14px;
+                }
+                .file-selection-prompt .file-info {
+                    background: white;
+                    padding: 15px;
+                    border-radius: 6px;
+                    margin: 15px 0;
+                    text-align: left;
+                }
+                .file-selection-prompt .file-info p {
+                    margin: 5px 0;
+                    color: #333;
+                    font-size: 14px;
+                }
+                .file-selection-prompt .prompt-actions {
+                    margin: 15px 0;
+                }
+                .file-selection-prompt .select-file-btn,
+                .file-selection-prompt .demo-link-btn {
+                    background: #ffc107;
+                    color: #212529;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    margin: 5px;
+                    font-size: 14px;
+                    transition: background 0.3s ease;
+                }
+                .file-selection-prompt .select-file-btn:hover {
+                    background: #e0a800;
+                }
+                .file-selection-prompt .demo-link-btn {
+                    background: #6c757d;
+                    color: white;
+                }
+                .file-selection-prompt .demo-link-btn:hover {
+                    background: #5a6268;
+                }
+                .file-selection-prompt .prompt-steps {
+                    background: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 6px;
+                    margin: 15px 0;
+                    text-align: left;
+                }
+                .file-selection-prompt .prompt-steps h5 {
+                    color: #495057;
+                    margin-bottom: 10px;
+                }
+                .file-selection-prompt .prompt-steps ol {
+                    margin: 0;
+                    padding-left: 20px;
+                    color: #495057;
+                }
+                .file-selection-prompt .prompt-steps li {
+                    margin: 5px 0;
+                    font-size: 14px;
+                }
+            </style>
+        </div>
+    `;
+}
 
 // 初始化搜索功能
 function initSearchFunctionality() {
@@ -352,33 +468,118 @@ function initDocumentList() {
 function openDocumentDetail(docId, docTitle) {
     // 记录文档访问
     trackDocumentView(docId);
-    
-    // 跳转到文档详情页面
-    safeCommonUtils().navigateTo(`document-detail.html?id=${docId}&title=${encodeURIComponent(docTitle)}`);
+
+    // 获取对应的文件名
+    let filename = null;
+
+    // 从真实文件数据中查找文件名
+    if (window.REAL_FILES_DATA) {
+        let fileIndex = -1;
+        if (docId.startsWith('real_doc_')) {
+            fileIndex = parseInt(docId.replace('real_doc_', ''));
+        } else if (docId.startsWith('hot_real_')) {
+            fileIndex = parseInt(docId.replace('hot_real_', ''));
+        }
+
+        if (fileIndex >= 0 && fileIndex < window.REAL_FILES_DATA.length) {
+            filename = window.REAL_FILES_DATA[fileIndex].filename;
+        }
+    }
+
+    // 构建URL参数
+    let url = `document-viewer.html?id=${docId}&title=${encodeURIComponent(docTitle)}&from=resource-library`;
+    if (filename) {
+        url += `&file=${encodeURIComponent(filename)}`;
+    }
+
+    // 跳转到文档查看器页面
+    safeCommonUtils().navigateTo(url);
 }
 
 // 下载文档
 function downloadDocument(docId, docTitle) {
     safeCommonUtils().showLoading('准备下载...');
-    
-    safeCommonUtils().mockApiRequest(`/api/documents/${docId}/download`)
-        .then(response => {
+
+    // 获取真实文件名
+    let filename = getRealFilename(docId, docTitle);
+
+    if (filename) {
+        // 构建文件下载路径
+        const downloadUrl = `uploads/${encodeURIComponent(filename)}`;
+
+        // 创建下载链接
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = filename;
+        link.style.display = 'none';
+
+        // 添加到页面并触发下载
+        document.body.appendChild(link);
+
+        // 由于本地文件访问的CORS限制，直接尝试下载
+        setTimeout(() => {
             safeCommonUtils().hideLoading();
-            if (response.success) {
-                // 模拟下载
-                const link = document.createElement('a');
-                link.href = response.data.downloadUrl || '#';
-                link.download = docTitle + '.pdf';
+
+            try {
+                // 直接触发下载
                 link.click();
-                
-                safeCommonUtils().showToast('下载开始', 'success');
-                
+                safeCommonUtils().showToast(`正在下载 ${filename}`, 'success');
+
                 // 记录下载统计
                 trackDocumentDownload(docId);
-            } else {
+
+                // 提示用户
+                setTimeout(() => {
+                    safeCommonUtils().showToast('如果下载没有开始，请检查浏览器的下载设置', 'info');
+                }, 2000);
+
+            } catch (error) {
+                console.error('下载失败:', error);
                 safeCommonUtils().showToast('下载失败，请重试', 'error');
             }
-        });
+
+            // 清理下载链接
+            setTimeout(() => {
+                if (document.body.contains(link)) {
+                    document.body.removeChild(link);
+                }
+            }, 1000);
+        }, 500);
+
+    } else {
+        safeCommonUtils().hideLoading();
+        safeCommonUtils().showToast('无法确定文件名，下载失败', 'error');
+    }
+}
+
+// 获取真实文件名
+function getRealFilename(docId, docTitle) {
+    // 尝试从DOM元素获取文件名
+    const docElement = document.querySelector(`[data-doc-id="${docId}"]`);
+    if (docElement && docElement.dataset.filename) {
+        return docElement.dataset.filename;
+    }
+
+    // 如果标题包含扩展名，直接使用
+    if (docTitle.includes('.')) {
+        return docTitle;
+    }
+
+    // 尝试从已知文档列表匹配
+    const knownDocs = [
+        '云电脑教育场景解决方案.pptx',
+        '智算一体机内部培训材料.pptx',
+        '党政行业重点解决方案及案例.pptx',
+        '法库县公安局融智算项目标杆案例.docx',
+        '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+        '辽宁省中小企业数字化转型政策.docx'
+    ];
+
+    const matchedDoc = knownDocs.find(doc =>
+        doc.includes(docTitle) || docTitle.includes(doc.split('.')[0])
+    );
+
+    return matchedDoc || null;
 }
 
 // 预览文档
@@ -390,8 +591,191 @@ function previewDocument(docId, docTitle) {
     trackDocumentPreview(docId);
 }
 
-// 显示文档预览模态框
-function showDocumentPreview(docId, docTitle) {
+// 获取文档内容用于预览（异步版本）
+async function getDocumentContentForPreview(docId, docTitle) {
+    // 尝试从真实文件数据中获取文件名
+    let filename = null;
+
+    // 如果是真实文档，从数据集中查找
+    if (docId.startsWith('real_doc_') || docId.startsWith('hot_real_')) {
+        const docElement = document.querySelector(`[data-doc-id="${docId}"]`);
+        if (docElement) {
+            filename = docElement.dataset.filename;
+        }
+    }
+
+    // 如果没有找到文件名，尝试从标题推断
+    if (!filename) {
+        // 检查标题是否包含文件扩展名
+        if (docTitle.includes('.')) {
+            filename = docTitle;
+        } else {
+            // 尝试匹配已知的文档
+            const knownDocs = [
+                '云电脑教育场景解决方案.pptx',
+                '智算一体机内部培训材料.pptx',
+                '党政行业重点解决方案及案例.pptx',
+                '法库县公安局融智算项目标杆案例.docx',
+                '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+                '辽宁省中小企业数字化转型政策.docx'
+            ];
+
+            filename = knownDocs.find(doc =>
+                doc.includes(docTitle) || docTitle.includes(doc.split('.')[0])
+            );
+        }
+    }
+
+    // 注意：现在优先使用在线加载，不再预先检查文件缓存
+
+    // 使用文档内容提取器获取内容
+    if (filename && window.DocumentContentExtractor) {
+        try {
+            // 确保解析器已初始化
+            if (!window.DocumentContentExtractor.isReady()) {
+                await window.DocumentContentExtractor.init();
+            }
+
+            const extractedContent = await window.DocumentContentExtractor.extractDocumentContent(filename);
+            if (extractedContent.success) {
+                return {
+                    success: true,
+                    content: window.DocumentContentExtractor.formatDocumentAsHTML(extractedContent),
+                    metadata: {
+                        title: extractedContent.title,
+                        fileSize: extractedContent.fileSize,
+                        pageCount: extractedContent.pageCount,
+                        source: extractedContent.source
+                    }
+                };
+            }
+        } catch (error) {
+            console.error('预览内容提取失败:', error);
+
+            // 如果所有加载方式都失败，显示文件选择提示（仅作为最后手段）
+            if (error.message.includes('文件未缓存且在线加载失败') ||
+                error.message.includes('所有加载方式都失败')) {
+                return {
+                    success: false,
+                    content: createFileSelectionPrompt(filename, docTitle),
+                    metadata: {
+                        title: docTitle,
+                        source: 'file_selection_needed'
+                    }
+                };
+            }
+        }
+    }
+
+    // 如果无法获取真实内容，返回默认预览
+    return {
+        success: false,
+        content: `
+            <div class="preview-placeholder">
+                <div class="preview-icon">📄</div>
+                <h4>文档预览</h4>
+                <p>正在尝试加载文档内容...</p>
+                <div class="document-info">
+                    <p><strong>文档名称：</strong>${docTitle}</p>
+                    <p><strong>文档ID：</strong>${docId}</p>
+                    <p><strong>文件名：</strong>${filename || '未识别'}</p>
+                    <p><strong>说明：</strong>正在提取真实文档内容。</p>
+                </div>
+                <div class="loading-indicator">
+                    <div class="loading-spinner-small"></div>
+                    <p>如果文档存在，内容将自动显示...</p>
+                </div>
+                <style>
+                    .loading-spinner-small {
+                        width: 20px;
+                        height: 20px;
+                        border: 2px solid #e3e3e3;
+                        border-top: 2px solid #3498db;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 10px auto;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    .loading-indicator {
+                        text-align: center;
+                        margin: 20px 0;
+                        padding: 15px;
+                        background: #f8f9fa;
+                        border-radius: 8px;
+                    }
+                </style>
+            </div>
+        `,
+        metadata: {
+            title: docTitle,
+            source: 'placeholder'
+        }
+    };
+}
+
+// 同步版本（用于向后兼容）
+function getDocumentContentForPreviewSync(docId, docTitle) {
+    // 尝试从真实文件数据中获取文件名
+    let filename = null;
+
+    // 如果是真实文档，从数据集中查找
+    if (docId.startsWith('real_doc_') || docId.startsWith('hot_real_')) {
+        const docElement = document.querySelector(`[data-doc-id="${docId}"]`);
+        if (docElement) {
+            filename = docElement.dataset.filename;
+        }
+    }
+
+    // 如果没有找到文件名，尝试从标题推断
+    if (!filename) {
+        // 检查标题是否包含文件扩展名
+        if (docTitle.includes('.')) {
+            filename = docTitle;
+        } else {
+            // 尝试匹配已知的文档
+            const knownDocs = [
+                '云电脑教育场景解决方案.pptx',
+                '智算一体机内部培训材料.pptx',
+                '党政行业重点解决方案及案例.pptx',
+                '法库县公安局融智算项目标杆案例.docx',
+                '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+                '辽宁省中小企业数字化转型政策.docx'
+            ];
+
+            filename = knownDocs.find(doc =>
+                doc.includes(docTitle) || docTitle.includes(doc.split('.')[0])
+            );
+        }
+    }
+
+    // 使用文档内容提取器获取内容（同步版本）
+    if (filename && window.DocumentContentExtractor) {
+        const extractedContent = window.DocumentContentExtractor.extractDocumentContentSync(filename);
+        if (extractedContent.success) {
+            return window.DocumentContentExtractor.formatDocumentAsHTML(extractedContent);
+        }
+    }
+
+    // 如果无法获取真实内容，返回默认预览
+    return `
+        <div class="preview-placeholder">
+            <div class="preview-icon">📄</div>
+            <h4>文档预览</h4>
+            <p>正在加载文档内容...</p>
+            <div class="document-info">
+                <p><strong>文档名称：</strong>${docTitle}</p>
+                <p><strong>文档ID：</strong>${docId}</p>
+                <p><strong>说明：</strong>由于这是静态部署，部分文档内容可能无法完整显示。</p>
+            </div>
+        </div>
+    `;
+}
+
+// 显示文档预览模态框（异步版本）
+async function showDocumentPreview(docId, docTitle) {
     const modal = document.createElement('div');
     modal.className = 'document-preview-modal';
     modal.innerHTML = `
@@ -404,30 +788,16 @@ function showDocumentPreview(docId, docTitle) {
                 <div class="preview-info">
                     <h4>${docTitle}</h4>
                     <div class="preview-meta">
-                        <span class="doc-id">文档ID: ${docId}</span>
                         <span class="preview-time">预览时间: ${new Date().toLocaleString()}</span>
                     </div>
                 </div>
 
                 <div class="preview-content-area">
-                    <div class="preview-placeholder">
-                        <div class="preview-icon">📄</div>
-                        <h4>文档预览</h4>
-                        <p>这里将显示文档的预览内容</p>
-                        <div class="preview-pages">
-                            <div class="page-preview">
-                                <div class="page-content">
-                                    <div class="page-header">移动云平台技术文档</div>
-                                    <div class="page-text">
-                                        <div class="text-line"></div>
-                                        <div class="text-line short"></div>
-                                        <div class="text-line"></div>
-                                        <div class="text-line medium"></div>
-                                        <div class="text-line"></div>
-                                        <div class="text-line short"></div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="loading-preview">
+                        <div class="loading-spinner"></div>
+                        <p>正在加载文档内容...</p>
+                        <div class="loading-details">
+                            <p>📄 正在提取真实内容</p>
                         </div>
                     </div>
                 </div>
@@ -448,13 +818,45 @@ function showDocumentPreview(docId, docTitle) {
         modal.classList.add('show');
     }, 10);
 
-    // 模拟加载预览内容
-    setTimeout(() => {
-        const placeholder = modal.querySelector('.preview-placeholder');
-        if (placeholder) {
-            placeholder.classList.add('loaded');
+    // 异步加载真实文档内容
+    try {
+        const documentResult = await getDocumentContentForPreview(docId, docTitle);
+        const previewContentArea = modal.querySelector('.preview-content-area');
+
+        if (documentResult.success) {
+            previewContentArea.innerHTML = documentResult.content;
+
+            // 更新元信息
+            if (documentResult.metadata) {
+                const previewMeta = modal.querySelector('.preview-meta');
+                if (documentResult.metadata.fileSize) {
+                    const sizeSpan = document.createElement('span');
+                    sizeSpan.className = 'preview-size';
+                    sizeSpan.textContent = ` | 大小: ${formatFileSize(documentResult.metadata.fileSize)}`;
+                    previewMeta.appendChild(sizeSpan);
+                }
+                if (documentResult.metadata.pageCount) {
+                    const pageSpan = document.createElement('span');
+                    pageSpan.className = 'preview-pages';
+                    pageSpan.textContent = ` | 页数: ${documentResult.metadata.pageCount}`;
+                    previewMeta.appendChild(pageSpan);
+                }
+            }
+        } else {
+            previewContentArea.innerHTML = documentResult.content;
         }
-    }, 1000);
+    } catch (error) {
+        console.error('预览内容加载失败:', error);
+        const previewContentArea = modal.querySelector('.preview-content-area');
+        previewContentArea.innerHTML = `
+            <div class="error-preview">
+                <h4>⚠️ 预览加载失败</h4>
+                <p>无法加载文档预览内容。</p>
+                <p><strong>错误信息：</strong>${error.message}</p>
+                <p>请尝试点击"查看详情"按钮查看文档。</p>
+            </div>
+        `;
+    }
 }
 
 // 切换收藏状态
@@ -981,7 +1383,7 @@ function trackDocumentView(docId) {
 
 function trackDocumentDownload(docId) {
     console.log('文档下载统计:', docId);
-    safeCommonUtils().showToast('下载统计已记录', 'info');
+    // 静默记录下载统计，不显示提示信息
 }
 
 function trackDocumentPreview(docId) {
@@ -993,3 +1395,11 @@ function trackCategoryClick(category) {
     console.log('分类点击统计:', category);
     // 这里可以发送分类点击统计数据到服务器
 }
+
+
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('资源库页面加载完成');
+    initResourceLibrary();
+});

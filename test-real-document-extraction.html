@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真实文档内容提取测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .file-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+        }
+        .file-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .file-info {
+            font-size: 12px;
+            color: #666;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s ease;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-button.secondary {
+            background: #95a5a6;
+        }
+        .test-button.secondary:hover {
+            background: #7f8c8d;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e3e3e3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .status-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+        }
+        .metadata {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .content-preview {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 真实文档内容提取测试</h1>
+            <p>测试从 uploads 文件夹中提取真实文档内容的功能</p>
+        </div>
+
+        <!-- 在线加载功能 -->
+        <div class="test-section">
+            <h3>🌐 在线加载功能</h3>
+            <div class="info-box">
+                <p><strong>✅ 自动在线加载</strong></p>
+                <p>系统现在支持直接从在线 URL 自动加载文档文件，无需手动选择。</p>
+                <p><strong>在线地址：</strong>https://huitaila.github.io/huitailang.github.io/uploads/</p>
+            </div>
+        </div>
+
+        <!-- 系统状态检查 -->
+        <div class="test-section">
+            <h3>🔧 系统状态检查</h3>
+            <div id="systemStatus">
+                <p>正在检查系统状态...</p>
+            </div>
+            <button class="test-button" onclick="checkSystemStatus()">重新检查</button>
+        </div>
+
+        <!-- 文档列表 -->
+        <div class="test-section">
+            <h3>📁 uploads 文件夹中的文档</h3>
+            <div class="file-list" id="fileList">
+                <!-- 文件列表将动态加载 -->
+            </div>
+            <button class="test-button" onclick="loadFileList()">刷新文件列表</button>
+        </div>
+
+        <!-- 单个文档测试 -->
+        <div class="test-section">
+            <h3>🧪 单个文档提取测试</h3>
+            <div class="status-info">
+                <p><strong>说明：</strong>点击上方文件列表中的任意文档进行内容提取测试</p>
+            </div>
+            <div id="singleTestResult" class="result-area">
+                <p>请选择一个文档进行测试...</p>
+            </div>
+        </div>
+
+        <!-- 批量测试 -->
+        <div class="test-section">
+            <h3>🚀 批量提取测试</h3>
+            <button class="test-button" onclick="runBatchTest()">开始批量测试</button>
+            <button class="test-button secondary" onclick="clearBatchResults()">清除结果</button>
+            <div id="batchTestResult" class="result-area">
+                <p>点击"开始批量测试"来测试所有文档的内容提取...</p>
+            </div>
+        </div>
+
+        <!-- 性能测试 -->
+        <div class="test-section">
+            <h3>⚡ 性能测试</h3>
+            <button class="test-button" onclick="runPerformanceTest()">运行性能测试</button>
+            <div id="performanceResult" class="result-area">
+                <p>点击"运行性能测试"来测试文档解析性能...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="scripts/common.js"></script>
+    <script src="scripts/file-protocol-adapter.js"></script>
+    <script src="scripts/document-parsers.js"></script>
+    <script src="scripts/document-content-extractor.js"></script>
+
+    <script>
+        // 已知的文档文件列表
+        const KNOWN_FILES = [
+            '云电脑教育场景解决方案.pptx',
+            '智算一体机内部培训材料.pptx',
+            '党政行业重点解决方案及案例.pptx',
+            '法库县公安局融智算项目标杆案例.docx',
+            '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+            '辽宁省中小企业数字化转型政策.docx'
+        ];
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，开始初始化测试环境');
+
+            checkSystemStatus();
+            loadFileList();
+        });
+
+
+
+        // 检查系统状态
+        async function checkSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>正在检查系统状态...</p></div>';
+
+            try {
+                let status = '<div class="status-info">';
+                
+                // 检查文档解析器
+                if (window.DocumentParser) {
+                    status += '<p class="success">✅ DocumentParser 已加载</p>';
+                } else {
+                    status += '<p class="error">❌ DocumentParser 未加载</p>';
+                }
+
+                // 检查文档内容提取器
+                if (window.DocumentContentExtractor) {
+                    status += '<p class="success">✅ DocumentContentExtractor 已加载</p>';
+                    
+                    // 检查是否准备就绪
+                    if (window.DocumentContentExtractor.isReady()) {
+                        status += '<p class="success">✅ 文档解析器已准备就绪</p>';
+                    } else {
+                        status += '<p class="warning">⚠️ 文档解析器正在初始化...</p>';
+                        // 尝试初始化
+                        await window.DocumentContentExtractor.init();
+                        if (window.DocumentContentExtractor.isReady()) {
+                            status += '<p class="success">✅ 文档解析器初始化成功</p>';
+                        } else {
+                            status += '<p class="error">❌ 文档解析器初始化失败</p>';
+                        }
+                    }
+                } else {
+                    status += '<p class="error">❌ DocumentContentExtractor 未加载</p>';
+                }
+
+                // 检查缓存信息
+                if (window.DocumentContentExtractor && window.DocumentContentExtractor.getCacheInfo) {
+                    const cacheInfo = window.DocumentContentExtractor.getCacheInfo();
+                    status += `<p>📊 缓存状态：${cacheInfo.size} 个文档已缓存</p>`;
+                }
+
+                status += '</div>';
+                statusDiv.innerHTML = status;
+
+            } catch (error) {
+                console.error('系统状态检查失败:', error);
+                statusDiv.innerHTML = `<p class="error">❌ 系统状态检查失败: ${error.message}</p>`;
+            }
+        }
+
+        // 加载文件列表
+        function loadFileList() {
+            const fileListDiv = document.getElementById('fileList');
+            fileListDiv.innerHTML = '';
+
+            KNOWN_FILES.forEach((filename, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.onclick = () => testSingleDocument(filename);
+                
+                const extension = filename.split('.').pop().toLowerCase();
+                const emoji = extension === 'pptx' ? '📊' : extension === 'docx' ? '📄' : '📋';
+                
+                fileItem.innerHTML = `
+                    <div class="file-name">${emoji} ${filename}</div>
+                    <div class="file-info">格式: ${extension.toUpperCase()} | 点击测试提取</div>
+                `;
+                
+                fileListDiv.appendChild(fileItem);
+            });
+        }
+
+        // 测试单个文档
+        async function testSingleDocument(filename) {
+            const resultDiv = document.getElementById('singleTestResult');
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在提取文档内容：${filename}</p>
+                </div>
+            `;
+
+            try {
+                const startTime = performance.now();
+                const result = await window.DocumentContentExtractor.extractDocumentContent(filename);
+                const endTime = performance.now();
+                const duration = (endTime - startTime).toFixed(2);
+
+                let resultHTML = `
+                    <h4>📄 ${filename}</h4>
+                    <div class="metadata">
+                        <p><strong>提取状态：</strong>${result.success ? '<span class="success">成功</span>' : '<span class="error">失败</span>'}</p>
+                        <p><strong>耗时：</strong>${duration} ms</p>
+                        <p><strong>标题：</strong>${result.title || '未提取到标题'}</p>
+                        <p><strong>来源：</strong>${result.source || '未知'}</p>
+                `;
+
+                if (result.fileSize) {
+                    resultHTML += `<p><strong>文件大小：</strong>${formatFileSize(result.fileSize)}</p>`;
+                }
+                if (result.pageCount) {
+                    resultHTML += `<p><strong>页数：</strong>${result.pageCount}</p>`;
+                }
+
+                resultHTML += '</div>';
+
+                if (result.success && result.htmlContent) {
+                    resultHTML += `
+                        <h5>内容预览：</h5>
+                        <div class="content-preview">
+                            ${result.htmlContent.substring(0, 1000)}${result.htmlContent.length > 1000 ? '...' : ''}
+                        </div>
+                    `;
+                } else if (result.htmlContent) {
+                    resultHTML += `
+                        <h5>错误信息：</h5>
+                        <div class="content-preview">
+                            ${result.htmlContent}
+                        </div>
+                    `;
+                }
+
+                resultDiv.innerHTML = resultHTML;
+
+            } catch (error) {
+                console.error('文档提取测试失败:', error);
+                resultDiv.innerHTML = `
+                    <h4>❌ 测试失败</h4>
+                    <p class="error">错误信息：${error.message}</p>
+                    <p>文件名：${filename}</p>
+                `;
+            }
+        }
+
+        // 批量测试
+        async function runBatchTest() {
+            const resultDiv = document.getElementById('batchTestResult');
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在进行批量测试...</p>
+                </div>
+            `;
+
+            const results = [];
+            const startTime = performance.now();
+
+            for (let i = 0; i < KNOWN_FILES.length; i++) {
+                const filename = KNOWN_FILES[i];
+                
+                // 更新进度
+                resultDiv.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>正在测试 ${i + 1}/${KNOWN_FILES.length}: ${filename}</p>
+                    </div>
+                `;
+
+                try {
+                    const fileStartTime = performance.now();
+                    const result = await window.DocumentContentExtractor.extractDocumentContent(filename);
+                    const fileEndTime = performance.now();
+                    
+                    results.push({
+                        filename,
+                        success: result.success,
+                        duration: (fileEndTime - fileStartTime).toFixed(2),
+                        title: result.title,
+                        source: result.source,
+                        fileSize: result.fileSize,
+                        pageCount: result.pageCount,
+                        error: result.error
+                    });
+                } catch (error) {
+                    results.push({
+                        filename,
+                        success: false,
+                        duration: 0,
+                        error: error.message
+                    });
+                }
+            }
+
+            const totalTime = (performance.now() - startTime).toFixed(2);
+            const successCount = results.filter(r => r.success).length;
+
+            // 显示结果
+            let resultHTML = `
+                <h4>📊 批量测试结果</h4>
+                <div class="metadata">
+                    <p><strong>总耗时：</strong>${totalTime} ms</p>
+                    <p><strong>成功率：</strong>${successCount}/${KNOWN_FILES.length} (${((successCount/KNOWN_FILES.length)*100).toFixed(1)}%)</p>
+                </div>
+                <div class="results-list">
+            `;
+
+            results.forEach(result => {
+                const statusIcon = result.success ? '✅' : '❌';
+                const statusClass = result.success ? 'success' : 'error';
+                
+                resultHTML += `
+                    <div class="result-item" style="margin: 10px 0; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                        <p><strong>${statusIcon} ${result.filename}</strong></p>
+                        <p class="${statusClass}">状态: ${result.success ? '成功' : '失败'} | 耗时: ${result.duration} ms</p>
+                        ${result.title ? `<p>标题: ${result.title}</p>` : ''}
+                        ${result.source ? `<p>来源: ${result.source}</p>` : ''}
+                        ${result.error ? `<p class="error">错误: ${result.error}</p>` : ''}
+                    </div>
+                `;
+            });
+
+            resultHTML += '</div>';
+            resultDiv.innerHTML = resultHTML;
+        }
+
+        // 清除批量测试结果
+        function clearBatchResults() {
+            document.getElementById('batchTestResult').innerHTML = '<p>点击"开始批量测试"来测试所有文档的内容提取...</p>';
+        }
+
+        // 性能测试
+        async function runPerformanceTest() {
+            const resultDiv = document.getElementById('performanceResult');
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在运行性能测试...</p>
+                </div>
+            `;
+
+            // 选择一个测试文件
+            const testFile = KNOWN_FILES[0];
+            const iterations = 5;
+            const times = [];
+
+            for (let i = 0; i < iterations; i++) {
+                resultDiv.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>性能测试进行中 ${i + 1}/${iterations}</p>
+                    </div>
+                `;
+
+                // 清除缓存
+                if (window.DocumentContentExtractor.clearCache) {
+                    window.DocumentContentExtractor.clearCache();
+                }
+
+                const startTime = performance.now();
+                await window.DocumentContentExtractor.extractDocumentContent(testFile);
+                const endTime = performance.now();
+                
+                times.push(endTime - startTime);
+            }
+
+            const avgTime = (times.reduce((a, b) => a + b, 0) / times.length).toFixed(2);
+            const minTime = Math.min(...times).toFixed(2);
+            const maxTime = Math.max(...times).toFixed(2);
+
+            resultDiv.innerHTML = `
+                <h4>⚡ 性能测试结果</h4>
+                <div class="metadata">
+                    <p><strong>测试文件：</strong>${testFile}</p>
+                    <p><strong>测试次数：</strong>${iterations}</p>
+                    <p><strong>平均耗时：</strong>${avgTime} ms</p>
+                    <p><strong>最短耗时：</strong>${minTime} ms</p>
+                    <p><strong>最长耗时：</strong>${maxTime} ms</p>
+                </div>
+                <div class="results-list">
+                    <h5>详细结果：</h5>
+                    ${times.map((time, index) => `<p>第 ${index + 1} 次: ${time.toFixed(2)} ms</p>`).join('')}
+                </div>
+            `;
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>

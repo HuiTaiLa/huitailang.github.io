@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线文档加载测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s ease;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .result.loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .url-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 在线文档加载测试</h1>
+            <p>测试从 GitHub Pages 在线加载文档文件的功能</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 测试文档列表</h3>
+            <p>以下是可用的在线文档文件：</p>
+            
+            <div class="test-item">
+                <h4>📄 法库县公安局融智算项目标杆案例.docx</h4>
+                <div class="url-info">
+                    URL: https://huitaila.github.io/huitailang.github.io/uploads/法库县公安局融智算项目标杆案例.docx
+                </div>
+                <button class="test-button" onclick="testDocument('法库县公安局融智算项目标杆案例.docx')">
+                    🧪 测试加载
+                </button>
+                <div id="result-法库县公安局融智算项目标杆案例.docx" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-item">
+                <h4>📊 云电脑教育场景解决方案.pptx</h4>
+                <div class="url-info">
+                    URL: https://huitaila.github.io/huitailang.github.io/uploads/云电脑教育场景解决方案.pptx
+                </div>
+                <button class="test-button" onclick="testDocument('云电脑教育场景解决方案.pptx')">
+                    🧪 测试加载
+                </button>
+                <div id="result-云电脑教育场景解决方案.pptx" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-item">
+                <h4>📊 智算一体机内部培训材料.pptx</h4>
+                <div class="url-info">
+                    URL: https://huitaila.github.io/huitailang.github.io/uploads/智算一体机内部培训材料.pptx
+                </div>
+                <button class="test-button" onclick="testDocument('智算一体机内部培训材料.pptx')">
+                    🧪 测试加载
+                </button>
+                <div id="result-智算一体机内部培训材料.pptx" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-item">
+                <h4>📊 党政行业重点解决方案及案例.pptx</h4>
+                <div class="url-info">
+                    URL: https://huitaila.github.io/huitailang.github.io/uploads/党政行业重点解决方案及案例.pptx
+                </div>
+                <button class="test-button" onclick="testDocument('党政行业重点解决方案及案例.pptx')">
+                    🧪 测试加载
+                </button>
+                <div id="result-党政行业重点解决方案及案例.pptx" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-item">
+                <h4>📊 移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx</h4>
+                <div class="url-info">
+                    URL: https://huitaila.github.io/huitailang.github.io/uploads/移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx
+                </div>
+                <button class="test-button" onclick="testDocument('移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx')">
+                    🧪 测试加载
+                </button>
+                <div id="result-移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-item">
+                <h4>📄 辽宁省中小企业数字化转型政策.docx</h4>
+                <div class="url-info">
+                    URL: https://huitaila.github.io/huitailang.github.io/uploads/辽宁省中小企业数字化转型政策.docx
+                </div>
+                <button class="test-button" onclick="testDocument('辽宁省中小企业数字化转型政策.docx')">
+                    🧪 测试加载
+                </button>
+                <div id="result-辽宁省中小企业数字化转型政策.docx" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 测试统计</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalTests">0</div>
+                    <div class="stat-label">总测试数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="successTests">0</div>
+                    <div class="stat-label">成功加载</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="failedTests">0</div>
+                    <div class="stat-label">加载失败</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgTime">0ms</div>
+                    <div class="stat-label">平均耗时</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="test-button" onclick="testAllDocuments()" style="background: #27ae60;">
+                    🚀 测试所有文档
+                </button>
+                <button class="test-button" onclick="clearResults()" style="background: #e74c3c;">
+                    🗑️ 清除结果
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="scripts/document-parsers.js"></script>
+    <script src="scripts/document-content-extractor.js"></script>
+
+    <script>
+        let testStats = {
+            total: 0,
+            success: 0,
+            failed: 0,
+            times: []
+        };
+
+        const documents = [
+            '法库县公安局融智算项目标杆案例.docx',
+            '云电脑教育场景解决方案.pptx',
+            '智算一体机内部培训材料.pptx',
+            '党政行业重点解决方案及案例.pptx',
+            '移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx',
+            '辽宁省中小企业数字化转型政策.docx'
+        ];
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('在线加载测试页面初始化完成');
+            updateStats();
+        });
+
+        async function testDocument(filename) {
+            const resultDiv = document.getElementById(`result-${filename}`);
+            const button = event.target;
+            
+            // 显示加载状态
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 正在测试在线加载...';
+            button.disabled = true;
+
+            const startTime = performance.now();
+
+            try {
+                // 确保文档解析器已初始化
+                if (!window.DocumentContentExtractor.isReady()) {
+                    await window.DocumentContentExtractor.init();
+                }
+
+                // 提取文档内容
+                const result = await window.DocumentContentExtractor.extractDocumentContent(filename);
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+
+                if (result.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        ✅ 加载成功！<br>
+                        📄 标题: ${result.title}<br>
+                        📊 文件大小: ${formatFileSize(result.fileSize)}<br>
+                        📑 页数: ${result.pageCount}<br>
+                        ⏱️ 耗时: ${duration}ms<br>
+                        🔗 来源: ${result.source}<br>
+                        📝 内容长度: ${result.textContent ? result.textContent.length : 0} 字符
+                    `;
+                    
+                    testStats.success++;
+                    testStats.times.push(duration);
+                } else {
+                    throw new Error(result.error || '未知错误');
+                }
+            } catch (error) {
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+                
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    ❌ 加载失败<br>
+                    🚫 错误: ${error.message}<br>
+                    ⏱️ 耗时: ${duration}ms
+                `;
+                
+                testStats.failed++;
+            }
+
+            testStats.total++;
+            button.disabled = false;
+            updateStats();
+        }
+
+        async function testAllDocuments() {
+            for (const filename of documents) {
+                await new Promise(resolve => {
+                    // 模拟点击测试按钮
+                    const button = document.querySelector(`[onclick="testDocument('${filename}')"]`);
+                    if (button) {
+                        button.click();
+                        // 等待一段时间再测试下一个
+                        setTimeout(resolve, 2000);
+                    } else {
+                        resolve();
+                    }
+                });
+            }
+        }
+
+        function clearResults() {
+            documents.forEach(filename => {
+                const resultDiv = document.getElementById(`result-${filename}`);
+                if (resultDiv) {
+                    resultDiv.style.display = 'none';
+                }
+            });
+            
+            testStats = {
+                total: 0,
+                success: 0,
+                failed: 0,
+                times: []
+            };
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('totalTests').textContent = testStats.total;
+            document.getElementById('successTests').textContent = testStats.success;
+            document.getElementById('failedTests').textContent = testStats.failed;
+            
+            const avgTime = testStats.times.length > 0 
+                ? Math.round(testStats.times.reduce((a, b) => a + b, 0) / testStats.times.length)
+                : 0;
+            document.getElementById('avgTime').textContent = avgTime + 'ms';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>

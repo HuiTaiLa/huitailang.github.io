@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真实文档内容提取系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .feature-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .feature-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .feature-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .feature-link {
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+        }
+        .feature-link:hover {
+            background: #5a6fd8;
+        }
+        .feature-link.secondary {
+            background: #6c757d;
+        }
+        .feature-link.secondary:hover {
+            background: #5a6268;
+        }
+        .feature-link.success {
+            background: #28a745;
+        }
+        .feature-link.success:hover {
+            background: #218838;
+        }
+        .online-notice {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .online-notice h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .online-notice p {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .online-url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .quick-start {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .quick-start h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .quick-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .quick-btn {
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quick-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .quick-btn.primary {
+            background: #e74c3c;
+            font-size: 1.1em;
+            padding: 18px 30px;
+        }
+        .quick-btn.primary:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 真实文档内容提取系统</h1>
+            <p>严格按照原始文档内容展示，支持在线自动加载</p>
+        </div>
+
+        <div class="online-notice">
+            <h3>🌐 在线自动加载功能</h3>
+            <p><strong>无需手动选择文件！</strong>系统现在支持直接从在线 URL 自动加载文档内容。</p>
+            <div class="online-url">
+                https://huitaila.github.io/huitailang.github.io/uploads/
+            </div>
+            <p>所有文档都可以直接在线访问，提供最佳的用户体验。</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <div class="feature-title">资源库预览</div>
+                <div class="feature-description">
+                    浏览所有可用的文档资源，支持实时预览文档内容。点击任意文档即可查看真实的文档内容，严格按照原始顺序展示。
+                </div>
+                <div class="feature-links">
+                    <a href="resource-library.html" class="feature-link">📚 打开资源库</a>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <div class="feature-title">文档查看器</div>
+                <div class="feature-description">
+                    查看完整的文档内容，支持 PDF、DOCX、PPTX 等格式。自动从在线 URL 加载文档，无需手动选择文件。
+                </div>
+                <div class="feature-links">
+                    <a href="document-viewer.html?file=法库县公安局融智算项目标杆案例.docx" class="feature-link">📄 查看示例</a>
+                    <a href="document-viewer.html" class="feature-link secondary">🔧 自定义</a>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧪</div>
+                <div class="feature-title">功能测试</div>
+                <div class="feature-description">
+                    测试文档内容提取功能，验证在线加载性能，查看详细的提取统计信息和系统状态。
+                </div>
+                <div class="feature-links">
+                    <a href="test-online-loading.html" class="feature-link success">🌐 在线测试</a>
+                    <a href="test-real-document-extraction.html" class="feature-link secondary">🧪 完整测试</a>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <div class="feature-title">使用指南</div>
+                <div class="feature-description">
+                    详细的使用说明和快速开始指南，了解系统的各项功能和使用方法。
+                </div>
+                <div class="feature-links">
+                    <a href="quick-start-file-protocol.html" class="feature-link">🚀 快速开始</a>
+                    <a href="file-protocol-demo.html" class="feature-link secondary">📖 详细说明</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h3>🚀 立即开始体验</h3>
+            <p>选择下方任意功能开始使用真实文档内容提取系统</p>
+            <div class="quick-buttons">
+                <a href="resource-library.html" class="quick-btn primary">
+                    📚 资源库预览
+                </a>
+                <a href="document-viewer.html?file=云电脑教育场景解决方案.pptx" class="quick-btn">
+                    📄 文档查看器
+                </a>
+                <a href="test-online-loading.html" class="quick-btn">
+                    🌐 在线加载测试
+                </a>
+                <a href="quick-start-file-protocol.html" class="quick-btn">
+                    📖 使用指南
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后的简单检测
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('真实文档内容提取系统首页加载完成');
+            console.log('支持的功能：');
+            console.log('- 📚 资源库预览');
+            console.log('- 📄 文档查看器');
+            console.log('- 🧪 功能测试');
+            console.log('- 🌐 在线自动加载');
+            console.log('- 📂 文件协议支持');
+        });
+    </script>
+</body>
+</html>

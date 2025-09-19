@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>改进测试页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-button.secondary {
+            background: #95a5a6;
+        }
+        .test-button.secondary:hover {
+            background: #7f8c8d;
+        }
+        .success {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            color: #22543d;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #ebf8ff;
+            border: 1px solid #90cdf4;
+            color: #2a69ac;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .checklist li:before {
+            content: "✅ ";
+            color: #22543d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-header">
+            <h1>🔧 文档预览系统改进测试</h1>
+            <p>验证所有改进是否正确实施</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 改进清单</h3>
+            <ul class="checklist">
+                <li>移除文档预览时的"正在从uploads"等提示文字</li>
+                <li>确保文档详情页面与预览内容保持一致</li>
+                <li>修复返回按钮，返回到资源库页面而不是首页</li>
+                <li>移除资源库页面右上角的缓存按钮</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 测试步骤</h3>
+            
+            <h4>1. 测试文档预览（无uploads提示）</h4>
+            <button class="test-button" onclick="testDocumentPreview()">打开资源库页面</button>
+            <div class="info">
+                <strong>测试方法：</strong>
+                <ol>
+                    <li>点击上方按钮打开资源库页面</li>
+                    <li>点击任意文档的"预览"按钮</li>
+                    <li>检查预览弹窗中是否还有"正在从uploads"等提示文字</li>
+                    <li>应该只显示"正在加载文档内容..."等简洁提示</li>
+                </ol>
+            </div>
+
+            <h4>2. 测试文档详情页面一致性</h4>
+            <button class="test-button" onclick="testDocumentDetail()">测试云电脑教育场景解决方案</button>
+            <div class="info">
+                <strong>测试方法：</strong>
+                <ol>
+                    <li>点击上方按钮打开资源库页面</li>
+                    <li>找到"云电脑教育场景解决方案"文档</li>
+                    <li>先点击"预览"查看预览内容</li>
+                    <li>再点击"查看详情"进入详情页面</li>
+                    <li>对比两者内容是否一致</li>
+                </ol>
+            </div>
+
+            <h4>3. 测试返回按钮</h4>
+            <button class="test-button" onclick="testBackButton()">测试返回功能</button>
+            <div class="info">
+                <strong>测试方法：</strong>
+                <ol>
+                    <li>点击上方按钮打开资源库页面</li>
+                    <li>点击任意文档的"查看详情"</li>
+                    <li>在文档详情页面点击左上角的返回按钮（‹）</li>
+                    <li>应该返回到资源库页面，而不是首页</li>
+                </ol>
+            </div>
+
+            <h4>4. 检查缓存按钮移除</h4>
+            <button class="test-button" onclick="checkCacheButton()">检查资源库页面</button>
+            <div class="info">
+                <strong>测试方法：</strong>
+                <ol>
+                    <li>点击上方按钮打开资源库页面</li>
+                    <li>查看右上角是否还有🔧缓存按钮</li>
+                    <li>应该只有🔍搜索按钮</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 测试结果</h3>
+            <div id="testResults">
+                <p>请按照上述步骤进行测试，并记录结果。</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 快速链接</h3>
+            <button class="test-button secondary" onclick="openResourceLibrary()">资源库页面</button>
+            <button class="test-button secondary" onclick="openDocumentViewer()">文档查看器</button>
+            <button class="test-button secondary" onclick="openTestPPTX()">PPTX解析测试</button>
+        </div>
+    </div>
+
+    <script>
+        function testDocumentPreview() {
+            window.open('resource-library.html', '_blank');
+            updateTestResult('预览测试', '已打开资源库页面，请手动测试预览功能');
+        }
+
+        function testDocumentDetail() {
+            window.open('resource-library.html', '_blank');
+            updateTestResult('详情页测试', '已打开资源库页面，请测试云电脑教育场景解决方案文档');
+        }
+
+        function testBackButton() {
+            window.open('resource-library.html', '_blank');
+            updateTestResult('返回按钮测试', '已打开资源库页面，请测试返回按钮功能');
+        }
+
+        function checkCacheButton() {
+            window.open('resource-library.html', '_blank');
+            updateTestResult('缓存按钮检查', '已打开资源库页面，请检查右上角是否还有缓存按钮');
+        }
+
+        function openResourceLibrary() {
+            window.open('resource-library.html', '_blank');
+        }
+
+        function openDocumentViewer() {
+            window.open('document-viewer.html', '_blank');
+        }
+
+        function openTestPPTX() {
+            window.open('test-cloud-education-pptx.html', '_blank');
+        }
+
+        function updateTestResult(testName, result) {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            resultsDiv.innerHTML += `
+                <div class="success">
+                    <strong>[${timestamp}] ${testName}:</strong> ${result}
+                </div>
+            `;
+        }
+
+        // 页面加载完成后的说明
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = `
+                <div class="info">
+                    <h4>🎯 测试目标</h4>
+                    <p>验证以下改进是否成功实施：</p>
+                    <ul>
+                        <li><strong>用户体验改进</strong>：移除技术性提示文字</li>
+                        <li><strong>内容一致性</strong>：预览和详情页面内容保持一致</li>
+                        <li><strong>导航优化</strong>：返回按钮智能导航</li>
+                        <li><strong>界面简化</strong>：移除调试按钮</li>
+                    </ul>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

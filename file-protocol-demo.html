@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件协议模式演示</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        .protocol-info {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 30px;
+        }
+        .step-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .step-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .step {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+        }
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .demo-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .demo-button:hover {
+            background: #2980b9;
+        }
+        .demo-button.secondary {
+            background: #95a5a6;
+        }
+        .demo-button.secondary:hover {
+            background: #7f8c8d;
+        }
+        .demo-button.success {
+            background: #27ae60;
+        }
+        .demo-button.success:hover {
+            background: #229954;
+        }
+        .file-list {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            margin: 15px 0;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .file-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .file-size {
+            color: #666;
+            font-size: 14px;
+        }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            color: #856404;
+        }
+        .success {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 文件协议模式演示</h1>
+            <p>在 file:// 协议下使用真实文档内容提取功能</p>
+        </div>
+
+        <div class="protocol-info">
+            <h3>🔍 当前协议检测</h3>
+            <p id="protocolStatus">正在检测当前访问协议...</p>
+            <p><strong>当前地址：</strong><span id="currentUrl"></span></p>
+        </div>
+
+        <div class="step-section">
+            <h3>📋 使用步骤</h3>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>选择文档文件</strong>
+                <p>点击下方的"选择文档文件"按钮，选择 uploads 文件夹中的所有文档文件。</p>
+                <div id="fileSelectionArea">
+                    <!-- 文件选择界面将在这里插入 -->
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>等待文件缓存</strong>
+                <p>系统会将选择的文件缓存到内存中，以便后续使用。</p>
+                <div id="cacheStatus">
+                    <p>缓存状态：等待文件选择...</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>开始使用功能</strong>
+                <p>文件缓存完成后，您就可以正常使用文档预览功能了。</p>
+                <div class="demo-links">
+                    <a href="resource-library.html" class="demo-button">📚 资源库</a>
+                    <a href="document-viewer.html?file=云电脑教育场景解决方案.pptx" class="demo-button">📄 文档查看器</a>
+                    <a href="test-real-document-extraction.html" class="demo-button secondary">🧪 测试页面</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-section">
+            <h3>📁 需要选择的文件</h3>
+            <p>请选择 uploads 文件夹中的以下文档文件：</p>
+            <div class="file-list">
+                <div class="file-item">
+                    <span class="file-icon">📊</span>
+                    <span class="file-name">云电脑教育场景解决方案.pptx</span>
+                    <span class="file-size">~24MB</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📊</span>
+                    <span class="file-name">智算一体机内部培训材料.pptx</span>
+                    <span class="file-size">~15MB</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📊</span>
+                    <span class="file-name">党政行业重点解决方案及案例.pptx</span>
+                    <span class="file-size">~18MB</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📄</span>
+                    <span class="file-name">法库县公安局融智算项目标杆案例.docx</span>
+                    <span class="file-size">~8MB</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📊</span>
+                    <span class="file-name">移动云分地市、分行业、分客群待拓清单及产品拓展方案.pptx</span>
+                    <span class="file-size">~22MB</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📄</span>
+                    <span class="file-name">辽宁省中小企业数字化转型政策.docx</span>
+                    <span class="file-size">~5MB</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-section">
+            <h3>💡 提示信息</h3>
+            
+            <div class="info">
+                <p><strong>ℹ️ 文件选择提示</strong></p>
+                <p>您可以一次性选择多个文件，建议选择所有文档文件以获得完整的功能体验。</p>
+            </div>
+
+            <div class="warning">
+                <p><strong>⚠️ 注意事项</strong></p>
+                <ul>
+                    <li>文件只会缓存在当前浏览器会话中，刷新页面后需要重新选择</li>
+                    <li>大文件可能需要较长时间进行解析</li>
+                    <li>确保选择的文件格式正确（PDF、DOCX、PPTX）</li>
+                </ul>
+            </div>
+
+            <div class="success" id="successMessage" style="display: none;">
+                <p><strong>✅ 文件加载成功！</strong></p>
+                <p>您现在可以正常使用所有文档预览功能了。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="scripts/file-protocol-adapter.js"></script>
+
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initDemo();
+        });
+
+        function initDemo() {
+            // 显示当前协议信息
+            updateProtocolStatus();
+            
+            // 如果是文件协议，设置文件选择界面
+            if (window.fileProtocolAdapter && window.fileProtocolAdapter.isFileProtocolMode()) {
+                setupFileSelection();
+            } else {
+                showHttpProtocolMessage();
+            }
+        }
+
+        function updateProtocolStatus() {
+            const statusElement = document.getElementById('protocolStatus');
+            const urlElement = document.getElementById('currentUrl');
+            
+            urlElement.textContent = window.location.href;
+            
+            if (window.location.protocol === 'file:') {
+                statusElement.innerHTML = '<strong style="color: #3498db;">✅ 文件协议 (file://)</strong> - 将使用文件选择模式';
+            } else {
+                statusElement.innerHTML = '<strong style="color: #27ae60;">✅ HTTP 协议</strong> - 可直接访问文件';
+            }
+        }
+
+        function setupFileSelection() {
+            const fileSelectionArea = document.getElementById('fileSelectionArea');
+            
+            if (window.fileProtocolAdapter) {
+                const ui = window.fileProtocolAdapter.createFileSelectionUI();
+                if (ui) {
+                    fileSelectionArea.appendChild(ui);
+                }
+                
+                // 监听文件加载事件
+                window.addEventListener('filesLoaded', function(e) {
+                    updateCacheStatus();
+                    showSuccessMessage();
+                });
+                
+                // 初始更新缓存状态
+                updateCacheStatus();
+            }
+        }
+
+        function updateCacheStatus() {
+            const cacheStatusElement = document.getElementById('cacheStatus');
+            
+            if (window.fileProtocolAdapter) {
+                const cacheInfo = window.fileProtocolAdapter.getCacheInfo();
+                
+                if (cacheInfo.cacheSize > 0) {
+                    cacheStatusElement.innerHTML = `
+                        <p><strong>缓存状态：</strong>已缓存 ${cacheInfo.cacheSize} 个文件</p>
+                        <div style="margin-top: 10px;">
+                            <strong>已缓存的文件：</strong><br>
+                            ${cacheInfo.cachedFiles.map(name => `<span style="display: inline-block; margin: 2px 5px; padding: 2px 8px; background: #e8f4fd; border-radius: 4px; font-size: 12px;">${name}</span>`).join('')}
+                        </div>
+                    `;
+                } else {
+                    cacheStatusElement.innerHTML = '<p>缓存状态：等待文件选择...</p>';
+                }
+            }
+        }
+
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            
+            // 滚动到成功消息
+            successMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showHttpProtocolMessage() {
+            const fileSelectionArea = document.getElementById('fileSelectionArea');
+            fileSelectionArea.innerHTML = `
+                <div class="info">
+                    <p><strong>ℹ️ HTTP 协议模式</strong></p>
+                    <p>您当前使用的是 HTTP 协议，可以直接访问文件，无需手动选择。</p>
+                    <p>您可以直接使用以下功能：</p>
+                    <div style="margin-top: 15px;">
+                        <a href="resource-library.html" class="demo-button success">📚 资源库</a>
+                        <a href="document-viewer.html?file=云电脑教育场景解决方案.pptx" class="demo-button success">📄 文档查看器</a>
+                        <a href="test-real-document-extraction.html" class="demo-button success">🧪 测试页面</a>
+                    </div>
+                </div>
+            `;
+            
+            const cacheStatusElement = document.getElementById('cacheStatus');
+            cacheStatusElement.innerHTML = '<p>缓存状态：HTTP 模式，无需缓存</p>';
+            
+            showSuccessMessage();
+        }
+    </script>
+</body>
+</html>

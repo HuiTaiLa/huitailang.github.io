@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档预览和下载功能测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <!-- 测试横幅 -->
+    <div class="test-banner">
+        <h1>📄 文档预览和下载功能测试</h1>
+        <p>测试uploads文件夹中真实文档的预览和下载功能</p>
+    </div>
+
+    <div class="container">
+        <!-- 测试预览功能 -->
+        <div class="test-section">
+            <h3>🔍 预览功能测试</h3>
+            <p>点击下面的按钮测试不同文档的预览功能：</p>
+            
+            <button class="test-button" onclick="testPreview('云电脑教育场景解决方案.pptx')">
+                预览：云电脑教育场景解决方案
+            </button>
+            
+            <button class="test-button" onclick="testPreview('智算一体机内部培训材料.pptx')">
+                预览：智算一体机内部培训材料
+            </button>
+            
+            <button class="test-button" onclick="testPreview('党政行业重点解决方案及案例.pptx')">
+                预览：党政行业重点解决方案及案例
+            </button>
+            
+            <button class="test-button" onclick="testPreview('法库县公安局融智算项目标杆案例.docx')">
+                预览：法库县公安局融智算项目标杆案例
+            </button>
+            
+            <div class="test-result" id="previewResult">
+                预览结果将在这里显示...
+            </div>
+        </div>
+
+        <!-- 测试下载功能 -->
+        <div class="test-section">
+            <h3>⬇️ 下载功能测试</h3>
+            <p>点击下面的按钮测试文档下载功能：</p>
+            
+            <button class="test-button" onclick="testDownload('云电脑教育场景解决方案.pptx')">
+                下载：云电脑教育场景解决方案
+            </button>
+            
+            <button class="test-button" onclick="testDownload('智算一体机内部培训材料.pptx')">
+                下载：智算一体机内部培训材料
+            </button>
+            
+            <button class="test-button" onclick="testDownload('党政行业重点解决方案及案例.pptx')">
+                下载：党政行业重点解决方案及案例
+            </button>
+            
+            <button class="test-button" onclick="testDownload('法库县公安局融智算项目标杆案例.docx')">
+                下载：法库县公安局融智算项目标杆案例
+            </button>
+            
+            <div class="test-result" id="downloadResult">
+                下载结果将在这里显示...
+            </div>
+        </div>
+
+        <!-- 测试文档查看器页面 -->
+        <div class="test-section">
+            <h3>📖 文档查看器测试</h3>
+            <p>点击下面的链接测试文档查看器页面：</p>
+            
+            <a href="document-viewer.html?file=云电脑教育场景解决方案.pptx" target="_blank" class="test-button" style="text-decoration: none; display: inline-block;">
+                查看：云电脑教育场景解决方案
+            </a>
+            
+            <a href="document-viewer.html?file=智算一体机内部培训材料.pptx" target="_blank" class="test-button" style="text-decoration: none; display: inline-block;">
+                查看：智算一体机内部培训材料
+            </a>
+            
+            <a href="document-viewer.html?file=党政行业重点解决方案及案例.pptx" target="_blank" class="test-button" style="text-decoration: none; display: inline-block;">
+                查看：党政行业重点解决方案及案例
+            </a>
+            
+            <a href="document-viewer.html?file=法库县公安局融智算项目标杆案例.docx" target="_blank" class="test-button" style="text-decoration: none; display: inline-block;">
+                查看：法库县公安局融智算项目标杆案例
+            </a>
+        </div>
+
+        <!-- 功能状态检查 -->
+        <div class="test-section">
+            <h3>🔧 功能状态检查</h3>
+            <div id="statusCheck">
+                <p>正在检查功能状态...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="scripts/common.js"></script>
+    <script src="scripts/document-content-extractor.js"></script>
+    <script src="scripts/resource-library.js"></script>
+
+    <script>
+        // 测试预览功能
+        function testPreview(filename) {
+            const resultDiv = document.getElementById('previewResult');
+            resultDiv.innerHTML = `<p>正在测试预览功能：${filename}</p>`;
+            
+            try {
+                // 模拟预览功能调用
+                if (window.DocumentContentExtractor) {
+                    const content = window.DocumentContentExtractor.extractDocumentContent(filename);
+                    if (content.success) {
+                        resultDiv.innerHTML = `
+                            <p><strong>✅ 预览功能正常</strong></p>
+                            <p>文档：${filename}</p>
+                            <p>标题：${content.title}</p>
+                            <p>提取时间：${content.extractedAt}</p>
+                            <details>
+                                <summary>查看内容预览</summary>
+                                <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+                                    ${content.htmlContent.substring(0, 500)}...
+                                </div>
+                            </details>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <p><strong>⚠️ 预览功能部分正常</strong></p>
+                            <p>文档：${filename}</p>
+                            <p>状态：使用默认内容</p>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <p><strong>❌ 预览功能异常</strong></p>
+                        <p>错误：DocumentContentExtractor 未加载</p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p><strong>❌ 预览功能异常</strong></p>
+                    <p>错误：${error.message}</p>
+                `;
+            }
+        }
+
+        // 测试下载功能
+        function testDownload(filename) {
+            const resultDiv = document.getElementById('downloadResult');
+            resultDiv.innerHTML = `<p>正在测试下载功能：${filename}</p>`;
+
+            try {
+                // 由于本地文件访问的CORS限制，直接测试下载功能
+                resultDiv.innerHTML = `
+                    <p><strong>✅ 下载功能准备就绪</strong></p>
+                    <p>文件：${filename}</p>
+                    <p>状态：由于CORS限制，无法检查文件存在性，但可以尝试下载</p>
+                    <button class="test-button" onclick="actualDownload('${filename}')">实际下载</button>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p><strong>❌ 下载功能异常</strong></p>
+                    <p>错误：${error.message}</p>
+                `;
+            }
+        }
+
+        // 实际下载文件
+        function actualDownload(filename) {
+            const downloadUrl = `uploads/${encodeURIComponent(filename)}`;
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = filename;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            const resultDiv = document.getElementById('downloadResult');
+            resultDiv.innerHTML += `<p><strong>📥 下载已触发</strong></p>`;
+        }
+
+        // 检查功能状态
+        function checkFunctionStatus() {
+            const statusDiv = document.getElementById('statusCheck');
+            let status = [];
+            
+            // 检查 DocumentContentExtractor
+            if (window.DocumentContentExtractor) {
+                status.push('✅ DocumentContentExtractor 已加载');
+            } else {
+                status.push('❌ DocumentContentExtractor 未加载');
+            }
+            
+            // 检查资源库函数
+            if (typeof showDocumentPreview === 'function') {
+                status.push('✅ showDocumentPreview 函数可用');
+            } else {
+                status.push('❌ showDocumentPreview 函数不可用');
+            }
+            
+            if (typeof downloadDocument === 'function') {
+                status.push('✅ downloadDocument 函数可用');
+            } else {
+                status.push('❌ downloadDocument 函数不可用');
+            }
+            
+            statusDiv.innerHTML = status.map(s => `<p>${s}</p>`).join('');
+        }
+
+        // 页面加载完成后检查状态
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkFunctionStatus, 1000);
+        });
+    </script>
+</body>
+</html>
