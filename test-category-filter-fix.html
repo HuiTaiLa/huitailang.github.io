@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类筛选功能测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-info {
+            background: #f0f8ff;
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+            font-family: monospace;
+        }
+        .test-info h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .debug-section {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+        }
+        .debug-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+        }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-info">
+            <h3>🧪 分类筛选功能测试</h3>
+            <p>测试内容：</p>
+            <ul>
+                <li>✅ 分类标签点击筛选</li>
+                <li>✅ 热门推荐根据分类筛选</li>
+                <li>✅ 滚动加载基于筛选结果</li>
+                <li>✅ URL参数自动选中分类</li>
+            </ul>
+        </div>
+
+        <div class="debug-section">
+            <h3>🔍 调试信息</h3>
+            <div id="debugInfo"></div>
+        </div>
+
+        <!-- 搜索栏 -->
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="搜索文档资源...">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 文档列表 -->
+        <div class="document-list">
+            <div class="list-header">
+                <h3>文档资源</h3>
+                <div class="sort-options">
+                    <select class="sort-select">
+                        <option value="latest">最新更新</option>
+                        <option value="popular">热门下载</option>
+                        <option value="rating">评分最高</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="document-items">
+                <!-- 文档列表内容将通过JavaScript动态加载 -->
+            </div>
+
+            <!-- 滚动加载提示 -->
+            <div class="scroll-loading" id="scrollLoading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">正在加载更多...</span>
+            </div>
+        </div>
+
+        <!-- 测试按钮 -->
+        <div class="test-info">
+            <h3>🎮 测试操作</h3>
+            <button onclick="testCategoryFilter('manual')" style="margin: 5px; padding: 10px;">测试产品手册筛选</button>
+            <button onclick="testCategoryFilter('solution')" style="margin: 5px; padding: 10px;">测试解决方案筛选</button>
+            <button onclick="testCategoryFilter('training')" style="margin: 5px; padding: 10px;">测试培训资料筛选</button>
+            <button onclick="testCategoryFilter('case')" style="margin: 5px; padding: 10px;">测试客户案例筛选</button>
+            <button onclick="testCategoryFilter('all')" style="margin: 5px; padding: 10px;">测试全部分类</button>
+            <button onclick="testScrollLoading()" style="margin: 5px; padding: 10px;">测试滚动加载</button>
+        </div>
+    </div>
+
+    <!-- 加载提示 -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">加载中...</div>
+    </div>
+
+    <!-- 引入脚本 -->
+    <script src="scripts/safe-utils.js"></script>
+    <script src="scripts/common.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    
+    <script>
+        // 调试信息显示
+        function debugLog(message, type = 'info') {
+            const debugInfo = document.getElementById('debugInfo');
+            const debugItem = document.createElement('div');
+            debugItem.className = `debug-item ${type}`;
+            debugItem.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            debugInfo.appendChild(debugItem);
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+            console.log(message);
+        }
+
+        // 测试分类筛选
+        function testCategoryFilter(category) {
+            debugLog(`🧪 开始测试分类筛选: ${category}`, 'info');
+            
+            // 点击对应的分类标签
+            const targetTab = document.querySelector(`.tab-item[data-category="${category}"]`);
+            if (targetTab) {
+                targetTab.click();
+                debugLog(`✅ 点击分类标签: ${category}`, 'success');
+                
+                // 检查筛选状态
+                setTimeout(() => {
+                    checkFilterState(category);
+                }, 1000);
+            } else {
+                debugLog(`❌ 找不到分类标签: ${category}`, 'error');
+            }
+        }
+
+        // 检查筛选状态
+        function checkFilterState(expectedCategory) {
+            debugLog(`🔍 检查筛选状态...`, 'info');
+            
+            // 检查当前分类
+            if (typeof currentCategory !== 'undefined') {
+                if (currentCategory === expectedCategory) {
+                    debugLog(`✅ 当前分类正确: ${currentCategory}`, 'success');
+                } else {
+                    debugLog(`❌ 当前分类错误: 期望 ${expectedCategory}, 实际 ${currentCategory}`, 'error');
+                }
+            } else {
+                debugLog(`❌ currentCategory 变量未定义`, 'error');
+            }
+            
+            // 检查筛选后的文件
+            if (typeof filteredFiles !== 'undefined') {
+                debugLog(`📄 筛选后文件数量: ${filteredFiles.length}`, 'info');
+                
+                if (expectedCategory === 'all') {
+                    if (filteredFiles.length === window.REAL_FILES_DATA.length) {
+                        debugLog(`✅ 全部分类文件数量正确`, 'success');
+                    } else {
+                        debugLog(`❌ 全部分类文件数量错误`, 'error');
+                    }
+                } else {
+                    const expectedCount = window.REAL_FILES_DATA.filter(file => file.category === expectedCategory).length;
+                    if (filteredFiles.length === expectedCount) {
+                        debugLog(`✅ 分类文件数量正确: ${filteredFiles.length}`, 'success');
+                    } else {
+                        debugLog(`❌ 分类文件数量错误: 期望 ${expectedCount}, 实际 ${filteredFiles.length}`, 'error');
+                    }
+                }
+            } else {
+                debugLog(`❌ filteredFiles 变量未定义`, 'error');
+            }
+            
+            // 检查热门推荐
+            const hotItems = document.querySelectorAll('.hot-item');
+            debugLog(`🔥 热门推荐数量: ${hotItems.length}`, 'info');
+            
+            // 检查文档列表
+            const docItems = document.querySelectorAll('.doc-item');
+            debugLog(`📋 文档列表数量: ${docItems.length}`, 'info');
+        }
+
+        // 测试滚动加载
+        function testScrollLoading() {
+            debugLog(`🧪 开始测试滚动加载`, 'info');
+            
+            // 模拟滚动到底部
+            window.scrollTo(0, document.body.scrollHeight);
+            
+            setTimeout(() => {
+                const scrollLoading = document.getElementById('scrollLoading');
+                if (scrollLoading && scrollLoading.style.display !== 'none') {
+                    debugLog(`✅ 滚动加载提示已显示`, 'success');
+                } else {
+                    debugLog(`❌ 滚动加载提示未显示`, 'error');
+                }
+            }, 500);
+        }
+
+        // 页面加载完成后的测试
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('📱 页面DOM加载完成', 'info');
+            
+            // 检查必要的变量和函数
+            setTimeout(() => {
+                debugLog('🔍 检查全局变量和函数...', 'info');
+                
+                if (typeof window.REAL_FILES_DATA !== 'undefined') {
+                    debugLog(`✅ REAL_FILES_DATA 存在，包含 ${window.REAL_FILES_DATA.length} 个文件`, 'success');
+                } else {
+                    debugLog('❌ REAL_FILES_DATA 不存在', 'error');
+                }
+                
+                if (typeof loadDocumentsByCategory === 'function') {
+                    debugLog('✅ loadDocumentsByCategory 函数存在', 'success');
+                } else {
+                    debugLog('❌ loadDocumentsByCategory 函数不存在', 'error');
+                }
+                
+                if (typeof updateHotRecommendationsWithFilter === 'function') {
+                    debugLog('✅ updateHotRecommendationsWithFilter 函数存在', 'success');
+                } else {
+                    debugLog('❌ updateHotRecommendationsWithFilter 函数不存在', 'error');
+                }
+                
+                // 检查初始状态
+                setTimeout(() => {
+                    checkFilterState('all');
+                }, 2000);
+                
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

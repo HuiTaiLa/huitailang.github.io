@@ -36,8 +36,15 @@ function initSearchFunctionality() {
     // 搜索建议标签点击事件
     suggestionTags.forEach(tag => {
         tag.addEventListener('click', function() {
-            searchInput.value = this.textContent;
-            performSearch();
+            const category = this.dataset.category;
+            if (category) {
+                // 直接跳转到资源库对应分类
+                navigateToResourceLibrary(category);
+            } else {
+                // 如果没有分类，则作为搜索关键词
+                searchInput.value = this.textContent;
+                performSearch();
+            }
         });
     });
     
@@ -66,8 +73,8 @@ function performSearch() {
     // 保存搜索历史
     saveSearchHistory(query);
     
-    // 跳转到搜索结果页面
-    safeCommonUtils().navigateTo(`search-results.html?q=${encodeURIComponent(query)}`);
+    // 跳转到资源库搜索页面
+    safeCommonUtils().navigateTo(`resource-library.html?search=${encodeURIComponent(query)}`);
 }
 
 // 显示搜索建议
@@ -161,7 +168,25 @@ function handleQuickAccess(itemName) {
 
 // 直接跳转到资源库指定分类
 function navigateToResourceLibrary(category) {
-    safeCommonUtils().showToast(`正在跳转到${category === 'training' ? '培训资料' : '客户案例'}...`, 'info');
+    let categoryName = '';
+    switch(category) {
+        case 'manual':
+            categoryName = '产品手册';
+            break;
+        case 'solution':
+            categoryName = '解决方案';
+            break;
+        case 'training':
+            categoryName = '培训资料';
+            break;
+        case 'case':
+            categoryName = '客户案例';
+            break;
+        default:
+            categoryName = '相关内容';
+    }
+
+    safeCommonUtils().showToast(`正在跳转到${categoryName}...`, 'info');
     safeCommonUtils().navigateTo(`resource-library.html?category=${category}`);
 }
 
@@ -190,7 +215,11 @@ function loadRecentUpdates() {
 
 // 处理动态项点击
 function handleUpdateClick(updateText) {
-    if (updateText.includes('文档')) {
+    if (updateText.includes('智算一体机内部培训材料')) {
+        navigateToDocument();
+    } else if (updateText.includes('沈阳专家回复了您的问题')) {
+        navigateToQuestion();
+    } else if (updateText.includes('文档')) {
         safeCommonUtils().navigateTo('resource-library.html');
     } else if (updateText.includes('问题') || updateText.includes('回复')) {
         safeCommonUtils().navigateTo('qa-system.html');
@@ -345,6 +374,18 @@ function logout() {
             window.location.href = 'login.html';
         }, 1000);
     }
+}
+
+// 跳转到智算一体机文档
+function navigateToDocument() {
+    const url = 'document-viewer.html?id=real_doc_1&title=智算一体机内部培训材料&from=resource-library&file=智算一体机内部培训材料.pptx';
+    safeCommonUtils().navigateTo(url);
+}
+
+// 跳转到问题详情
+function navigateToQuestion() {
+    const url = 'question-detail.html?id=q003';
+    safeCommonUtils().navigateTo(url);
 }
 
 // 添加点击背景关闭模态框的功能

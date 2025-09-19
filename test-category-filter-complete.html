@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类筛选完整测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .test-panel h3 {
+            margin-top: 0;
+            color: #007bff;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-result {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        
+        .stats-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+        
+        .toggle-panel {
+            position: fixed;
+            top: 20px;
+            right: 380px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-panel" onclick="toggleTestPanel()">🧪 测试面板</button>
+    
+    <div id="testPanel" class="test-panel">
+        <h3>🧪 分类筛选测试</h3>
+        
+        <div class="stats-display" id="statsDisplay">
+            <strong>当前状态：</strong><br>
+            分类: <span id="currentCategoryDisplay">-</span><br>
+            筛选文件: <span id="filteredCountDisplay">-</span><br>
+            显示文件: <span id="displayedCountDisplay">-</span><br>
+            热门推荐: <span id="hotCountDisplay">-</span>
+        </div>
+        
+        <button class="test-button" onclick="testCategory('all')">测试全部分类</button>
+        <button class="test-button" onclick="testCategory('manual')">测试产品手册</button>
+        <button class="test-button" onclick="testCategory('solution')">测试解决方案</button>
+        <button class="test-button" onclick="testCategory('training')">测试培训资料</button>
+        <button class="test-button" onclick="testCategory('case')">测试客户案例</button>
+        
+        <hr>
+        
+        <button class="test-button" onclick="testUrlParameter('manual')">测试URL参数(手册)</button>
+        <button class="test-button" onclick="testUrlParameter('solution')">测试URL参数(方案)</button>
+        <button class="test-button" onclick="testScrollLoad()">测试滚动加载</button>
+        <button class="test-button" onclick="clearResults()">清空结果</button>
+        
+        <div id="testResults"></div>
+    </div>
+
+    <div class="container">
+        <!-- 搜索栏 -->
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="搜索文档资源...">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 文档列表 -->
+        <div class="document-list">
+            <div class="list-header">
+                <h3>文档资源</h3>
+                <div class="sort-options">
+                    <select class="sort-select">
+                        <option value="latest">最新更新</option>
+                        <option value="popular">热门下载</option>
+                        <option value="rating">评分最高</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="document-items">
+                <!-- 文档列表内容将通过JavaScript动态加载 -->
+            </div>
+
+            <!-- 滚动加载提示 -->
+            <div class="scroll-loading" id="scrollLoading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">正在加载更多...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载提示 -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">加载中...</div>
+    </div>
+
+    <!-- 引入脚本 -->
+    <script src="scripts/safe-utils.js"></script>
+    <script src="scripts/common.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    
+    <script>
+        let testPanelVisible = true;
+        
+        function toggleTestPanel() {
+            const panel = document.getElementById('testPanel');
+            testPanelVisible = !testPanelVisible;
+            panel.style.display = testPanelVisible ? 'block' : 'none';
+        }
+        
+        function addTestResult(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            const result = document.createElement('div');
+            result.className = `test-result ${type}`;
+            result.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(result);
+            results.scrollTop = results.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function updateStats() {
+            document.getElementById('currentCategoryDisplay').textContent = 
+                typeof currentCategory !== 'undefined' ? currentCategory : '未定义';
+            document.getElementById('filteredCountDisplay').textContent = 
+                typeof filteredFiles !== 'undefined' ? filteredFiles.length : '未定义';
+            document.getElementById('displayedCountDisplay').textContent = 
+                typeof displayedFiles !== 'undefined' ? displayedFiles.length : '未定义';
+            document.getElementById('hotCountDisplay').textContent = 
+                document.querySelectorAll('.hot-item').length;
+        }
+        
+        function testCategory(category) {
+            addTestResult(`开始测试分类: ${category}`, 'info');
+            
+            // 点击分类标签
+            const tab = document.querySelector(`.tab-item[data-category="${category}"]`);
+            if (tab) {
+                tab.click();
+                addTestResult(`点击分类标签: ${category}`, 'success');
+                
+                // 等待加载完成后检查结果
+                setTimeout(() => {
+                    validateCategoryFilter(category);
+                    updateStats();
+                }, 1500);
+            } else {
+                addTestResult(`找不到分类标签: ${category}`, 'error');
+            }
+        }
+        
+        function validateCategoryFilter(expectedCategory) {
+            let passed = true;
+            
+            // 检查当前分类
+            if (typeof currentCategory !== 'undefined') {
+                if (currentCategory === expectedCategory) {
+                    addTestResult(`✅ 当前分类正确: ${currentCategory}`, 'success');
+                } else {
+                    addTestResult(`❌ 当前分类错误: 期望 ${expectedCategory}, 实际 ${currentCategory}`, 'error');
+                    passed = false;
+                }
+            } else {
+                addTestResult(`❌ currentCategory 变量未定义`, 'error');
+                passed = false;
+            }
+            
+            // 检查筛选文件数量
+            if (typeof filteredFiles !== 'undefined' && typeof window.REAL_FILES_DATA !== 'undefined') {
+                const expectedCount = expectedCategory === 'all' ? 
+                    window.REAL_FILES_DATA.length : 
+                    window.REAL_FILES_DATA.filter(file => file.category === expectedCategory).length;
+                
+                if (filteredFiles.length === expectedCount) {
+                    addTestResult(`✅ 筛选文件数量正确: ${filteredFiles.length}`, 'success');
+                } else {
+                    addTestResult(`❌ 筛选文件数量错误: 期望 ${expectedCount}, 实际 ${filteredFiles.length}`, 'error');
+                    passed = false;
+                }
+            } else {
+                addTestResult(`❌ filteredFiles 或 REAL_FILES_DATA 未定义`, 'error');
+                passed = false;
+            }
+            
+            // 检查显示的文档数量
+            const docItems = document.querySelectorAll('.doc-item');
+            if (typeof filteredFiles !== 'undefined') {
+                if (docItems.length === filteredFiles.length) {
+                    addTestResult(`✅ 显示文档数量正确: ${docItems.length}`, 'success');
+                } else {
+                    addTestResult(`❌ 显示文档数量错误: 期望 ${filteredFiles.length}, 实际 ${docItems.length}`, 'error');
+                    passed = false;
+                }
+            }
+            
+            // 检查热门推荐
+            const hotItems = document.querySelectorAll('.hot-item');
+            if (hotItems.length > 0) {
+                addTestResult(`✅ 热门推荐已更新: ${hotItems.length} 项`, 'success');
+            } else {
+                addTestResult(`⚠️ 热门推荐为空`, 'warning');
+            }
+            
+            if (passed) {
+                addTestResult(`🎉 分类 ${expectedCategory} 测试通过`, 'success');
+            } else {
+                addTestResult(`💥 分类 ${expectedCategory} 测试失败`, 'error');
+            }
+        }
+        
+        function testUrlParameter(category) {
+            addTestResult(`测试URL参数: category=${category}`, 'info');
+            const newUrl = `${window.location.pathname}?category=${category}`;
+            window.location.href = newUrl;
+        }
+        
+        function testScrollLoad() {
+            addTestResult(`测试滚动加载`, 'info');
+            
+            // 滚动到底部
+            window.scrollTo(0, document.body.scrollHeight);
+            
+            setTimeout(() => {
+                const scrollLoading = document.getElementById('scrollLoading');
+                if (scrollLoading && scrollLoading.style.display !== 'none') {
+                    addTestResult(`✅ 滚动加载触发`, 'success');
+                } else {
+                    addTestResult(`❌ 滚动加载未触发`, 'error');
+                }
+            }, 1000);
+        }
+        
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            addTestResult(`测试结果已清空`, 'info');
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            addTestResult('页面加载完成，开始初始化测试', 'info');
+            
+            setTimeout(() => {
+                // 检查必要的变量和函数
+                if (typeof window.REAL_FILES_DATA !== 'undefined') {
+                    addTestResult(`✅ REAL_FILES_DATA 已加载: ${window.REAL_FILES_DATA.length} 个文件`, 'success');
+                } else {
+                    addTestResult(`❌ REAL_FILES_DATA 未加载`, 'error');
+                }
+                
+                updateStats();
+                
+                // 检查URL参数
+                const urlParams = new URLSearchParams(window.location.search);
+                const category = urlParams.get('category');
+                if (category) {
+                    addTestResult(`检测到URL参数: category=${category}`, 'info');
+                    setTimeout(() => {
+                        validateCategoryFilter(category);
+                        updateStats();
+                    }, 2000);
+                }
+                
+            }, 1000);
+            
+            // 定期更新统计信息
+            setInterval(updateStats, 2000);
+        });
+    </script>
+</body>
+</html>

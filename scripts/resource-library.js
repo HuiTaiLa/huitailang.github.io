@@ -48,8 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollLoading();
     loadResourceData();
 
-    // 检查URL参数并自动选中对应分类
+    // 检查URL参数并自动选中对应分类或执行搜索
     checkUrlCategoryParameter();
+    checkUrlSearchParameter();
 
     console.log('资源库初始化完成');
 });
@@ -287,6 +288,12 @@ function searchDocuments(query) {
             return searchText.includes(query.toLowerCase());
         });
 
+        // 更新筛选状态
+        filteredFiles = [...searchResults];
+
+        // 更新热门推荐（始终显示固定的热门推荐）
+        updateHotRecommendationsWithFilter(searchResults);
+
         // 更新文档列表
         updateDocumentListWithFilteredFiles(searchResults);
 
@@ -324,6 +331,38 @@ function checkUrlCategoryParameter() {
                 categoryNav.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+    } else {
+        // 如果没有URL参数，确保初始化为"全部"分类
+        currentCategory = 'all';
+        filteredFiles = [...window.REAL_FILES_DATA];
+    }
+}
+
+// 检查URL搜索参数并自动执行搜索
+function checkUrlSearchParameter() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+
+    if (searchQuery) {
+        // 设置搜索输入框的值
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.value = searchQuery;
+        }
+
+        // 显示搜索区域
+        const searchSection = document.querySelector('.search-section');
+        if (searchSection) {
+            searchSection.classList.add('active');
+        }
+
+        // 执行搜索
+        searchDocuments(searchQuery);
+
+        // 滚动到搜索区域
+        if (searchSection) {
+            searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 }
 
@@ -355,15 +394,21 @@ function initCategoryTabs() {
 function loadDocumentsByCategory(category) {
     safeCommonUtils().showLoading('加载中...');
 
+    // 更新当前分类
+    currentCategory = category;
+
     // 模拟加载延迟
     setTimeout(() => {
         safeCommonUtils().hideLoading();
 
         // 根据分类筛选真实文件
-        let filteredFiles = window.REAL_FILES_DATA;
+        filteredFiles = window.REAL_FILES_DATA;
         if (category !== 'all') {
             filteredFiles = window.REAL_FILES_DATA.filter(file => file.category === category);
         }
+
+        // 更新热门推荐（基于筛选后的文件）
+        updateHotRecommendationsWithFilter(filteredFiles);
 
         // 更新文档列表
         updateDocumentListWithFilteredFiles(filteredFiles);
@@ -679,7 +724,7 @@ async function getDocumentContentForPreview(docId, docTitle) {
                     <p><strong>文档名称：</strong>${docTitle}</p>
                     <p><strong>文档ID：</strong>${docId}</p>
                     <p><strong>文件名：</strong>${filename || '未识别'}</p>
-                    <p><strong>说明：</strong>正在提取真实文档内容。</p>
+                    <p><strong>说明：</strong>正在解析文档内容。</p>
                 </div>
                 <div class="loading-indicator">
                     <div class="loading-spinner-small"></div>
@@ -797,7 +842,7 @@ async function showDocumentPreview(docId, docTitle) {
                         <div class="loading-spinner"></div>
                         <p>正在加载文档内容...</p>
                         <div class="loading-details">
-                            <p>📄 正在提取真实内容</p>
+                            <p>📄 正在解析文档格式</p>
                         </div>
                     </div>
                 </div>
@@ -1093,6 +1138,10 @@ function loadResourceData() {
 
 // 加载真实文件数据
 function loadRealFilesData() {
+    // 初始化筛选状态
+    currentCategory = 'all';
+    filteredFiles = [...window.REAL_FILES_DATA];
+
     // 更新热门推荐
     updateHotRecommendations();
 
@@ -1102,22 +1151,80 @@ function loadRealFilesData() {
 
 // 更新热门推荐
 function updateHotRecommendations() {
+    // 使用当前筛选状态的数据更新热门推荐
+    const currentFiles = filteredFiles.length > 0 ? filteredFiles : window.REAL_FILES_DATA;
+    updateHotRecommendationsWithFilter(currentFiles);
+}
+
+// 获取当前分类
+function getCurrentCategory() {
+    const activeTab = document.querySelector('.tab-item.active');
+    return activeTab ? activeTab.dataset.category : 'all';
+}
+
+// 基于筛选文件更新热门推荐
+function updateHotRecommendationsWithFilter(files) {
     const hotList = document.querySelector('.hot-list');
     if (!hotList) return;
 
-    // 随机选择2个文件作为热门推荐
-    const shuffled = [...window.REAL_FILES_DATA].sort(() => 0.5 - Math.random());
-    const hotFiles = shuffled.slice(0, 2);
+    // 获取当前分类
+    const currentCategory = getCurrentCategory();
+
+    // 根据分类定义热门推荐规则
+    const categoryHotRules = {
+        'all': [
+            '党政行业重点解决方案及案例.pptx',
+            '辽宁省中小企业数字化转型政策.docx'
+        ],
+        'manual': [
+            '辽宁省中小企业数字化转型政策.docx'
+        ],
+        'case': [
+            '党政行业重点解决方案及案例.pptx'
+        ],
+        'solution': [], // 显示空
+        'training': []  // 显示空
+    };
+
+    // 获取当前分类应该显示的热门推荐文件名列表
+    const hotFileNames = categoryHotRules[currentCategory] || [];
+
+    let hotFiles = [];
+
+    // 从全量数据中查找指定的热门推荐文件
+    hotFileNames.forEach(filename => {
+        const file = window.REAL_FILES_DATA.find(f => f.filename === filename);
+        if (file) {
+            hotFiles.push(file);
+        }
+    });
 
     hotList.innerHTML = '';
+
+    // 如果没有热门推荐文件，显示空状态或隐藏热门推荐区域
+    if (hotFiles.length === 0) {
+        // 可以选择隐藏整个热门推荐区域或显示空状态提示
+        const hotSection = document.querySelector('.hot-section');
+        if (hotSection) {
+            hotSection.style.display = 'none';
+        }
+        return;
+    } else {
+        // 确保热门推荐区域可见
+        const hotSection = document.querySelector('.hot-section');
+        if (hotSection) {
+            hotSection.style.display = 'block';
+        }
+    }
 
     hotFiles.forEach((file, index) => {
         const hotItem = document.createElement('div');
         hotItem.className = 'hot-item';
-        hotItem.dataset.docId = `hot_real_${index}`;
+        // 使用文件在原始数据中的索引来生成docId
+        const originalIndex = window.REAL_FILES_DATA.findIndex(f => f.filename === file.filename);
+        hotItem.dataset.docId = `hot_real_${originalIndex}`;
         hotItem.dataset.filename = file.filename;
 
-        const icon = getFileTypeIcon(file.type);
         const iconEmoji = file.type === 'pptx' ? '📊' : '📋';
 
         hotItem.innerHTML = `
@@ -1147,14 +1254,17 @@ function updateDocumentListWithRealFiles() {
     // 重置显示的文件列表
     displayedFiles = [];
 
-    // 添加真实文件
-    window.REAL_FILES_DATA.forEach((file, index) => {
+    // 使用当前筛选后的文件列表
+    const filesToShow = filteredFiles.length > 0 ? filteredFiles : window.REAL_FILES_DATA;
+
+    // 添加文件
+    filesToShow.forEach((file, index) => {
         const docElement = createRealDocumentElement(file, index);
         documentItems.appendChild(docElement);
     });
 
-    // 标记所有文件为已显示
-    displayedFiles = [...window.REAL_FILES_DATA];
+    // 标记文件为已显示
+    displayedFiles = [...filesToShow];
 
     // 重新初始化文档列表事件
     setTimeout(() => {
@@ -1276,15 +1386,20 @@ document.addEventListener('visibilitychange', function() {
 // 全局变量
 let currentPage = 1;
 let displayedFiles = [];
+let currentCategory = 'all'; // 当前选中的分类
+let filteredFiles = []; // 当前筛选后的文件列表
 
 // 加载更多文档
 function loadMoreDocuments() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         // 模拟API请求延迟
         setTimeout(() => {
-            // 检查是否还有未显示的真实文件
+            // 使用当前筛选后的文件列表进行加载
+            const currentFilteredFiles = filteredFiles.length > 0 ? filteredFiles : window.REAL_FILES_DATA;
+
+            // 检查是否还有未显示的文件
             const startIndex = displayedFiles.length;
-            const remainingFiles = window.REAL_FILES_DATA.slice(startIndex);
+            const remainingFiles = currentFilteredFiles.slice(startIndex);
 
             if (remainingFiles.length > 0) {
                 // 每次最多加载2个文件
@@ -1293,7 +1408,7 @@ function loadMoreDocuments() {
                 displayedFiles.push(...filesToLoad);
 
                 // 检查是否还有更多文件
-                const hasMore = displayedFiles.length < window.REAL_FILES_DATA.length;
+                const hasMore = displayedFiles.length < currentFilteredFiles.length;
                 resolve(hasMore);
             } else {
                 // 没有更多数据

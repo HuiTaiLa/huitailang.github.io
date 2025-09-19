@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>热门推荐修复测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .hot-section {
+            margin: 20px 0;
+        }
+        .hot-list {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .hot-item {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .hot-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .hot-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .hot-content h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .hot-content p {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .hot-stats {
+            font-size: 12px;
+            color: #999;
+        }
+        .category-nav {
+            margin: 20px 0;
+        }
+        .tab-scroll {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .tab-item {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-item.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .search-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-submit-btn {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔥 热门推荐修复测试</h1>
+        
+        <div class="test-section">
+            <h3>测试说明</h3>
+            <div class="info test-result">
+                <p><strong>修复内容：</strong></p>
+                <ul>
+                    <li>✅ 热门推荐不再随机，固定显示：党政行业重点解决方案及案例.pptx 和 辽宁省中小企业数字化转型政策.docx</li>
+                    <li>✅ 热门推荐与文档资源联动筛选（分类筛选）</li>
+                    <li>✅ 热门推荐与文档资源联动筛选（搜索筛选）</li>
+                    <li>✅ 支持URL参数直接访问（如：?category=manual 或 ?search=党政）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 功能测试</h3>
+            <div>
+                <button class="test-button" onclick="testInitialLoad()">测试初始加载</button>
+                <button class="test-button" onclick="testCategoryFilter('solution')">测试解决方案分类</button>
+                <button class="test-button" onclick="testCategoryFilter('training')">测试培训资料分类</button>
+                <button class="test-button" onclick="testCategoryFilter('manual')">测试产品手册分类</button>
+                <button class="test-button" onclick="testSearch('党政')">测试搜索"党政"</button>
+                <button class="test-button" onclick="testSearch('数字化转型')">测试搜索"数字化转型"</button>
+                <button class="test-button" onclick="resetToAll()">重置到全部</button>
+            </div>
+            <div id="testResults"></div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" placeholder="输入关键词进行搜索..." class="search-input" id="testSearchInput">
+                <button class="search-submit-btn" onclick="performTestSearch()">搜索</button>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list" id="testHotList">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 当前状态</h3>
+            <div id="statusInfo" class="info test-result">
+                等待测试...
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/file-protocol-adapter.js"></script>
+    <script src="scripts/document-parsers.js"></script>
+    <script src="scripts/document-content-extractor.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    
+    <script>
+        let testResults = [];
+
+        function addTestResult(message, type = 'info') {
+            testResults.push({message, type, time: new Date().toLocaleTimeString()});
+            updateTestResults();
+        }
+
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = testResults.map(result => 
+                `<div class="test-result ${result.type}">[${result.time}] ${result.message}</div>`
+            ).join('');
+        }
+
+        function updateStatus() {
+            const statusDiv = document.getElementById('statusInfo');
+            const hotItems = document.querySelectorAll('#testHotList .hot-item');
+            const currentCategory = document.querySelector('.tab-item.active')?.dataset.category || 'unknown';
+            
+            let status = `
+                <strong>当前分类：</strong> ${currentCategory}<br>
+                <strong>热门推荐数量：</strong> ${hotItems.length}<br>
+                <strong>热门推荐内容：</strong><br>
+            `;
+            
+            hotItems.forEach((item, index) => {
+                const title = item.querySelector('h4')?.textContent || '未知';
+                status += `&nbsp;&nbsp;${index + 1}. ${title}<br>`;
+            });
+            
+            statusDiv.innerHTML = status;
+        }
+
+        function testInitialLoad() {
+            addTestResult('开始测试初始加载...', 'info');
+            
+            // 重新加载数据
+            if (typeof loadResourceData === 'function') {
+                loadResourceData();
+            }
+            
+            setTimeout(() => {
+                const hotItems = document.querySelectorAll('#testHotList .hot-item');
+                if (hotItems.length === 2) {
+                    const titles = Array.from(hotItems).map(item => item.querySelector('h4').textContent);
+                    if (titles.includes('党政行业重点解决方案及案例') && titles.includes('辽宁省中小企业数字化转型政策')) {
+                        addTestResult('✅ 初始加载测试通过：显示固定的两个热门推荐', 'success');
+                    } else {
+                        addTestResult(`❌ 初始加载测试失败：热门推荐内容不正确 - ${titles.join(', ')}`, 'error');
+                    }
+                } else {
+                    addTestResult(`❌ 初始加载测试失败：热门推荐数量不正确 (${hotItems.length})`, 'error');
+                }
+                updateStatus();
+            }, 1000);
+        }
+
+        function testCategoryFilter(category) {
+            addTestResult(`开始测试分类筛选：${category}`, 'info');
+            
+            // 模拟点击分类标签
+            const targetTab = document.querySelector(`.tab-item[data-category="${category}"]`);
+            if (targetTab) {
+                // 移除其他标签的active状态
+                document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+                // 添加当前标签的active状态
+                targetTab.classList.add('active');
+                
+                // 调用分类加载函数
+                if (typeof loadDocumentsByCategory === 'function') {
+                    loadDocumentsByCategory(category);
+                }
+                
+                setTimeout(() => {
+                    const hotItems = document.querySelectorAll('#testHotList .hot-item');
+                    addTestResult(`分类 ${category} 筛选后热门推荐数量：${hotItems.length}`, 'info');
+                    
+                    // 检查热门推荐是否正确筛选
+                    if (hotItems.length > 0) {
+                        addTestResult(`✅ 分类筛选测试通过：热门推荐已更新`, 'success');
+                    } else {
+                        addTestResult(`⚠️ 分类筛选结果：该分类下没有热门推荐项`, 'info');
+                    }
+                    updateStatus();
+                }, 1000);
+            }
+        }
+
+        function testSearch(query) {
+            addTestResult(`开始测试搜索：${query}`, 'info');
+            
+            // 设置搜索输入框
+            const searchInput = document.getElementById('testSearchInput');
+            searchInput.value = query;
+            
+            // 调用搜索函数
+            if (typeof searchDocuments === 'function') {
+                searchDocuments(query);
+            }
+            
+            setTimeout(() => {
+                const hotItems = document.querySelectorAll('#testHotList .hot-item');
+                addTestResult(`搜索 "${query}" 后热门推荐数量：${hotItems.length}`, 'info');
+                
+                if (hotItems.length > 0) {
+                    const titles = Array.from(hotItems).map(item => item.querySelector('h4').textContent);
+                    addTestResult(`✅ 搜索测试通过：热门推荐已更新 - ${titles.join(', ')}`, 'success');
+                } else {
+                    addTestResult(`⚠️ 搜索结果：没有找到匹配的热门推荐项`, 'info');
+                }
+                updateStatus();
+            }, 1000);
+        }
+
+        function performTestSearch() {
+            const searchInput = document.getElementById('testSearchInput');
+            const query = searchInput.value.trim();
+            if (query) {
+                testSearch(query);
+            }
+        }
+
+        function resetToAll() {
+            addTestResult('重置到全部分类', 'info');
+            
+            // 重置分类标签
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+            document.querySelector('.tab-item[data-category="all"]').classList.add('active');
+            
+            // 清空搜索框
+            document.getElementById('testSearchInput').value = '';
+            
+            // 重新加载全部数据
+            if (typeof loadDocumentsByCategory === 'function') {
+                loadDocumentsByCategory('all');
+            }
+            
+            setTimeout(() => {
+                updateStatus();
+                addTestResult('✅ 已重置到全部分类', 'success');
+            }, 1000);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            addTestResult('页面加载完成，开始初始化...', 'info');
+            
+            // 等待资源库脚本加载完成
+            setTimeout(() => {
+                if (typeof window.REAL_FILES_DATA !== 'undefined') {
+                    addTestResult(`✅ 文件数据加载成功：${window.REAL_FILES_DATA.length} 个文件`, 'success');
+                    testInitialLoad();
+                } else {
+                    addTestResult('❌ 文件数据加载失败', 'error');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

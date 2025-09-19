@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精确热门推荐规则测试</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/resource-library.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .hot-section {
+            margin: 20px 0;
+        }
+        .hot-list {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .hot-item {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .hot-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .hot-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .hot-content h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .hot-content p {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .hot-stats {
+            font-size: 12px;
+            color: #999;
+        }
+        .category-nav {
+            margin: 20px 0;
+        }
+        .tab-scroll {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .tab-item {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-item.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .rules-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .rules-info h4 {
+            margin: 0 0 10px 0;
+            color: #0066cc;
+        }
+        .rules-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .rules-info li {
+            color: #333;
+            margin: 5px 0;
+        }
+        .empty-state {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎯 精确热门推荐规则测试</h1>
+        
+        <div class="test-section">
+            <h3>📋 热门推荐显示规则</h3>
+            <div class="rules-info">
+                <h4>各分类的热门推荐规则：</h4>
+                <ul>
+                    <li><strong>全部 (all)：</strong>显示"党政行业重点解决方案及案例" + "辽宁省中小企业数字化转型政策"</li>
+                    <li><strong>产品手册 (manual)：</strong>只显示"辽宁省中小企业数字化转型政策"</li>
+                    <li><strong>客户案例 (case)：</strong>只显示"党政行业重点解决方案及案例"</li>
+                    <li><strong>解决方案 (solution)：</strong>显示空（隐藏热门推荐区域）</li>
+                    <li><strong>培训资料 (training)：</strong>显示空（隐藏热门推荐区域）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 分类测试</h3>
+            <div>
+                <button class="test-button" onclick="testCategory('all')">测试"全部"</button>
+                <button class="test-button" onclick="testCategory('manual')">测试"产品手册"</button>
+                <button class="test-button" onclick="testCategory('case')">测试"客户案例"</button>
+                <button class="test-button" onclick="testCategory('solution')">测试"解决方案"</button>
+                <button class="test-button" onclick="testCategory('training')">测试"培训资料"</button>
+            </div>
+            <div id="categoryTestResults"></div>
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <div class="tab-scroll">
+                <div class="tab-item active" data-category="all">全部</div>
+                <div class="tab-item" data-category="manual">产品手册</div>
+                <div class="tab-item" data-category="solution">解决方案</div>
+                <div class="tab-item" data-category="training">培训资料</div>
+                <div class="tab-item" data-category="case">客户案例</div>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="hot-section" id="hotSection">
+            <h3>🔥 热门推荐</h3>
+            <div class="hot-list" id="testHotList">
+                <!-- 热门推荐内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 实时状态</h3>
+            <div id="statusInfo" class="info test-result">
+                等待测试...
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/file-protocol-adapter.js"></script>
+    <script src="scripts/document-parsers.js"></script>
+    <script src="scripts/document-content-extractor.js"></script>
+    <script src="scripts/resource-library.js"></script>
+    
+    <script>
+        // 定义期望的热门推荐规则
+        const expectedHotRules = {
+            'all': ['党政行业重点解决方案及案例', '辽宁省中小企业数字化转型政策'],
+            'manual': ['辽宁省中小企业数字化转型政策'],
+            'case': ['党政行业重点解决方案及案例'],
+            'solution': [], // 应该隐藏热门推荐区域
+            'training': []  // 应该隐藏热门推荐区域
+        };
+
+        function addTestResult(message, type = 'info') {
+            const container = document.getElementById('categoryTestResults');
+            const time = new Date().toLocaleTimeString();
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `[${time}] ${message}`;
+            container.appendChild(resultDiv);
+        }
+
+        function updateStatus() {
+            const statusDiv = document.getElementById('statusInfo');
+            const hotSection = document.getElementById('hotSection');
+            const hotItems = document.querySelectorAll('#testHotList .hot-item');
+            const currentCategory = document.querySelector('.tab-item.active')?.dataset.category || 'unknown';
+            
+            let status = `
+                <strong>当前分类：</strong> ${currentCategory}<br>
+                <strong>热门推荐区域：</strong> ${hotSection.style.display === 'none' ? '隐藏' : '显示'}<br>
+                <strong>热门推荐数量：</strong> ${hotItems.length}<br>
+            `;
+            
+            if (hotItems.length > 0) {
+                status += `<strong>热门推荐内容：</strong><br>`;
+                hotItems.forEach((item, index) => {
+                    const title = item.querySelector('h4')?.textContent || '未知';
+                    status += `&nbsp;&nbsp;${index + 1}. ${title}<br>`;
+                });
+            } else if (hotSection.style.display !== 'none') {
+                status += `<strong>热门推荐内容：</strong> 无<br>`;
+            }
+            
+            statusDiv.innerHTML = status;
+        }
+
+        function checkHotRecommendations(category) {
+            const hotSection = document.getElementById('hotSection');
+            const hotItems = document.querySelectorAll('#testHotList .hot-item');
+            const expectedTitles = expectedHotRules[category] || [];
+            
+            // 检查是否应该隐藏热门推荐区域
+            const shouldHide = expectedTitles.length === 0;
+            const isHidden = hotSection.style.display === 'none';
+            
+            if (shouldHide) {
+                return {
+                    isCorrect: isHidden,
+                    actualTitles: [],
+                    expectedTitles: [],
+                    shouldHide: true,
+                    isHidden: isHidden
+                };
+            }
+            
+            // 检查显示的内容是否正确
+            const actualTitles = Array.from(hotItems).map(item => item.querySelector('h4').textContent);
+            const isMatch = actualTitles.length === expectedTitles.length && 
+                           expectedTitles.every(expected => 
+                               actualTitles.some(actual => actual.includes(expected))
+                           );
+            
+            return {
+                isCorrect: isMatch && !isHidden,
+                actualTitles,
+                expectedTitles,
+                shouldHide: false,
+                isHidden: isHidden
+            };
+        }
+
+        function testCategory(category) {
+            addTestResult(`开始测试分类：${category}`, 'info');
+            
+            // 模拟点击分类标签
+            const targetTab = document.querySelector(`.tab-item[data-category="${category}"]`);
+            if (targetTab) {
+                // 移除其他标签的active状态
+                document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+                // 添加当前标签的active状态
+                targetTab.classList.add('active');
+                
+                // 调用分类加载函数
+                if (typeof loadDocumentsByCategory === 'function') {
+                    loadDocumentsByCategory(category);
+                }
+                
+                setTimeout(() => {
+                    const result = checkHotRecommendations(category);
+                    
+                    if (result.shouldHide) {
+                        if (result.isCorrect) {
+                            addTestResult(
+                                `✅ 分类"${category}"测试通过：热门推荐区域已正确隐藏`, 
+                                'success'
+                            );
+                        } else {
+                            addTestResult(
+                                `❌ 分类"${category}"测试失败：热门推荐区域应该隐藏但仍然显示`, 
+                                'error'
+                            );
+                        }
+                    } else {
+                        if (result.isCorrect) {
+                            addTestResult(
+                                `✅ 分类"${category}"测试通过：热门推荐显示正确 - ${result.actualTitles.join(', ')}`, 
+                                'success'
+                            );
+                        } else {
+                            if (result.isHidden) {
+                                addTestResult(
+                                    `❌ 分类"${category}"测试失败：热门推荐区域被错误隐藏`, 
+                                    'error'
+                                );
+                            } else {
+                                addTestResult(
+                                    `❌ 分类"${category}"测试失败：\n期望: ${result.expectedTitles.join(', ')}\n实际: ${result.actualTitles.join(', ')}`, 
+                                    'error'
+                                );
+                            }
+                        }
+                    }
+                    
+                    updateStatus();
+                }, 1000);
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (typeof window.REAL_FILES_DATA !== 'undefined') {
+                    addTestResult(`✅ 文件数据加载成功：${window.REAL_FILES_DATA.length} 个文件`, 'success');
+                    
+                    // 自动测试初始状态（全部分类）
+                    setTimeout(() => {
+                        const result = checkHotRecommendations('all');
+                        if (result.isCorrect) {
+                            addTestResult('✅ 初始状态测试通过：显示正确的热门推荐', 'success');
+                        } else {
+                            addTestResult(`❌ 初始状态测试失败：${result.actualTitles.join(', ')}`, 'error');
+                        }
+                        updateStatus();
+                    }, 1000);
+                } else {
+                    addTestResult('❌ 文件数据加载失败', 'error');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
